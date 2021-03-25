@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd">
+
+    <card>
+        <title>API</title>
+        <title lang="de-DE">API</title>
+
+        <input-field type="bool">
+            <name>sandbox</name>
+            <label>Sandbox</label>
+            <label lang="de-DE">Testmodus</label>
+            <value>0</value>
+        </input-field>
+
+        <input-field type="text">
+            <name>clientId</name>
+            <label>Client ID</label>
+            <label lang="de-DE">Client ID</label>
+        </input-field>
+
+        <input-field type="password">
+            <name>clientSecret</name>
+            <label>Client secret</label>
+            <label lang="de-DE">Client Secret</label>
+        </input-field>
+
+    </card>
+</config>

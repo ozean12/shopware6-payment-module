@@ -1,0 +1,9 @@
+{
+    "billie": {
+        "paymentConfig": {
+            "card": {
+                "title": "Billie configuration"
+            }
+        }
+    }
+}
