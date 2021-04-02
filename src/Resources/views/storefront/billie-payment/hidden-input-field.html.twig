@@ -1,0 +1,9 @@
+{% if page.extensions.billie_payment.widget %}
+    <input
+        name="billie_payment[session-id]"
+        type="hidden"
+        data-billie-checkout="true"
+        data-billie-checkout-options='{{ page.extensions.billie_payment.widget|json_encode }}'
+        form="confirmOrderForm"
+    />
+{% endif %}

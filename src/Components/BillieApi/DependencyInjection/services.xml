@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+
+        <defaults autowire="true" />
+
+        <!-- Factory for BillieClient -->
+        <service id="Billie\BilliePayment\Components\BillieApi\Service\BillieClientFactory" />
+
+        <service id="Billie\Sdk\HttpClient\BillieClient">
+            <factory service="Billie\BilliePayment\Components\BillieApi\Service\BillieClientFactory" method="createBillieClient"/>
+        </service>
+
+        <!-- RequestServices -->
+        <service id="Billie\Sdk\Service\Request\CreateSessionRequest"/>
+        <service id="Billie\Sdk\Service\Request\CancelOrderRequest" />
+        <service id="Billie\Sdk\Service\Request\CheckoutSessionConfirmRequest" />
+        <service id="Billie\Sdk\Service\Request\CreateOrderRequest" />
+        <service id="Billie\Sdk\Service\Request\GetLegalFormsRequest" />
+        <service id="Billie\Sdk\Service\Request\GetOrderDetailsRequest" />
+        <service id="Billie\Sdk\Service\Request\ShipOrderRequest" />
+        <service id="Billie\Sdk\Service\Request\UpdateOrderRequest" />
+        <service id="Billie\Sdk\Service\Request\PauseOrderDunningProcessRequest" />
+        <service id="Billie\Sdk\Service\Request\ConfirmPaymentRequest" />
+        <service id="Billie\Sdk\Service\Request\GetBankDataRequest" />
+
+    </services>
+</container>

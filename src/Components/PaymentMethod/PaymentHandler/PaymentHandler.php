@@ -3,20 +3,43 @@
 namespace Billie\BilliePayment\Components\PaymentMethod\PaymentHandler;
 
 
-use Billie\BilliePayment\Components\RedirectException\Exception\ForwardException;
-use Shopware\Core\Checkout\Order\OrderEntity;
+use Billie\BilliePayment\Components\Order\Model\OrderDataEntity;
+use Billie\BilliePayment\Components\PaymentMethod\Service\ConfirmDataService;
+use Billie\Sdk\Exception\BillieException;
+use Billie\Sdk\Service\Request\CheckoutSessionConfirmRequest;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
-use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpFoundation\Request;
 
 class PaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    public const ERROR_SNIPPET_VIOLATION_PREFIX = 'VIOLATION::';
+    /**
+     * @var CheckoutSessionConfirmRequest
+     */
+    private $checkoutSessionConfirmRequest;
+    /**
+     * @var ConfirmDataService
+     */
+    private $confirmDataService;
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $orderDataRepository;
+
+    public function __construct(
+        ConfirmDataService $confirmDataService,
+        CheckoutSessionConfirmRequest $checkoutSessionConfirmRequest,
+        EntityRepositoryInterface $orderDataRepository
+    )
+    {
+        $this->checkoutSessionConfirmRequest = $checkoutSessionConfirmRequest;
+        $this->confirmDataService = $confirmDataService;
+        $this->orderDataRepository = $orderDataRepository;
+    }
 
     public function pay(
         SyncPaymentTransactionStruct $transaction,
@@ -25,39 +48,29 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
     ): void
     {
         /** @var ParameterBag $billieData */
-        $billieData = $dataBag->get('billie', new ParameterBag([]));
+        $billieData = $dataBag->get('billie_payment', new ParameterBag([]));
 
-        $order = $this->getOrderWithAssociations($transaction->getOrder(), $salesChannelContext->getContext());
+        $order = $transaction->getOrder();
 
-        if ($order === null || $billieData->count() === 0) {
+        if ($billieData->count() === 0 || $billieData->has('session-id') === false) {
             throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'unknown error during payment');
         }
+
+        $confirmModel = $this->confirmDataService->getConfirmModel($billieData->get('session-id'), $order);
         try {
-        } catch (\Exception $e) {
-            throw new ForwardException(
-                'frontend.account.edit-order.page',
-                ['orderId' => $order->getId()],
-                ['billie-errors' => [$e->getMessage()]],
-                new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $e->getMessage())
-            );
+            $response = $this->checkoutSessionConfirmRequest->execute($confirmModel);
+
+            $this->orderDataRepository->upsert([
+                [
+                    OrderDataEntity::FIELD_ORDER_ID => $order->getId(),
+                    OrderDataEntity::FIELD_ORDER_VERSION_ID => $order->getVersionId(),
+                    OrderDataEntity::FIELD_REFERENCE_ID => $response->getUuid(),
+                    OrderDataEntity::FIELD_IS_SUCCESSFUL => true
+                ]
+            ], $salesChannelContext->getContext());
+
+        } catch (BillieException $exception) {
+            throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
-    }
-
-    /**
-     * @return OrderEntity|null
-     */
-    protected function getOrderWithAssociations(OrderEntity $order, Context $context): OrderEntity
-    {
-        return $this->orderRepository->search(CriteriaHelper::getCriteriaForOrder($order->getId()), $context)->first();
-    }
-
-    /**
-     * @param OrderEntity|SalesChannelContext $baseData
-     */
-    public function getValidationDefinitions(Request $request, $baseData): array
-    {
-        $validations = [
-        ];
-        return $validations;
     }
 }

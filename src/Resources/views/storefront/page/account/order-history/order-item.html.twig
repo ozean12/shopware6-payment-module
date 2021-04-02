@@ -1,0 +1,8 @@
+{% sw_extends '@Storefront/storefront/page/account/order-history/order-item.html.twig' %}
+
+{% block page_account_order_item_context_menu_content_change_payment_button %}
+    {# You can't change the payment if it is a billie order #}
+    {% if not order.extensions.billieData %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}

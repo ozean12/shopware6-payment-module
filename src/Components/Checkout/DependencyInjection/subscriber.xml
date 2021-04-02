@@ -5,13 +5,11 @@
     <services>
 
         <defaults autowire="true">
-            <tag name="shopware.payment.method.sync"/>
+            <tag name="kernel.event_subscriber" />
         </defaults>
 
-        <service id="Billie\BilliePayment\Components\PaymentMethod\PaymentHandler\PaymentHandler">
-            <argument key="$orderDataRepository" type="service" id="billie_order_data.repository"/>
-        </service>
-        <service id="Billie\BilliePayment\Components\PaymentMethod\Service\ConfirmDataService"/>
+        <service id="Billie\BilliePayment\Components\Checkout\Subscriber\CheckoutSubscriber" />
+        <service id="Billie\BilliePayment\Components\Checkout\Subscriber\CheckoutValidationSubscriber" />
 
     </services>
 </container>

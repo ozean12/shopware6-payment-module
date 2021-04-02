@@ -1,8 +1,6 @@
-<?php
-
+<?php declare(strict_types=1);
 
 namespace Billie\BilliePayment;
-
 
 use Billie\BilliePayment\Bootstrap\AbstractBootstrap;
 use Billie\BilliePayment\Bootstrap\Database;
@@ -14,8 +12,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin;
-use Shopware\Core\Kernel;
-use Symfony\Component\Routing\RouteCollectionBuilder;
 
 class BilliePayment extends Plugin
 {
@@ -129,10 +125,4 @@ class BilliePayment extends Plugin
             }
         }
     }
-
-//    public function configureRoutes(RouteCollectionBuilder $routes, string $environment): void
-//    {
-//        parent::configureRoutes($routes, $environment);
-//        $routes->import(__DIR__ . '/Components/**/DependencyInjection/routes' . Kernel::CONFIG_EXTS, '/', 'glob');
-//    }
 }

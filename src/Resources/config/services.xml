@@ -6,7 +6,7 @@
     <imports>
         <import resource="../../Components/*/DependencyInjection/services.xml"/>
         <import resource="../../Components/*/DependencyInjection/models.xml"/>
-        <import resource="../../Components/*/DependencyInjection/controller.xml"/>
+        <import resource="../../Components/*/DependencyInjection/controllers.xml"/>
         <import resource="../../Components/*/DependencyInjection/subscriber.xml"/>
         <import resource="../../Components/*/DependencyInjection/translations.xml"/>
     </imports>

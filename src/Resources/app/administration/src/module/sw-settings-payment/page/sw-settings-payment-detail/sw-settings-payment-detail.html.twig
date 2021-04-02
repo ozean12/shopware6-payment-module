@@ -2,7 +2,8 @@
     {% parent %}
 
     {% block billie_payment_config_content %}
-        <sw-card class="billie--payment-config--card"
+        <sw-card v-if="paymentMethod && paymentMethod.extensions.billieConfig != null"
+                 class="billie--payment-config--card"
                  :title="$tc('billie.paymentConfig.card.title')"
                  :isLoading="isLoading">
             <template v-if="!isLoading">
@@ -10,8 +11,9 @@
                 {% block billie_payment_config_fields %}
                     <sw-field
                         type="number"
-                        :label="$tc('billie.paymentConfig.duration.label')"
-                        v-model="paymentMethod.extensions.billieConfig.duration">
+                        :label="$tc('billie.paymentConfig.fields.duration.label')"
+                        v-model="paymentMethod.extensions.billieConfig.duration"
+                        min="1">
                     </sw-field>
                 {% endblock %}
             </template>

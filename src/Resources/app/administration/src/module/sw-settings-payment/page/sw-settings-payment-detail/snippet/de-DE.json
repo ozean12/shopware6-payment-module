@@ -3,6 +3,11 @@
         "paymentConfig": {
             "card": {
                 "title": "Billie Konfiguration"
+            },
+            "fields": {
+                "duration": {
+                    "label": "Laufzeit"
+                }
             }
         }
     }

@@ -1,0 +1,35 @@
+<?php declare(strict_types=1);
+
+namespace Billie\BilliePayment\Migration;
+
+use Doctrine\DBAL\Connection;
+use Shopware\Core\Framework\Migration\MigrationStep;
+
+class Migration1617376765OrderExtension extends MigrationStep
+{
+    public function getCreationTimestamp(): int
+    {
+        return 1617376765;
+    }
+
+    public function update(Connection $connection): void
+    {
+        $connection->exec("
+            CREATE TABLE `billie_order_data` (
+              `id` binary(16) NOT NULL,
+              `order_id` binary(16) NOT NULL,
+              `order_version_id` binary(16) NOT NULL,
+              `reference_id` varchar(255) NOT NULL,
+              `successful` tinyint(1) NOT NULL,
+              `updated_at` DATETIME NULL,
+              PRIMARY KEY (`id`),
+              FOREIGN KEY (`order_id`,`order_version_id`) REFERENCES `order` (`id`, `version_id`) ON UPDATE CASCADE ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+        ");
+    }
+
+    public function updateDestructive(Connection $connection): void
+    {
+        $connection->executeQuery("DROP TABLE IF EXISTS `billie_order_data`");
+    }
+}
