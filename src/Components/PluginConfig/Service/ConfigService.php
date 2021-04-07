@@ -55,7 +55,21 @@ class ConfigService
 
     public function getSalutation(SalutationEntity $salutationEntity): string
     {
-        return 'm'; // TODO
+        $config = $this->getPluginConfiguration();
+
+        switch ($salutationEntity->getId()) {
+            case $config['salutationMale']:
+                $return = 'm';
+                break;
+            case $config['salutationFemale']:
+                $return = 'f';
+                break;
+            default :
+                $return = $config['salutationFallback'];
+                break;
+        }
+
+        return in_array($return, ['m', 'f']) ? $return : 'm';
     }
 
 }

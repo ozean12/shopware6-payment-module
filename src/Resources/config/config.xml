@@ -26,4 +26,46 @@
         </input-field>
 
     </card>
+
+    <card>
+        <title>Salutations</title>
+        <title lang="de-DE">Anreden</title>
+
+        <!-- it does not make any sense - but the `input-field`-tag must be before a `component`-tag -->
+        <input-field type="single-select">
+            <name>salutationFallback</name>
+            <label>Salutation (Fallback)</label>
+            <label lang="de-DE">Anrede (Fallback)</label>
+            <options>
+                <option>
+                    <id>m</id>
+                    <name>Male</name>
+                    <name lang="de-DE">Herr</name>
+                </option>
+                <option>
+                    <id>w</id>
+                    <name>Female</name>
+                    <name lang="de-DE">Frau</name>
+                </option>
+            </options>
+        </input-field>
+
+        <component name="sw-entity-single-select">
+            <name>salutationMale</name>
+            <label>Salutation (Male)</label>
+            <label lang="de-DE">Anrede (Mann)</label>
+            <entity>salutation</entity>
+            <labelProperty>displayName</labelProperty>
+        </component>
+
+        <component name="sw-entity-single-select">
+            <name>salutationFemale</name>
+            <label>Salutation (Female)</label>
+            <label lang="de-DE">Anrede (Frau)</label>
+            <entity>salutation</entity>
+            <labelProperty>displayName</labelProperty>
+        </component>
+
+
+    </card>
 </config>
