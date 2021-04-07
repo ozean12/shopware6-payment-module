@@ -2,10 +2,15 @@
 
 namespace Billie\BilliePayment\Bootstrap;
 
+use Billie\BilliePayment\Components\PaymentMethod\Model\Definition\PaymentMethodConfigDefinition;
 use Billie\BilliePayment\Components\PaymentMethod\Model\Extension\PaymentMethodExtension;
+use Billie\BilliePayment\Components\PaymentMethod\Model\PaymentMethodConfigEntity;
 use Billie\BilliePayment\Components\PaymentMethod\PaymentHandler\PaymentHandler;
+use Doctrine\DBAL\Connection;
+use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityWriteResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
