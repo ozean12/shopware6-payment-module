@@ -35,6 +35,8 @@ class Database extends AbstractBootstrap
         }
 
         $this->connection->exec('SET FOREIGN_KEY_CHECKS=0;');
+        $this->connection->executeQuery("DROP TABLE IF EXISTS `billie_payment_config`");
+        $this->connection->executeQuery("DROP TABLE IF EXISTS `billie_order_data`");
         $this->connection->exec('SET FOREIGN_KEY_CHECKS=1;');
     }
 
