@@ -56,13 +56,8 @@ export default class BilliePayment extends Plugin {
           }
         });
       }).catch((err) => {
-        // code to execute when there is an error or when order is rejected
-        if (err.state !== 'declined') {
-          //we assume, that the error popup of billie will be displayed, when the order got declined
-          console.error('Error occurred', err);
-          // this._showDefaultMessage();
-        }
-        // me.unlockSubmitButton();
+        console.error('Error occurred', err);
+        window.location.reload();
       });
     }
   }
