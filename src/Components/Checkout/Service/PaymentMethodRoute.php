@@ -75,14 +75,15 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
             $order = $this->orderRepository->search($criteria, $salesChannelContext->getContext())->first();
             $billingAddress = $order->getBillingAddress();
         } else {
-            $billingAddress = $salesChannelContext->getCustomer()->getActiveBillingAddress();
+            $customer = $salesChannelContext->getCustomer();
+            $billingAddress = $customer ? $customer->getActiveBillingAddress() : null;
         }
 
         if ($order || $request->query->getBoolean('onlyAvailable', false)) {
 
             $me = $this;
             $paymentMethods = $response->getPaymentMethods()->filter(static function (PaymentMethodEntity $paymentMethod) use ($me, $billingAddress) {
-                return MethodHelper::isBilliePayment($paymentMethod) === false ||
+                return ($billingAddress && MethodHelper::isBilliePayment($paymentMethod) === false) ||
                     (
                         !empty($billingAddress->getCompany()) &&
                         $me->getCountryIso($billingAddress) === 'DE'
