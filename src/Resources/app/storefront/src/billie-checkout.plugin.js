@@ -1,7 +1,5 @@
 import Plugin from 'src/plugin-system/plugin.class';
-
-// xhr call storage
-let xhr = null;
+import StoreApiClient from 'src/service/store-api-client.service';
 
 export default class BilliePayment extends Plugin {
 
@@ -37,6 +35,7 @@ export default class BilliePayment extends Plugin {
         },
         billie_order_data: this.options.checkoutData
       }).then((data) => {
+        const client = new StoreApiClient;
         let url = '/billie-payment/update-addresses';
         let locationMatch = window.location.href.match(/account\/order\/edit\/([A-Za-z0-9]+)/);
         if (locationMatch && locationMatch.length === 2) {
@@ -47,15 +46,10 @@ export default class BilliePayment extends Plugin {
         if (window.csrf.enabled && window.csrf.mode === 'twig') {
           data['_csrf_token'] = this.options.csrfToken;
         }
-
-        window.storeApiClient.post(url, JSON.stringify(data), (response, xmlHttpRequest) => {
-          if (xmlHttpRequest.status === 204) {
-            this._setAddressConfirmed(true);
-            this.el.value = this.options.checkoutSessionId;
-            this.el.form.submit();
-          } else {
-            console.log(response);
-          }
+        client.post(url, JSON.stringify(data), (response) => {
+          this._setAddressConfirmed(true);
+          this.el.value = this.options.checkoutSessionId;
+          this.el.form.submit();
         });
       }).catch((err) => {
         console.error('Error occurred', err);

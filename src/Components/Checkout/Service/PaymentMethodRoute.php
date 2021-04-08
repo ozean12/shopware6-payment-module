@@ -8,6 +8,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Checkout\Payment\SalesChannel\AbstractPaymentMethodRoute;
+use Shopware\Core\Checkout\Payment\SalesChannel\PaymentMethodRoute as CorePaymentMethodRoute;
 use Shopware\Core\Checkout\Payment\SalesChannel\PaymentMethodRouteResponse;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -16,7 +17,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class PaymentMethodRoute extends AbstractPaymentMethodRoute
+class PaymentMethodRoute extends CorePaymentMethodRoute
 {
     /**
      * @var AbstractPaymentMethodRoute
@@ -37,6 +38,10 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
      */
     private $countryRepository;
 
+    /**
+     * @noinspection MagicMethodsValidityInspection
+     * @noinspection PhpMissingParentConstructorInspection
+     */
     public function __construct(
         AbstractPaymentMethodRoute $innerService,
         RequestStack $requestStack,
@@ -70,10 +75,10 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
         $order = null;
         if ($orderId) {
             $criteria = (new Criteria([$orderId]))
-                ->addAssociation('billingAddress');
+                ->addAssociation('addresses');
             /** @var OrderEntity $order */
             $order = $this->orderRepository->search($criteria, $salesChannelContext->getContext())->first();
-            $billingAddress = $order->getBillingAddress();
+            $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
         } else {
             $customer = $salesChannelContext->getCustomer();
             $billingAddress = $customer ? $customer->getActiveBillingAddress() : null;

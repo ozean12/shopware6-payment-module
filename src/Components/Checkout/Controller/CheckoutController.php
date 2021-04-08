@@ -52,43 +52,40 @@ class CheckoutController extends StorefrontController
     }
 
     /**
-     * @Route(path="/update-addresses", methods={"POST"}, defaults={"XmlHttpRequest"=true})
+     * @Route(path="/update-addresses/{orderId}", name="billie-payment.checkout.update-addresses", methods={"POST"}, defaults={"XmlHttpRequest"=true})
      * @noinspection NullPointerExceptionInspection
+     * @param Request $request
+     * @param SalesChannelContext $salesChannelContext
+     * @param null $orderId
      */
-    public function updateCustomerAddress(Request $request, SalesChannelContext $salesChannelContext)
+    public function updateCustomerAddress(Request $request, SalesChannelContext $salesChannelContext, $orderId = null)
     {
-        $this->updateAddress(
-            $salesChannelContext->getCustomer()->getActiveBillingAddress()->getId(),
-            $salesChannelContext->getCustomer()->getActiveShippingAddress()->getId(),
-            $request->request->all(),
-            $this->customerAddressRepository,
-            $salesChannelContext->getContext()
-        );
+        if($orderId === null) {
+            $this->updateAddress(
+                $salesChannelContext->getCustomer()->getActiveBillingAddress()->getId(),
+                $salesChannelContext->getCustomer()->getActiveShippingAddress()->getId(),
+                $request->request->all(),
+                $this->customerAddressRepository,
+                $salesChannelContext->getContext()
+            );
+        } else {
+            $criteria = (new Criteria([$orderId]))
+                ->addAssociation('deliveries');
 
-        return new NoContentResponse();
-    }
+            /** @var OrderEntity $orderEntity */
+            $orderEntity = $this->orderRepository->search($criteria, $salesChannelContext->getContext())->first();
+            if ($orderEntity === null) {
+                return $this->createNotFoundException('order with id ' . $orderId . ' was not found');
+            }
 
-    /**
-     * @Route(path="/update-addresses/{orderId}", methods={"POST"}, defaults={"XmlHttpRequest"=true})
-     */
-    public function updateOrderAddress(Request $request, SalesChannelContext $salesChannelContext, string $orderId)
-    {
-        $criteria = (new Criteria([$orderId]))
-            ->addAssociation('deliveries');
-
-        /** @var OrderEntity $orderEntity */
-        $orderEntity = $this->orderRepository->search($criteria, $salesChannelContext->getContext())->first();
-        if ($orderEntity === null) {
-            return $this->createNotFoundException('order with id ' . $orderId . ' was not found');
+            $this->updateAddress(
+                $orderEntity->getBillingAddressId(),
+                $orderEntity->getDeliveries()->first()->getShippingOrderAddressId(),
+                $request->request->all(),
+                $this->orderAddressRepository,
+                $salesChannelContext->getContext()
+            );
         }
-
-        $this->updateAddress(
-            $orderEntity->getBillingAddressId(),
-            $orderEntity->getDeliveries()->first()->getShippingOrderAddressId(),
-            $request->request->all(),
-            $this->orderAddressRepository,
-            $salesChannelContext->getContext()
-        );
 
         return new NoContentResponse();
     }
