@@ -47,7 +47,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
 
             if ($widgetData) {
                 $extension = $event->getPage()->getExtension('billie_payment') ?? new ArrayStruct();
-                $extension->set('widget', $widgetData->getVars());
+                $extension->set('widget', $widgetData->all());
 
                 $event->getPage()->addExtension('billie_payment', $extension);
             }

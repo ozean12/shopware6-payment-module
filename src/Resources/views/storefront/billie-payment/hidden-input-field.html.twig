@@ -1,9 +1,13 @@
 {% if page.extensions.billie_payment.widget %}
+    {% set billieCheckoutOptions = page.extensions.billie_payment.widget|merge({
+        csrfToken: sw_csrf("billie.checkout.update-addresses", {"mode": "token"})
+    }) %}
+
     <input
         name="billie_payment[session-id]"
         type="hidden"
         data-billie-checkout="true"
-        data-billie-checkout-options='{{ page.extensions.billie_payment.widget|json_encode }}'
+        data-billie-checkout-options='{{ billieCheckoutOptions|json_encode }}'
         form="confirmOrderForm"
     />
 {% endif %}
