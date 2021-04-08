@@ -62,6 +62,21 @@ class OrderDataDefinition extends EntityDefinition
                 OrderDataEntity::FIELD_REFERENCE_ID
             ))->addFlags(new Required()),
 
+            (new StringField(
+                'external_invoice_number',
+                OrderDataEntity::FIELD_EXTERNAL_INVOICE_NUMBER
+            )),
+
+            (new StringField(
+                'external_invoice_url',
+                OrderDataEntity::FIELD_EXTERNAL_INVOICE_URL
+            )),
+
+            (new StringField(
+                'external_delivery_note_url',
+                OrderDataEntity::FIELD_EXTERNAL_DELIVERY_NOTE_URL
+            )),
+
             (new BoolField(
                 'successful',
                 OrderDataEntity::FIELD_IS_SUCCESSFUL

@@ -4,8 +4,6 @@ namespace Billie\BilliePayment\Components\Checkout\Subscriber;
 
 use Billie\BilliePayment\Components\Checkout\Service\WidgetService;
 use Billie\BilliePayment\Components\PaymentMethod\Util\MethodHelper;
-use Ratepay\RpayPayments\Components\PaymentHandler\AbstractPaymentHandler;
-use Ratepay\RpayPayments\Util\DataValidationHelper;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;

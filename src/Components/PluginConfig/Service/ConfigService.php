@@ -72,4 +72,25 @@ class ConfigService
         return in_array($return, ['m', 'f']) ? $return : 'm';
     }
 
+    public function getStateForShip()
+    {
+        $config = $this->getPluginConfiguration();
+
+        return $config['stateShipped'];
+    }
+
+    public function getStateCancel()
+    {
+        $config = $this->getPluginConfiguration();
+
+        return $config['stateCanceled'];
+    }
+
+    public function isStateWatchingEnabled()
+    {
+        $config = $this->getPluginConfiguration();
+
+        return (bool)$config['stateEnabled'];
+    }
+
 }

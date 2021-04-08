@@ -1,0 +1,23 @@
+{
+    "billie": {
+        "orderData": {
+            "cart": {
+                "title": "Billie order information"
+            },
+            "fields": {
+                "referenceId": {
+                    "label": "Reference number"
+                },
+                "externalInvoiceNumber": {
+                    "label": "External invoice number"
+                },
+                "externalInvoiceUrl": {
+                    "label": "External invoice url"
+                },
+                "externalDeliveryNoteUrl": {
+                    "label": "external delivery note url"
+                }
+            }
+        }
+    }
+}
