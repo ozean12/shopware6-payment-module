@@ -13,6 +13,9 @@ class OrderDataEntity extends Entity
     public const FIELD_ORDER_VERSION_ID = 'orderVersionId';
     public const FIELD_REFERENCE_ID = 'referenceId';
     public const FIELD_IS_SUCCESSFUL = 'successful';
+    public const FIELD_EXTERNAL_INVOICE_NUMBER = 'externalInvoiceNumber';
+    public const FIELD_EXTERNAL_INVOICE_URL = 'externalInvoiceUrl';
+    public const FIELD_EXTERNAL_DELIVERY_NOTE_URL = 'externalDeliveryNoteUrl';
 
     use EntityIdTrait;
 
@@ -35,6 +38,21 @@ class OrderDataEntity extends Entity
      * @var string
      */
     protected $referenceId;
+
+    /**
+     * @var string|null
+     */
+    protected $externalInvoiceNumber;
+
+    /**
+     * @var string|null
+     */
+    protected $externalInvoiceUrl;
+
+    /**
+     * @var string|null
+     */
+    protected $externalDeliveryNoteUrl;
 
     /**
      * @var bool
@@ -71,6 +89,30 @@ class OrderDataEntity extends Entity
     public function getReferenceId(): string
     {
         return $this->referenceId;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getExternalInvoiceNumber(): ?string
+    {
+        return $this->externalInvoiceNumber;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getExternalInvoiceUrl(): ?string
+    {
+        return $this->externalInvoiceUrl;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getExternalDeliveryNoteUrl(): ?string
+    {
+        return $this->externalDeliveryNoteUrl;
     }
 
     /**

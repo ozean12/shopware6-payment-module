@@ -1,0 +1,41 @@
+{% block sw_order_detail_base_custom_fields %}
+
+    {% block billie_payment_order_data %}
+        <sw-card :title="$tc('billie.orderData.cart.title')"
+                 v-if="order.extensions.billieData"
+                 :isLoading="isLoading">
+
+            <sw-field
+                type="text"
+                :label="$tc('billie.orderData.fields.referenceId.label')"
+                v-model="order.extensions.billieData.referenceId"
+                disabled="disabled">
+            </sw-field>
+
+            <sw-field
+                type="text"
+                :label="$tc('billie.orderData.fields.externalInvoiceNumber.label')"
+                v-model="order.extensions.billieData.externalInvoiceNumber"
+                :disabled="!isEditing || !acl.can('order.editor')">
+            </sw-field>
+
+            <sw-field
+                type="text"
+                :label="$tc('billie.orderData.fields.externalInvoiceUrl.label')"
+                v-model="order.extensions.billieData.externalInvoiceUrl"
+                :disabled="!isEditing || !acl.can('order.editor')">
+            </sw-field>
+
+             <sw-field
+             type="text"
+             :label="$tc('billie.orderData.fields.externalDeliveryNoteUrl.label')"
+             v-model="order.extensions.billieData.externalDeliveryNoteUrl"
+             :disabled="!isEditing || !acl.can('order.editor')">
+             </sw-field>
+
+        </sw-card>
+
+    {% endblock %}
+
+    {% parent %}
+{% endblock %}

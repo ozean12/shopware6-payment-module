@@ -5,7 +5,7 @@
     <services>
 
         <service id="Billie\BilliePayment\Components\PaymentMethod\Model\Definition\PaymentMethodConfigDefinition">
-            <tag name="shopware.entity.definition" entity="ratepay_admin_order_token"/>
+            <tag name="shopware.entity.definition" entity="billie_payment_config"/>
         </service>
 
         <service id="Billie\BilliePayment\Components\PaymentMethod\Model\Extension\PaymentMethodExtension">

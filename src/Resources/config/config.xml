@@ -69,7 +69,45 @@
             <entity>salutation</entity>
             <labelProperty>displayName</labelProperty>
         </component>
+    </card>
 
+    <card>
+        <title>Notification about state changes</title>
+        <title lang="de-DE">Übertragen der Statusveränderung</title>
 
+        <input-field type="bool">
+            <name>stateEnabled</name>
+            <label>Enable</label>
+            <label lang="de-DE">Aktivieren</label>
+            <value>0</value>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>stateShipped</name>
+            <options>
+                <option>
+                    <id>shipped</id>
+                    <name>shipped</name>
+                    <name lang="de-DE">Ausgeliefert</name>
+                </option>
+            </options>
+            <defaultValue>shipped</defaultValue>
+            <label>Status for shipment</label>
+            <label lang="de-DE">Status für die Lieferung</label>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>stateCanceled</name>
+            <options>
+                <option>
+                    <id>cancelled</id>
+                    <name>Cancelled</name>
+                    <name lang="de-DE">Abgebrochen</name>
+                </option>
+            </options>
+            <defaultValue>cancelled</defaultValue>
+            <label>Status for cancellation</label>
+            <label lang="de-DE">Status für die Stornierung</label>
+        </input-field>
     </card>
 </config>
