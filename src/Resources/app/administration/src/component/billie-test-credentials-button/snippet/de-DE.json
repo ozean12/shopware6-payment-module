@@ -1,0 +1,14 @@
+{
+    "billie": {
+        "config": {
+            "testCredentialsButton": {
+                "text": "Zugangsdaten testen"
+            },
+            "notification": {
+                "correctCredentials": "Die Zugangsdaten sind korrekt!",
+                "incorrectCredentials": "Die Zugangsdaten sind leider falsch!",
+                "failedToTestCredentials": "Beim Prüfen der Zugangsdaten ist ein Fehler aufgetreten!"
+            }
+        }
+    }
+}
