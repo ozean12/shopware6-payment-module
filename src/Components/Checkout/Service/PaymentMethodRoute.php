@@ -2,6 +2,8 @@
 
 namespace Billie\BilliePayment\Components\Checkout\Service;
 
+use Billie\BilliePayment\Components\PaymentMethod\Model\Extension\PaymentMethodExtension;
+use Billie\BilliePayment\Components\PaymentMethod\Model\PaymentMethodConfigEntity;
 use Billie\BilliePayment\Components\PaymentMethod\Util\MethodHelper;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
@@ -69,6 +71,13 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
             return $response;
         }
 
+        // Replace variables of billie payment descriptions, names and other translatable fields
+        foreach ($response->getPaymentMethods() as $paymentMethod) {
+            if (MethodHelper::isBilliePayment($paymentMethod)) {
+                $this->replaceVariables($paymentMethod);
+            }
+        }
+
         // if the order id is set, the oder has been already placed, and the customer may tries to change/edit
         // the payment method. - e.g. in case of a failed payment
         $orderId = $currentRequest->get('orderId');
@@ -85,7 +94,6 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
         }
 
         if ($order || $request->query->getBoolean('onlyAvailable', false)) {
-
             $me = $this;
             $paymentMethods = $response->getPaymentMethods()->filter(static function (PaymentMethodEntity $paymentMethod) use ($me, $billingAddress) {
                 return ($billingAddress && MethodHelper::isBilliePayment($paymentMethod) === false) ||
@@ -117,5 +125,35 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
             $country = $address->getCountry();
         }
         return $country->getIso();
+    }
+
+    private function replaceVariables(PaymentMethodEntity $paymentMethod): void
+    {
+        /** @var PaymentMethodConfigEntity|null $extension */
+        $extension = $paymentMethod->getExtension(PaymentMethodExtension::EXTENSION_NAME);
+        if ($extension) {
+            // Prepare variables
+            $duration = (string) $extension->getDuration();
+
+            // Description
+            $description = $paymentMethod->getDescription();
+            $description = str_replace('{duration}', $duration, $description);
+            $paymentMethod->setDescription($description);
+
+            // Name
+            $name = $paymentMethod->getName();
+            $name = str_replace('{duration}', $duration, $name);
+            $paymentMethod->setName($name);
+
+            // Translations
+            $prepared = [];
+            foreach ($paymentMethod->getTranslated() as $key => $translated) {
+                if (is_string($translated)) {
+                    $translated = str_replace('{duration}', $duration, $translated);
+                }
+                $prepared[$key] = $translated;
+            }
+            $paymentMethod->setTranslated($prepared);
+        }
     }
 }

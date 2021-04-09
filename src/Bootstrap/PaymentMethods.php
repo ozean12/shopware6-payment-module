@@ -2,15 +2,10 @@
 
 namespace Billie\BilliePayment\Bootstrap;
 
-use Billie\BilliePayment\Components\PaymentMethod\Model\Definition\PaymentMethodConfigDefinition;
 use Billie\BilliePayment\Components\PaymentMethod\Model\Extension\PaymentMethodExtension;
-use Billie\BilliePayment\Components\PaymentMethod\Model\PaymentMethodConfigEntity;
 use Billie\BilliePayment\Components\PaymentMethod\PaymentHandler\PaymentHandler;
-use Doctrine\DBAL\Connection;
-use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityWriteResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
@@ -19,19 +14,27 @@ class PaymentMethods extends AbstractBootstrap
     public const PAYMENT_METHODS = [
         PaymentHandler::class => [
             'handlerIdentifier' => PaymentHandler::class,
+            // ToDo: EN name
             'name' => 'Billie Rechnungskauf',
-            'description' => 'Bezahlen Sie bequem und sicher auf Rechnung - innerhalb von {$payment_mean.attributes.core->get(\'billie_duration\')} Tagen nach Erhalt der Ware.',
+            // ToDo: EN text
+            'description' => '',
             'afterOrderEnabled' => true,
+            'translations' => [
+                'de-DE' => [
+                    'name' => 'Billie Rechnungskauf',
+                    'description' => 'Bezahlen Sie bequem und sicher auf Rechnung - innerhalb von {duration} Tagen nach Erhalt der Ware.',
+                ],
+                'en-GB' => [
+                    // ToDo: EN name
+                    'name' => 'Billie Rechnungskauf',
+                    // ToDo: EN text
+                    'description' => '',
+                ],
+            ],
             PaymentMethodExtension::EXTENSION_NAME => [
                 'duration' => 14
-            ]
+            ],
         ],
-//        [
-//            'handlerIdentifier' => PaymentHandler::class,
-//            'name' => 'Billie Rechnungskauf (2)',
-//            'description' => 'Bezahlen Sie bequem und sicher auf Rechnung - innerhalb von {$payment_mean.attributes.core->get(\'billie_duration\')} Tagen nach Erhalt der Ware.',
-//            'afterOrderEnabled' => true,
-//        ],
     ];
 
     /**
