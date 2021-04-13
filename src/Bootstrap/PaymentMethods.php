@@ -14,10 +14,8 @@ class PaymentMethods extends AbstractBootstrap
     public const PAYMENT_METHODS = [
         PaymentHandler::class => [
             'handlerIdentifier' => PaymentHandler::class,
-            // ToDo: EN name
-            'name' => 'Billie Rechnungskauf',
-            // ToDo: EN text
-            'description' => '',
+            'name' => 'Billie Invoice',
+            'description' => 'Pay comfortably and securely on invoice - within {duration} days after receiving the goods.',
             'afterOrderEnabled' => true,
             'translations' => [
                 'de-DE' => [
@@ -25,10 +23,8 @@ class PaymentMethods extends AbstractBootstrap
                     'description' => 'Bezahlen Sie bequem und sicher auf Rechnung - innerhalb von {duration} Tagen nach Erhalt der Ware.',
                 ],
                 'en-GB' => [
-                    // ToDo: EN name
-                    'name' => 'Billie Rechnungskauf',
-                    // ToDo: EN text
-                    'description' => '',
+                    'name' => 'Billie Invoice',
+                    'description' => 'Pay comfortably and securely on invoice - within {duration} days after receiving the goods.',
                 ],
             ],
             PaymentMethodExtension::EXTENSION_NAME => [
