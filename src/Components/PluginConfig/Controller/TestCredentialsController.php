@@ -3,6 +3,7 @@
 namespace Billie\BilliePayment\Components\PluginConfig\Controller;
 
 use Billie\BilliePayment\Components\PluginConfig\Service\ConfigService;
+use Billie\Sdk\Exception\UserNotAuthorizedException;
 use Billie\Sdk\Util\BillieClientFactory;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
@@ -39,7 +40,7 @@ class TestCredentialsController extends AbstractController
                 $request->request->get('secret') ?? $this->configService->getClientSecret(),
                 $request->request->get('isSandbox') ?? $this->configService->isSandbox()
             );
-        } catch (\Exception $exception) {
+        } catch (UserNotAuthorizedException $exception) {
             $success = false;
         }
 
