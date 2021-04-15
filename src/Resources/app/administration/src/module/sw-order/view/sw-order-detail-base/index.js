@@ -4,5 +4,6 @@ const { Component } = Shopware;
 
 Component.override('sw-order-detail-base', {
     template,
-});
 
+    inject: ['acl']
+});

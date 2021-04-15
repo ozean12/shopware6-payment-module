@@ -27,10 +27,10 @@
             </sw-field>
 
              <sw-field
-             type="text"
-             :label="$tc('billie.orderData.fields.externalDeliveryNoteUrl.label')"
-             v-model="order.extensions.billieData.externalDeliveryNoteUrl"
-             :disabled="!isEditing || !acl.can('order.editor')">
+                type="text"
+                :label="$tc('billie.orderData.fields.externalDeliveryNoteUrl.label')"
+                v-model="order.extensions.billieData.externalDeliveryNoteUrl"
+                :disabled="!isEditing || !acl.can('order.editor')">
              </sw-field>
 
         </sw-card>

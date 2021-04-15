@@ -29,28 +29,28 @@ class ConfigService
 
     public function getPluginConfiguration(): array
     {
-        return $this->systemConfigService->get('BilliePayment.config', null) ?: [];
+        return $this->systemConfigService->get('BilliePayment.config') ?: [];
     }
 
-    public function getClientId(): string
+    public function getClientId(): ?string
     {
         $config = $this->getPluginConfiguration();
 
-        return $config['clientId'];
+        return $config['clientId'] ?? null;
     }
 
-    public function getClientSecret(): string
+    public function getClientSecret(): ?string
     {
         $config = $this->getPluginConfiguration();
 
-        return $config['clientSecret'];
+        return $config['clientSecret'] ?? null;
     }
 
     public function isSandbox(): bool
     {
         $config = $this->getPluginConfiguration();
 
-        return (bool)$config['sandbox'];
+        return (bool) $config['sandbox'];
     }
 
     public function getSalutation(SalutationEntity $salutationEntity): string
@@ -72,25 +72,25 @@ class ConfigService
         return in_array($return, ['m', 'f']) ? $return : 'm';
     }
 
-    public function getStateForShip()
+    public function getStateForShip(): ?string
     {
         $config = $this->getPluginConfiguration();
 
-        return $config['stateShipped'];
+        return $config['stateShipped'] ?? null;
     }
 
-    public function getStateCancel()
+    public function getStateCancel(): ?string
     {
         $config = $this->getPluginConfiguration();
 
-        return $config['stateCanceled'];
+        return $config['stateCanceled'] ?? null;
     }
 
-    public function isStateWatchingEnabled()
+    public function isStateWatchingEnabled(): bool
     {
         $config = $this->getPluginConfiguration();
 
-        return (bool)$config['stateEnabled'];
+        return (bool) $config['stateEnabled'];
     }
 
 }

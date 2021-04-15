@@ -3,15 +3,19 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-
-        <defaults>
-            <tag name="kernel.event_subscriber"/>
-        </defaults>
-
         <service id="Billie\BilliePayment\Components\StateMachine\Subscriber\TransitionSubscriber" autowire="true">
             <argument key="$orderRepository" id="order.repository" type="service" />
             <argument key="$orderDeliveryRepository" id="order_delivery.repository" type="service" />
             <argument key="$logger" id="billie_payment.logger" type="service" />
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="Billie\BilliePayment\Components\StateMachine\Service\StateMachineRegistryDecorator"
+                 decorates="Shopware\Core\System\StateMachine\StateMachineRegistry"
+                 parent="Shopware\Core\System\StateMachine\StateMachineRegistry"
+                 autowire="true">
+            <argument key="$orderRepository" id="order.repository" type="service" />
+            <argument key="$orderDeliveryRepository" id="order_delivery.repository" type="service" />
         </service>
     </services>
 </container>
