@@ -13,6 +13,8 @@ use Billie\Sdk\Model\Request\ShipOrderRequestModel;
 use Billie\Sdk\Service\Request\CancelOrderRequest;
 use Billie\Sdk\Service\Request\ShipOrderRequest;
 use Monolog\Logger;
+use Shopware\Core\Checkout\Document\DocumentGenerator\DeliveryNoteGenerator;
+use Shopware\Core\Checkout\Document\DocumentGenerator\InvoiceGenerator;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
 use Shopware\Core\Checkout\Order\OrderDefinition;
@@ -21,6 +23,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\StateMachine\Event\StateMachineTransitionEvent;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class TransitionSubscriber implements EventSubscriberInterface
@@ -45,35 +48,31 @@ class TransitionSubscriber implements EventSubscriberInterface
      * @var Logger
      */
     private $logger;
-    /**
-     * @var ShipOrderRequest
-     */
-    private $shipOrderRequest;
-    /**
-     * @var CancelOrderRequest
-     */
-    private $cancelOrderRequest;
+
     /**
      * @var DocumentUrlHelper
      */
     private $documentUrlHelper;
 
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
     public function __construct(
+        ContainerInterface $container,
         EntityRepositoryInterface $orderDeliveryRepository,
         EntityRepositoryInterface $orderRepository,
-        ShipOrderRequest $shipOrderRequest,
-        CancelOrderRequest $cancelOrderRequest,
         ConfigService $configService,
         DocumentUrlHelper $documentUrlHelper,
         Logger $logger
     )
     {
+        $this->container = $container;
         $this->orderDeliveryRepository = $orderDeliveryRepository;
         $this->orderRepository = $orderRepository;
         $this->configService = $configService;
         $this->logger = $logger;
-        $this->shipOrderRequest = $shipOrderRequest;
-        $this->cancelOrderRequest = $cancelOrderRequest;
         $this->documentUrlHelper = $documentUrlHelper;
     }
 
@@ -84,7 +83,7 @@ class TransitionSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onTransition(StateMachineTransitionEvent $event)
+    public function onTransition(StateMachineTransitionEvent $event): void
     {
         if ($this->configService->isStateWatchingEnabled() === false) {
             return;
@@ -104,18 +103,23 @@ class TransitionSubscriber implements EventSubscriberInterface
                     $invoiceUrl = $billieData->getExternalInvoiceUrl();
                     $shippingUrl = $billieData->getExternalDeliveryNoteUrl();
 
-                    if (!$invoiceNumber) {
+                    if (!$invoiceNumber || !$shippingUrl) {
                         foreach ($order->getDocuments() as $document) {
 
-                            if ($invoiceNumber === null && $document->getDocumentType()->getTechnicalName() === 'invoice') {
+                            if ($invoiceNumber === null &&
+                                $document->getDocumentType()->getTechnicalName() === InvoiceGenerator::INVOICE
+                            ) {
                                 $config = $document->getConfig();
                                 $invoiceNumber = isset($config['custom']['invoiceNumber']) ? $config['custom']['invoiceNumber'] : null;
                                 $invoiceUrl = $this->documentUrlHelper->generateRouteForDocument($document);
                             }
 
-                            if ($shippingUrl === null && $document->getDocumentType()->getTechnicalName() === 'delivery_note') {
+                            if ($shippingUrl === null &&
+                                $document->getDocumentType()->getTechnicalName() === DeliveryNoteGenerator::DELIVERY_NOTE
+                            ) {
                                 $shippingUrl = $this->documentUrlHelper->generateRouteForDocument($document);
                             }
+
                         }
                     }
 
@@ -126,12 +130,14 @@ class TransitionSubscriber implements EventSubscriberInterface
                         ->setShippingDocumentUrl($shippingUrl);
 
                     try {
-                        $this->shipOrderRequest->execute($data);
+                        /** @noinspection NullPointerExceptionInspection */
+                        $this->container->get(ShipOrderRequest::class)->execute($data);
                     } catch (BillieException $e) {
                         $this->logError($e, $order, $billieData);
                     }
                     break;
             }
+
             return;
         }
 
@@ -143,12 +149,15 @@ class TransitionSubscriber implements EventSubscriberInterface
             switch ($event->getToPlace()->getTechnicalName()) {
                 case $this->configService->getStateCancel():
                     try {
-                        $this->cancelOrderRequest->execute(new OrderRequestModel($billieData->getReferenceId()));
+                        /** @noinspection NullPointerExceptionInspection */
+                        $this->container->get(CancelOrderRequest::class)
+                            ->execute(new OrderRequestModel($billieData->getReferenceId()));
                     } catch (BillieException $e) {
                         $this->logError($e, $order, $billieData);
                     }
                     break;
             }
+
             return;
         }
     }
@@ -157,10 +166,11 @@ class TransitionSubscriber implements EventSubscriberInterface
     {
         $criteria = CriteriaHelper::getCriteriaForOrder($orderId);
         $criteria->addAssociation('documents.documentType');
+
         return $this->orderRepository->search($criteria, $context)->first();
     }
 
-    private function logError(BillieException $e, OrderEntity $order, OrderDataEntity $billieData)
+    private function logError(BillieException $e, OrderEntity $order, OrderDataEntity $billieData): void
     {
         $this->logger->addCritical('Exception during ship. (Exception: ' . $e->getMessage() . ')', [
             'error' => $e->getBillieCode(),
