@@ -1,0 +1,17 @@
+parameters:
+    level: 0
+    paths:
+        - %currentWorkingDirectory%/src
+
+    ignoreErrors:
+        - '#apcu_#'
+        - '#ioncube_#'
+        - '#opcache_#'
+        - '#imagettftext#'
+        - '#class Redis#'
+        - '#Constant STARTTIME#'
+
+    reportUnmatchedIgnoredErrors: false
+    tipsOfTheDay: false
+    bootstrapFiles:
+        - ../../project/vendor/autoload.php
