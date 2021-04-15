@@ -4,12 +4,12 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
 
-        <defaults autowire="true" />
+        <defaults autowire="true" public="true"/>
 
         <!-- Factory for BillieClient -->
-        <service id="Billie\BilliePayment\Components\BillieApi\Service\BillieClientFactory" />
+        <service id="Billie\BilliePayment\Components\BillieApi\Service\BillieClientFactory" public="false"/>
 
-        <service id="Billie\Sdk\HttpClient\BillieClient">
+        <service id="Billie\Sdk\HttpClient\BillieClient" public="false">
             <factory service="Billie\BilliePayment\Components\BillieApi\Service\BillieClientFactory" method="createBillieClient"/>
         </service>
 

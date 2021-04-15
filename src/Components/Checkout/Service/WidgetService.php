@@ -36,6 +36,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class WidgetService
@@ -69,29 +70,32 @@ class WidgetService
      * @var EntityRepositoryInterface
      */
     private $orderRepository;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
     public function __construct(
+        ContainerInterface $container,
         EventDispatcherInterface $eventDispatcher,
         EntityRepositoryInterface $productRepository,
         EntityRepositoryInterface $orderRepository,
         EntityRepositoryInterface $salutationRepository,
         CartService $cartService,
-        ConfigService $configService,
-        CreateSessionRequest $sessionRequestService
+        ConfigService $configService
     )
     {
+        $this->container = $container;
         $this->eventDispatcher = $eventDispatcher;
         $this->productRepository = $productRepository;
         $this->orderRepository = $orderRepository;
         $this->salutationRepository = $salutationRepository;
-        $this->sessionRequestService = $sessionRequestService;
         $this->configService = $configService;
         $this->cartService = $cartService;
     }
 
     public function getWidgetDataByOrder(OrderEntity $orderEntity, SalesChannelContext $salesChannelContext)
     {
-
         $criteria = CriteriaHelper::getCriteriaForOrder($orderEntity->getId());
 
         /** @var OrderEntity $orderEntity */
@@ -144,7 +148,9 @@ class WidgetService
     ): ?ArrayStruct
     {
         try {
-            $checkoutSessionId = $this->sessionRequestService->execute((new CreateSessionRequestModel())
+            /** @noinspection NullPointerExceptionInspection */
+            $checkoutSessionId = $this->container->get(CreateSessionRequest::class)
+                ->execute((new CreateSessionRequestModel())
                 ->setMerchantCustomerId($customer->getCustomerNumber())
             )->getCheckoutSessionId();
         } catch (BillieException $e) {
