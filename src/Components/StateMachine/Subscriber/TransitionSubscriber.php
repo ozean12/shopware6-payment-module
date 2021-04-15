@@ -90,10 +90,7 @@ class TransitionSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $stateForShip = $this->configService->getStateForShip();
-        $stateCancel = $this->configService->getStateCancel();
-
-        if ($stateForShip && $event->getEntityName() === OrderDeliveryDefinition::ENTITY_NAME) {
+        if ($event->getEntityName() === OrderDeliveryDefinition::ENTITY_NAME) {
             /** @var OrderDeliveryEntity $orderDelivery */
             $orderDelivery = $this->orderDeliveryRepository->search(new Criteria([$event->getEntityId()]), $event->getContext())->first();
             $order = $this->getOrder($orderDelivery->getOrderId(), $event->getContext());
@@ -102,7 +99,7 @@ class TransitionSubscriber implements EventSubscriberInterface
             $billieData = $order->getExtension(OrderExtension::EXTENSION_NAME);
 
             switch ($event->getToPlace()->getTechnicalName()) {
-                case $stateForShip:
+                case $this->configService->getStateForShip():
                     $invoiceNumber = $billieData->getExternalInvoiceNumber();
                     $invoiceUrl = $billieData->getExternalInvoiceUrl();
                     $shippingUrl = $billieData->getExternalDeliveryNoteUrl();
@@ -138,13 +135,13 @@ class TransitionSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if ($stateCancel && $event->getEntityName() === OrderDefinition::ENTITY_NAME) {
+        if ($event->getEntityName() === OrderDefinition::ENTITY_NAME) {
             $order = $this->getOrder($event->getEntityId(), $event->getContext());
             /** @var OrderDataEntity $billieData */
             $billieData = $order->getExtension(OrderExtension::EXTENSION_NAME);
 
             switch ($event->getToPlace()->getTechnicalName()) {
-                case $stateCancel:
+                case $this->configService->getStateCancel():
                     try {
                         $this->cancelOrderRequest->execute(new OrderRequestModel($billieData->getReferenceId()));
                     } catch (BillieException $e) {

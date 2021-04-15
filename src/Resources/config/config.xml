@@ -25,6 +25,10 @@
             <label lang="de-DE">Client Secret</label>
         </input-field>
 
+        <component name="billie-test-credentials-button">
+            <name>testClientCredentialsButton</name>
+        </component>
+
     </card>
 
     <card>
