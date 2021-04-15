@@ -117,12 +117,6 @@ class TransitionSubscriber implements EventSubscriberInterface
                                 $shippingUrl = $this->documentUrlHelper->generateRouteForDocument($document);
                             }
                         }
-                        if (!$invoiceNumber) {
-                            return;
-                            // TODO throwing an exception will not prevent the changing of the state :(
-                            // Todo better exception
-                            throw new \Exception('please set a invoice number for the order in the billie panel, or create a shopware invoice');
-                        }
                     }
 
                     $data = new ShipOrderRequestModel($billieData->getReferenceId());
