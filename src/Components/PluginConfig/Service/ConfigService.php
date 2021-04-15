@@ -1,4 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
+/*
+ * Copyright (c) Billie GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Billie\BilliePayment\Components\PluginConfig\Service;
 
@@ -18,9 +27,7 @@ class ConfigService
     }
 
     /**
-     * returns true if the plugin config has been set
-     *
-     * @return bool
+     * returns true if the plugin config has been set.
      */
     public function isConfigReady(): bool
     {
@@ -64,7 +71,7 @@ class ConfigService
             case $config['salutationFemale']:
                 $return = 'f';
                 break;
-            default :
+            default:
                 $return = $config['salutationFallback'];
                 break;
         }
@@ -92,5 +99,4 @@ class ConfigService
 
         return (bool) $config['stateEnabled'];
     }
-
 }

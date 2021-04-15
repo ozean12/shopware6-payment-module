@@ -1,8 +1,15 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
+
+/*
+ * Copyright (c) Billie GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Billie\BilliePayment\Components\BillieApi\Util;
-
 
 use Billie\Sdk\Model\Address;
 use Billie\Sdk\Model\DebtorCompany;
@@ -12,10 +19,8 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 
 class AddressHelper
 {
-
     /**
      * @param OrderAddressEntity|CustomerAddressEntity $addressEntity
-     * @return DebtorCompany
      */
     public static function createDebtorCompany($addressEntity): DebtorCompany
     {
@@ -29,7 +34,6 @@ class AddressHelper
 
     /**
      * @param OrderAddressEntity|CustomerAddressEntity $addressEntity
-     * @return Address
      */
     public static function createAddress($addressEntity): Address
     {
@@ -56,6 +60,7 @@ class AddressHelper
                 (!empty($addition1) ? $addition1 . ', ' : null) . $addition2
             );
         }
+
         return $addressModel;
     }
 
@@ -65,11 +70,7 @@ class AddressHelper
     private static function validateParam($address): void
     {
         if ($address instanceof OrderAddressEntity === false && $address instanceof CustomerAddressEntity === false) {
-            throw new \InvalidArgumentException(
-                'the param `address` must be type of ' . OrderAddressEntity::class . ' or ' . CustomerAddressEntity::class .
-                '. Given type: ' . get_class($address)
-            );
+            throw new \InvalidArgumentException('the param `address` must be type of ' . OrderAddressEntity::class . ' or ' . CustomerAddressEntity::class . '. Given type: ' . get_class($address));
         }
     }
-
 }

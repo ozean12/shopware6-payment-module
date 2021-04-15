@@ -1,4 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
+/*
+ * Copyright (c) Billie GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Billie\BilliePayment\Bootstrap;
 
@@ -35,8 +44,8 @@ class Database extends AbstractBootstrap
         }
 
         $this->connection->exec('SET FOREIGN_KEY_CHECKS=0;');
-        $this->connection->executeQuery("DROP TABLE IF EXISTS `billie_payment_config`");
-        $this->connection->executeQuery("DROP TABLE IF EXISTS `billie_order_data`");
+        $this->connection->executeQuery('DROP TABLE IF EXISTS `billie_payment_config`');
+        $this->connection->executeQuery('DROP TABLE IF EXISTS `billie_order_data`');
         $this->connection->exec('SET FOREIGN_KEY_CHECKS=1;');
     }
 

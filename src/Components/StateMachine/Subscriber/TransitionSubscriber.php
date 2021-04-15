@@ -1,4 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
+/*
+ * Copyright (c) Billie GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Billie\BilliePayment\Components\StateMachine\Subscriber;
 
@@ -33,7 +42,6 @@ class TransitionSubscriber implements EventSubscriberInterface
      */
     private $configService;
 
-
     /**
      * @var EntityRepositoryInterface
      */
@@ -66,8 +74,7 @@ class TransitionSubscriber implements EventSubscriberInterface
         ConfigService $configService,
         DocumentUrlHelper $documentUrlHelper,
         Logger $logger
-    )
-    {
+    ) {
         $this->container = $container;
         $this->orderDeliveryRepository = $orderDeliveryRepository;
         $this->orderRepository = $orderRepository;
@@ -105,7 +112,6 @@ class TransitionSubscriber implements EventSubscriberInterface
 
                     if (!$invoiceNumber || !$shippingUrl) {
                         foreach ($order->getDocuments() as $document) {
-
                             if ($invoiceNumber === null &&
                                 $document->getDocumentType()->getTechnicalName() === InvoiceGenerator::INVOICE
                             ) {
@@ -119,7 +125,6 @@ class TransitionSubscriber implements EventSubscriberInterface
                             ) {
                                 $shippingUrl = $this->documentUrlHelper->generateRouteForDocument($document);
                             }
-
                         }
                     }
 
@@ -130,7 +135,7 @@ class TransitionSubscriber implements EventSubscriberInterface
                         ->setShippingDocumentUrl($shippingUrl);
 
                     try {
-                        /** @noinspection NullPointerExceptionInspection */
+                        /* @noinspection NullPointerExceptionInspection */
                         $this->container->get(ShipOrderRequest::class)->execute($data);
                     } catch (BillieException $e) {
                         $this->logError($e, $order, $billieData);
@@ -149,7 +154,7 @@ class TransitionSubscriber implements EventSubscriberInterface
             switch ($event->getToPlace()->getTechnicalName()) {
                 case $this->configService->getStateCancel():
                     try {
-                        /** @noinspection NullPointerExceptionInspection */
+                        /* @noinspection NullPointerExceptionInspection */
                         $this->container->get(CancelOrderRequest::class)
                             ->execute(new OrderRequestModel($billieData->getReferenceId()));
                     } catch (BillieException $e) {

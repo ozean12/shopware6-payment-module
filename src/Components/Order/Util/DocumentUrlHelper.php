@@ -1,8 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * Copyright (c) Billie GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Billie\BilliePayment\Components\Order\Util;
-
 
 use Billie\BilliePayment\Components\PluginConfig\Service\ConfigService;
 use Shopware\Core\Checkout\Document\DocumentEntity;
@@ -10,11 +17,11 @@ use Shopware\Storefront\Framework\Routing\Router;
 
 class DocumentUrlHelper
 {
-
     /**
      * @var ConfigService
      */
     private $configService;
+
     /**
      * @var Router
      */
@@ -23,19 +30,17 @@ class DocumentUrlHelper
     public function __construct(
         ConfigService $configService,
         Router $router
-    )
-    {
+    ) {
         $this->configService = $configService;
         $this->router = $router;
     }
-
 
     public function generateRouteForDocument(DocumentEntity $document): string
     {
         return $this->router->generate('billie.payment.document', [
             'documentId' => $document->getId(),
             'deepLinkCode' => $document->getDeepLinkCode(),
-            'token' => $this->getToken()
+            'token' => $this->getToken(),
         ], Router::ABSOLUTE_URL);
     }
 
@@ -43,7 +48,7 @@ class DocumentUrlHelper
     {
         return sha1(md5(implode('', [
             $this->configService->getClientId(),
-            $this->configService->getClientSecret()
+            $this->configService->getClientSecret(),
         ])));
     }
 }

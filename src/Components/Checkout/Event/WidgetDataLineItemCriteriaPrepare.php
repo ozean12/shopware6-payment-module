@@ -1,9 +1,15 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
+
+/*
+ * Copyright (c) Billie GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Billie\BilliePayment\Components\Checkout\Event;
-
-
 
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
@@ -12,7 +18,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 
 class WidgetDataLineItemCriteriaPrepare
 {
-
     /**
      * @var Criteria
      */
@@ -30,9 +35,8 @@ class WidgetDataLineItemCriteriaPrepare
 
     /**
      * WidgetDataLineItemCriteriaPrepare constructor.
-     * @param Criteria $criteria
+     *
      * @param LineItem|OrderLineItemEntity $lineItem
-     * @param Context $context
      */
     public function __construct(Criteria $criteria, $lineItem, Context $context)
     {
@@ -41,17 +45,11 @@ class WidgetDataLineItemCriteriaPrepare
         $this->context = $context;
     }
 
-    /**
-     * @return Criteria
-     */
     public function getCriteria(): Criteria
     {
         return $this->criteria;
     }
 
-    /**
-     * @param Criteria $criteria
-     */
     public function setCriteria(Criteria $criteria): void
     {
         $this->criteria = $criteria;
@@ -65,12 +63,8 @@ class WidgetDataLineItemCriteriaPrepare
         return $this->lineItem;
     }
 
-    /**
-     * @return Context
-     */
     public function getContext(): Context
     {
         return $this->context;
     }
-
 }

@@ -1,4 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
+/*
+ * Copyright (c) Billie GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Billie\BilliePayment\Components\Checkout\Subscriber;
 
@@ -12,7 +21,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutSubscriber implements EventSubscriberInterface
 {
-
     /**
      * @var WidgetService
      */
@@ -37,7 +45,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
         if (MethodHelper::isBilliePayment($paymentMethod) && $event->getPage()->getPaymentMethods()->has($paymentMethod->getId())) {
             if ($event instanceof CheckoutConfirmPageLoadedEvent) {
                 $widgetData = $this->widgetService->getWidgetDataBySalesChannelContext($event->getSalesChannelContext());
-            } else if ($event instanceof AccountEditOrderPageLoadedEvent) {
+            } elseif ($event instanceof AccountEditOrderPageLoadedEvent) {
                 $widgetData = $this->widgetService->getWidgetDataByOrder($event->getPage()->getOrder(), $event->getSalesChannelContext());
             } else {
                 throw new \RuntimeException('invalid event: ' . gettype($event));

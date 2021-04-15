@@ -1,4 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
+/*
+ * Copyright (c) Billie GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Billie\BilliePayment\Components\StateMachine\Service;
 
@@ -37,6 +46,7 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
      * @var EntityRepositoryInterface
      */
     protected $orderDeliveryRepository;
+
     /**
      * @var StateMachineRegistry
      */
@@ -51,14 +61,12 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
         ConfigService $configService,
         EntityRepositoryInterface $orderRepository,
         EntityRepositoryInterface $orderDeliveryRepository
-    )
-    {
+    ) {
         $this->innerService = $innerService;
         $this->configService = $configService;
         $this->orderRepository = $orderRepository;
         $this->orderDeliveryRepository = $orderDeliveryRepository;
     }
-
 
     public function transition(Transition $transition, Context $context): StateMachineStateCollection
     {
@@ -93,6 +101,7 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
             foreach ($order->getDocuments() as $document) {
                 if ($document->getDocumentType()->getTechnicalName() === InvoiceGenerator::INVOICE) {
                     $config = $document->getConfig();
+
                     return isset($config['custom']['invoiceNumber']);
                 }
             }

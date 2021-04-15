@@ -1,8 +1,15 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
+
+/*
+ * Copyright (c) Billie GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Billie\BilliePayment\Components\Checkout\Event;
-
 
 use Shopware\Core\Checkout\Cart\LineItem\LineItemCollection;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
@@ -18,7 +25,6 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class WidgetDataBuilt
 {
-
     /**
      * @var ArrayStruct
      */
@@ -60,13 +66,10 @@ class WidgetDataBuilt
     private $salesChannelContext;
 
     /**
-     * @param ArrayStruct $widgetData
-     * @param CustomerEntity|OrderCustomerEntity $customer
-     * @param CustomerAddressEntity|OrderAddressEntity $billingAddress
-     * @param CustomerAddressEntity|OrderAddressEntity $shippingAddress
-     * @param CartPrice $price
+     * @param CustomerEntity|OrderCustomerEntity         $customer
+     * @param CustomerAddressEntity|OrderAddressEntity   $billingAddress
+     * @param CustomerAddressEntity|OrderAddressEntity   $shippingAddress
      * @param LineItemCollection|OrderLineItemCollection $lineItems
-     * @param SalesChannelContext $salesChannelContext
      */
     public function __construct(
         ArrayStruct $widgetData,
@@ -76,8 +79,7 @@ class WidgetDataBuilt
         CartPrice $price,
         $lineItems,
         SalesChannelContext $salesChannelContext
-    )
-    {
+    ) {
         $this->widgetData = $widgetData;
         $this->customer = $customer;
         $this->billingAddress = $billingAddress;
@@ -87,25 +89,16 @@ class WidgetDataBuilt
         $this->salesChannelContext = $salesChannelContext;
     }
 
-    /**
-     * @return ArrayStruct
-     */
     public function getWidgetData(): ArrayStruct
     {
         return $this->widgetData;
     }
 
-    /**
-     * @param ArrayStruct $widgetData
-     */
     public function setWidgetData(ArrayStruct $widgetData): void
     {
         $this->widgetData = $widgetData;
     }
 
-    /**
-     * @return PaymentMethodEntity
-     */
     public function getPaymentMethodEntity(): PaymentMethodEntity
     {
         return $this->paymentMethodEntity;
@@ -135,9 +128,6 @@ class WidgetDataBuilt
         return $this->shippingAddress;
     }
 
-    /**
-     * @return CartPrice
-     */
     public function getPrice(): CartPrice
     {
         return $this->price;
@@ -151,9 +141,6 @@ class WidgetDataBuilt
         return $this->lineItems;
     }
 
-    /**
-     * @return Context
-     */
     public function getSalesChannelContext(): Context
     {
         return $this->salesChannelContext;

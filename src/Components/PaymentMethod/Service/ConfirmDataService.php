@@ -1,8 +1,15 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
+
+/*
+ * Copyright (c) Billie GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Billie\BilliePayment\Components\PaymentMethod\Service;
-
 
 use Billie\BilliePayment\Components\BillieApi\Util\AddressHelper;
 use Billie\BilliePayment\Components\PaymentMethod\Event\ConfirmModelBuilt;
@@ -14,17 +21,15 @@ use Billie\Sdk\Model\Request\CheckoutSessionConfirmRequestModel;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ConfirmDataService
 {
-
     /**
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
+
     /**
      * @var EntityRepositoryInterface
      */
@@ -33,19 +38,16 @@ class ConfirmDataService
     public function __construct(
         EntityRepositoryInterface $orderRepository,
         EventDispatcherInterface $eventDispatcher
-    )
-    {
+    ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->orderRepository = $orderRepository;
     }
 
     public function getConfirmModel(string $sessionUuid, OrderEntity $orderEntity): CheckoutSessionConfirmRequestModel
     {
-
         $criteria = CriteriaHelper::getCriteriaForOrder($orderEntity->getId());
         /** @var OrderEntity $orderEntity */
         $orderEntity = $this->orderRepository->search($criteria, Context::createDefaultContext())->first();
-
 
         /** @var PaymentMethodConfigEntity $paymentConfig */
         $paymentConfig = $orderEntity->getTransactions()->first()->getPaymentMethod()->getExtension(PaymentMethodExtension::EXTENSION_NAME);
@@ -65,7 +67,7 @@ class ConfirmDataService
 
         /** @var ConfirmModelBuilt $event */
         $event = $this->eventDispatcher->dispatch(new ConfirmModelBuilt($model, $orderEntity));
+
         return $event->getModel();
     }
-
 }

@@ -1,4 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
+/*
+ * Copyright (c) Billie GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Billie\BilliePayment\Components\Checkout\Service;
 
@@ -36,10 +45,12 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
      * @var EntityRepositoryInterface
      */
     private $orderRepository;
+
     /**
      * @var EntityRepositoryInterface
      */
     private $countryRepository;
+
     /**
      * @var ConfigService
      */
@@ -55,8 +66,7 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
         EntityRepositoryInterface $orderRepository,
         EntityRepositoryInterface $countryRepository,
         ConfigService $configService
-    )
-    {
+    ) {
         $this->innerService = $innerService;
         $this->requestStack = $requestStack;
         $this->orderRepository = $orderRepository;
@@ -127,6 +137,7 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
 
     /**
      * @param CustomerAddressEntity|OrderAddressEntity $address
+     *
      * @return string|null
      */
     private function getCountryIso($address): string
@@ -141,6 +152,7 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
         } else {
             $country = $address->getCountry();
         }
+
         return $country->getIso();
     }
 
@@ -150,7 +162,7 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
         $extension = $paymentMethod->getExtension(PaymentMethodExtension::EXTENSION_NAME);
         if ($extension) {
             // Prepare variables
-            $duration = (string)$extension->getDuration();
+            $duration = (string) $extension->getDuration();
 
             // Description
             $description = $paymentMethod->getDescription();

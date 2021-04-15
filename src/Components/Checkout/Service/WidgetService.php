@@ -1,8 +1,15 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
+
+/*
+ * Copyright (c) Billie GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Billie\BilliePayment\Components\Checkout\Service;
-
 
 use Billie\BilliePayment\Components\BillieApi\Util\AddressHelper;
 use Billie\BilliePayment\Components\Checkout\Event\WidgetDataBuilt;
@@ -29,7 +36,6 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -41,35 +47,41 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class WidgetService
 {
-
     /**
      * @var CreateSessionRequest
      */
     private $sessionRequestService;
+
     /**
      * @var ConfigService
      */
     private $configService;
+
     /**
      * @var CartService
      */
     private $cartService;
+
     /**
      * @var EntityRepositoryInterface
      */
     private $productRepository;
+
     /**
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
+
     /**
      * @var EntityRepositoryInterface
      */
     private $salutationRepository;
+
     /**
      * @var EntityRepositoryInterface
      */
     private $orderRepository;
+
     /**
      * @var ContainerInterface
      */
@@ -83,8 +95,7 @@ class WidgetService
         EntityRepositoryInterface $salutationRepository,
         CartService $cartService,
         ConfigService $configService
-    )
-    {
+    ) {
         $this->container = $container;
         $this->eventDispatcher = $eventDispatcher;
         $this->productRepository = $productRepository;
@@ -118,6 +129,7 @@ class WidgetService
     public function getWidgetDataBySalesChannelContext(SalesChannelContext $salesChannelContext): ?ArrayStruct
     {
         $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
+
         return $this->getBaseData(
             $salesChannelContext->getCustomer(),
             $salesChannelContext->getCustomer()->getActiveBillingAddress(),
@@ -129,13 +141,10 @@ class WidgetService
     }
 
     /**
-     * @param CustomerEntity|OrderCustomerEntity $customer
-     * @param CustomerAddressEntity|OrderAddressEntity $billingAddress
-     * @param CustomerAddressEntity|OrderAddressEntity $shippingAddress
-     * @param CartPrice $price
+     * @param CustomerEntity|OrderCustomerEntity         $customer
+     * @param CustomerAddressEntity|OrderAddressEntity   $billingAddress
+     * @param CustomerAddressEntity|OrderAddressEntity   $shippingAddress
      * @param LineItemCollection|OrderLineItemCollection $lineItems
-     * @param SalesChannelContext $salesChannelContext
-     * @return ArrayStruct|null
      * @noinspection PhpDocMissingThrowsInspection
      */
     protected function getBaseData(
@@ -145,8 +154,7 @@ class WidgetService
         CartPrice $price,
         $lineItems,
         SalesChannelContext $salesChannelContext
-    ): ?ArrayStruct
-    {
+    ): ?ArrayStruct {
         try {
             /** @noinspection NullPointerExceptionInspection */
             $checkoutSessionId = $this->container->get(CreateSessionRequest::class)
@@ -160,7 +168,6 @@ class WidgetService
 
         /** @var PaymentMethodConfigEntity $billieConfig */
         $billieConfig = $salesChannelContext->getPaymentMethod()->get(PaymentMethodExtension::EXTENSION_NAME);
-
 
         $salutation = $this->salutationRepository->search(new Criteria([$billingAddress->getSalutationId()]), $salesChannelContext->getContext())->first();
 
@@ -203,14 +210,12 @@ class WidgetService
             $lineItems,
             $salesChannelContext
         ));
+
         return $event->getWidgetData();
     }
 
-
     /**
      * @param LineItemCollection|OrderLineItemCollection $collection
-     * @param Context $context
-     * @return array
      * @noinspection PhpDocMissingThrowsInspection
      */
     protected function getLineItems($collection, Context $context): array
@@ -224,13 +229,12 @@ class WidgetService
             }
             $lineItems[] = $this->getLineItem($lineItem, $context)->toArray();
         }
+
         return $lineItems;
     }
 
     /**
      * @param \Shopware\Core\Checkout\Cart\LineItem\LineItem|OrderLineItemEntity $lineItem
-     * @param Context $context
-     * @return LineItem
      * @noinspection PhpDocMissingThrowsInspection
      */
     protected function getLineItem($lineItem, Context $context): LineItem
@@ -266,7 +270,7 @@ class WidgetService
 
         /** @var WidgetDataLineItemBuilt $event */
         $event = $this->eventDispatcher->dispatch(new WidgetDataLineItemBuilt($billieLineItem, $lineItem, $context, $product ?? null));
+
         return $event->getBillieLineItem();
     }
-
 }

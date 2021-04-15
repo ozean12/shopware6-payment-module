@@ -1,14 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * Copyright (c) Billie GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Billie\BilliePayment\Components\Checkout\Controller;
-
 
 use Billie\Sdk\Model\Address;
 use Billie\Sdk\Model\DebtorCompany;
 use Billie\Sdk\Model\Person;
-use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
-use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -26,15 +31,16 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CheckoutController extends StorefrontController
 {
-
     /**
      * @var EntityRepositoryInterface
      */
     private $customerAddressRepository;
+
     /**
      * @var EntityRepositoryInterface
      */
     private $orderAddressRepository;
+
     /**
      * @var EntityRepositoryInterface
      */
@@ -44,8 +50,7 @@ class CheckoutController extends StorefrontController
         EntityRepositoryInterface $addressRepository,
         EntityRepositoryInterface $orderRepository,
         EntityRepositoryInterface $orderAddressRepository
-    )
-    {
+    ) {
         $this->customerAddressRepository = $addressRepository;
         $this->orderAddressRepository = $orderAddressRepository;
         $this->orderRepository = $orderRepository;
@@ -54,13 +59,12 @@ class CheckoutController extends StorefrontController
     /**
      * @Route(path="/update-addresses/{orderId}", name="billie-payment.checkout.update-addresses", methods={"POST"}, defaults={"XmlHttpRequest"=true})
      * @noinspection NullPointerExceptionInspection
-     * @param Request $request
-     * @param SalesChannelContext $salesChannelContext
+     *
      * @param null $orderId
      */
     public function updateCustomerAddress(Request $request, SalesChannelContext $salesChannelContext, $orderId = null)
     {
-        if($orderId === null) {
+        if ($orderId === null) {
             $this->updateAddress(
                 $salesChannelContext->getCustomer()->getActiveBillingAddress()->getId(),
                 $salesChannelContext->getCustomer()->getActiveShippingAddress()->getId(),
@@ -96,8 +100,7 @@ class CheckoutController extends StorefrontController
         array $requestParams,
         EntityRepositoryInterface $repository,
         Context $context
-    ): void
-    {
+    ): void {
         $billieDebtorCompany = new DebtorCompany($requestParams['debtor_company']);
         $billieDebtorPerson = new Person($requestParams['debtor_person']);
         $billieShippingAddress = new Address($requestParams['delivery_address']);
@@ -110,9 +113,8 @@ class CheckoutController extends StorefrontController
             'lastName' => $billieDebtorPerson->getLastname(),
             'street' => $billieDebtorCompany->getAddress()->getStreet() . ' ' . $billieDebtorCompany->getAddress()->getHouseNumber(),
             'zipcode' => $billieDebtorCompany->getAddress()->getPostalCode(),
-            'city' => $billieDebtorCompany->getAddress()->getCity()
+            'city' => $billieDebtorCompany->getAddress()->getCity(),
         ]], $context);
-
 
         if ($shopwareBillingAddressId !== $shopwareShippingAddressId) {
             // update shipping address if the ids are not identical
@@ -120,9 +122,8 @@ class CheckoutController extends StorefrontController
                 'id' => $shopwareShippingAddressId,
                 'street' => $billieShippingAddress->getStreet() . ' ' . $billieShippingAddress->getHouseNumber(),
                 'zipcode' => $billieShippingAddress->getPostalCode(),
-                'city' => $billieShippingAddress->getCity()
+                'city' => $billieShippingAddress->getCity(),
             ]], $context);
         }
     }
-
 }

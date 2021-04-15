@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * Copyright (c) Billie GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Billie\BilliePayment\Components\BillieApi\Service;
 
@@ -7,7 +15,6 @@ use Billie\BilliePayment\Components\PluginConfig\Service\ConfigService;
 
 class BillieClientFactory
 {
-
     /**
      * @var ConfigService
      */

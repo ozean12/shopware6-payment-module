@@ -23,6 +23,7 @@ $rules = [
     'trailing_comma_in_multiline_array' => true,
     'no_blank_lines_after_phpdoc' => true,
     'class_attributes_separation' => true,
+    'declare_strict_types' => true,
 ];
 
 return Config::create()

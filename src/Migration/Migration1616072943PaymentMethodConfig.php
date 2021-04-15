@@ -1,4 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
+/*
+ * Copyright (c) Billie GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Billie\BilliePayment\Migration;
 
@@ -32,16 +41,16 @@ class Migration1616072943PaymentMethodConfig extends MigrationStep
         // so we must insert the "duration" values after we added the tables.
         // TODO: we should think about a better solution to insert these values
         foreach (PaymentMethods::PAYMENT_METHODS as $method) {
-            $connection->executeQuery("
-                REPLACE INTO " . PaymentMethodConfigDefinition::ENTITY_NAME . "
+            $connection->executeQuery('
+                REPLACE INTO ' . PaymentMethodConfigDefinition::ENTITY_NAME . '
                     SELECT
                         payment_method.id,
                         ?
-                    FROM " . PaymentMethodDefinition::ENTITY_NAME . "
-                    WHERE payment_method.handler_identifier = ?",
+                    FROM ' . PaymentMethodDefinition::ENTITY_NAME . '
+                    WHERE payment_method.handler_identifier = ?',
                 [
                     $method[PaymentMethodExtension::EXTENSION_NAME]['duration'],
-                    $method['handlerIdentifier']
+                    $method['handlerIdentifier'],
                 ]
             );
         }
@@ -49,6 +58,6 @@ class Migration1616072943PaymentMethodConfig extends MigrationStep
 
     public function updateDestructive(Connection $connection): void
     {
-        $connection->executeQuery("DROP TABLE IF EXISTS `billie_payment_config`");
+        $connection->executeQuery('DROP TABLE IF EXISTS `billie_payment_config`');
     }
 }
