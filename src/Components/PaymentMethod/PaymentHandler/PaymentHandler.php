@@ -13,6 +13,7 @@ use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class PaymentHandler implements SynchronousPaymentHandlerInterface
@@ -29,16 +30,20 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
      * @var EntityRepositoryInterface
      */
     private $orderDataRepository;
+    /**
+     * @var ContainerInterface
+     */
+    private $requestServiceLocator;
 
     public function __construct(
+        ContainerInterface $requestServiceLocator,
         ConfirmDataService $confirmDataService,
-        CheckoutSessionConfirmRequest $checkoutSessionConfirmRequest,
         EntityRepositoryInterface $orderDataRepository
     )
     {
-        $this->checkoutSessionConfirmRequest = $checkoutSessionConfirmRequest;
         $this->confirmDataService = $confirmDataService;
         $this->orderDataRepository = $orderDataRepository;
+        $this->requestServiceLocator = $requestServiceLocator;
     }
 
     public function pay(
@@ -58,7 +63,8 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
 
         $confirmModel = $this->confirmDataService->getConfirmModel($billieData->get('session-id'), $order);
         try {
-            $response = $this->checkoutSessionConfirmRequest->execute($confirmModel);
+            /** @noinspection NullPointerExceptionInspection */
+            $response = $this->requestServiceLocator->get(CheckoutSessionConfirmRequest::class)->execute($confirmModel);
 
             $this->orderDataRepository->upsert([
                 [
