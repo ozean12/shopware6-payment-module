@@ -24,7 +24,7 @@ class ConfigService
      */
     public function isConfigReady(): bool
     {
-        return count($this->getPluginConfiguration()) > 0;
+        return !empty($this->getClientId()) && !empty($this->getClientSecret());
     }
 
     public function getPluginConfiguration(): array

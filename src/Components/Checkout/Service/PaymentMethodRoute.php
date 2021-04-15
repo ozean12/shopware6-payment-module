@@ -5,6 +5,7 @@ namespace Billie\BilliePayment\Components\Checkout\Service;
 use Billie\BilliePayment\Components\PaymentMethod\Model\Extension\PaymentMethodExtension;
 use Billie\BilliePayment\Components\PaymentMethod\Model\PaymentMethodConfigEntity;
 use Billie\BilliePayment\Components\PaymentMethod\Util\MethodHelper;
+use Billie\BilliePayment\Components\PluginConfig\Service\ConfigService;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -39,6 +40,10 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
      * @var EntityRepositoryInterface
      */
     private $countryRepository;
+    /**
+     * @var ConfigService
+     */
+    private $configService;
 
     /**
      * @noinspection MagicMethodsValidityInspection
@@ -48,13 +53,15 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
         AbstractPaymentMethodRoute $innerService,
         RequestStack $requestStack,
         EntityRepositoryInterface $orderRepository,
-        EntityRepositoryInterface $countryRepository
+        EntityRepositoryInterface $countryRepository,
+        ConfigService $configService
     )
     {
         $this->innerService = $innerService;
         $this->requestStack = $requestStack;
         $this->orderRepository = $orderRepository;
         $this->countryRepository = $countryRepository;
+        $this->configService = $configService;
     }
 
     public function getDecorated(): AbstractPaymentMethodRoute
@@ -69,6 +76,13 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
         $currentRequest = $this->requestStack->getCurrentRequest();
         if (!$currentRequest) {
             return $response;
+        }
+        $filterMethods = $request->query->getBoolean('onlyAvailable', false);
+        $isPluginReady = $this->configService->isConfigReady();
+
+        if ($isPluginReady === false && $filterMethods) {
+            // remove all billie payments
+            return $this->removeAllBillieMethods($response);
         }
 
         // Replace variables of billie payment descriptions, names and other translatable fields
@@ -93,19 +107,22 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
             $billingAddress = $customer ? $customer->getActiveBillingAddress() : null;
         }
 
-        if ($order || $request->query->getBoolean('onlyAvailable', false)) {
-            $me = $this;
-            $paymentMethods = $response->getPaymentMethods()->filter(static function (PaymentMethodEntity $paymentMethod) use ($me, $billingAddress) {
-                return ($billingAddress && MethodHelper::isBilliePayment($paymentMethod) === false) ||
-                    (
-                        !empty($billingAddress->getCompany()) &&
-                        $me->getCountryIso($billingAddress) === 'DE'
-                    );
-            });
-            return new PaymentMethodRouteResponse($paymentMethods);
+        if ($order || $filterMethods) {
+            if ($billingAddress === null || empty($billingAddress->getCompany()) || $this->getCountryIso($billingAddress) !== 'DE') {
+                return $this->removeAllBillieMethods($response);
+            }
         }
 
         return $response;
+    }
+
+    private function removeAllBillieMethods(PaymentMethodRouteResponse $response): PaymentMethodRouteResponse
+    {
+        $paymentMethods = $response->getPaymentMethods()->filter(static function (PaymentMethodEntity $paymentMethod) {
+            return MethodHelper::isBilliePayment($paymentMethod) === false;
+        });
+
+        return new PaymentMethodRouteResponse($paymentMethods);
     }
 
     /**
@@ -133,7 +150,7 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
         $extension = $paymentMethod->getExtension(PaymentMethodExtension::EXTENSION_NAME);
         if ($extension) {
             // Prepare variables
-            $duration = (string) $extension->getDuration();
+            $duration = (string)$extension->getDuration();
 
             // Description
             $description = $paymentMethod->getDescription();
