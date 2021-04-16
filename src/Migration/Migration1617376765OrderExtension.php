@@ -26,6 +26,7 @@ class Migration1617376765OrderExtension extends MigrationStep
         $connection->exec('
             CREATE TABLE `billie_order_data` (
               `id` binary(16) NOT NULL,
+              `version_id` BINARY(16) NOT NULL,
               `order_id` binary(16) NOT NULL,
               `order_version_id` binary(16) NOT NULL,
               `reference_id` varchar(255) NOT NULL,
@@ -34,7 +35,7 @@ class Migration1617376765OrderExtension extends MigrationStep
               `external_delivery_note_url` TEXT NULL,
               `successful` tinyint(1) NOT NULL,
               `updated_at` DATETIME NULL,
-              PRIMARY KEY (`id`),
+              PRIMARY KEY (`id`, `version_id`),
               FOREIGN KEY (`order_id`,`order_version_id`) REFERENCES `order` (`id`, `version_id`) ON UPDATE CASCADE ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
         ');

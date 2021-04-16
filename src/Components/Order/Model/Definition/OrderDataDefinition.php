@@ -20,9 +20,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ReferenceVersionField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\VersionField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class OrderDataDefinition extends EntityDefinition
@@ -51,6 +53,11 @@ class OrderDataDefinition extends EntityDefinition
         ];
     }
 
+    protected function getParentDefinitionClass(): ?string
+    {
+        return OrderDefinition::class;
+    }
+
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([
@@ -58,6 +65,7 @@ class OrderDataDefinition extends EntityDefinition
                 'id',
                 OrderDataEntity::FIELD_ID
             ))->addFlags(new Required(), new PrimaryKey()),
+            new VersionField(),
 
             (new FkField(
                 'order_id',
@@ -90,6 +98,8 @@ class OrderDataDefinition extends EntityDefinition
                 'successful',
                 OrderDataEntity::FIELD_IS_SUCCESSFUL
             ))->addFlags(new Required()),
+
+            new OneToOneAssociationField('order', 'order_id', 'id', OrderDefinition::class, false),
         ]);
     }
 }
