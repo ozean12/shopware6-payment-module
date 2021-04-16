@@ -1,0 +1,9 @@
+{
+    "billie": {
+        "transition": {
+            "errors": {
+                "invoiceNumberMissing": "Der Lieferstatus kann nicht geändert werden, solange noch keine Billie Rechnungsnummer hinterlegt ist!"
+            }
+        }
+    }
+}

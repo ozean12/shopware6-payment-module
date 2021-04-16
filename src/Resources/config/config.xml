@@ -82,12 +82,13 @@
             <value>0</value>
         </input-field>
 
+        <!-- waiting for this to provide more options: https://issues.shopware.com/issues/NEXT-7670 -->
         <input-field type="single-select">
             <name>stateShipped</name>
             <options>
                 <option>
                     <id>shipped</id>
-                    <name>shipped</name>
+                    <name>Shipped</name>
                     <name lang="de-DE">Ausgeliefert</name>
                 </option>
             </options>
@@ -96,6 +97,7 @@
             <label lang="de-DE">Status für die Lieferung</label>
         </input-field>
 
+        <!-- waiting for this to provide more options: https://issues.shopware.com/issues/NEXT-7670 -->
         <input-field type="single-select">
             <name>stateCanceled</name>
             <options>
