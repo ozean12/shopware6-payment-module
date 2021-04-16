@@ -15,7 +15,7 @@
                     "label": "External invoice url"
                 },
                 "externalDeliveryNoteUrl": {
-                    "label": "external delivery note url"
+                    "label": "External delivery note url"
                 }
             }
         }

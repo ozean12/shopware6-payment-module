@@ -57,7 +57,7 @@ class ConfigService
     {
         $config = $this->getPluginConfiguration();
 
-        return (bool) $config['sandbox'];
+        return isset($config['sandbox']) && $config['sandbox'];
     }
 
     public function getSalutation(SalutationEntity $salutationEntity): string
