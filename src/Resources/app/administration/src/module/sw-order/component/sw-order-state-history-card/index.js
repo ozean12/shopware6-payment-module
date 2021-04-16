@@ -1,5 +1,20 @@
 const { Component } = Shopware;
 
 Component.override('sw-order-state-history-card', {
-  // ToDo: If there is an exception because of missing invoice number on transition, we should send a more detailed error notification
+  methods: {
+    createStateChangeErrorNotification(error) {
+      if (error.response && error.response.data && error.response.data.errors) {
+        let transitionError = error.response.data.errors.pop();
+        if (transitionError.code === 'BILLIE__INVOICE_NUMBER_MISSING') {
+          this.createNotificationError({
+            message: this.$tc('billie.transition.errors.invoiceNumberMissing')
+          });
+        } else {
+          this.$super('createStateChangeErrorNotification', error)
+        }
+      } else {
+        this.$super('createStateChangeErrorNotification', error)
+      }
+    }
+  }
 });

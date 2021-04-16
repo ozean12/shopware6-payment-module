@@ -15,6 +15,7 @@ use Billie\BilliePayment\Components\Order\Model\Extension\OrderExtension;
 use Billie\BilliePayment\Components\Order\Model\OrderDataEntity;
 use Billie\BilliePayment\Components\PaymentMethod\Util\MethodHelper;
 use Billie\BilliePayment\Components\PluginConfig\Service\ConfigService;
+use Billie\BilliePayment\Components\StateMachine\Exception\InvoiceNumberMissingException;
 use Billie\BilliePayment\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Document\DocumentGenerator\InvoiceGenerator;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryDefinition;
@@ -25,7 +26,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateCollection;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
-use Shopware\Core\System\StateMachine\Exception\IllegalTransitionException;
 use Shopware\Core\System\StateMachine\StateMachineEntity;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
@@ -70,21 +70,20 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
 
     public function transition(Transition $transition, Context $context): StateMachineStateCollection
     {
-        if ($this->configService->isStateWatchingEnabled()) {
-            if ($this->configService->getStateForShip() && $transition->getEntityName() === OrderDeliveryDefinition::ENTITY_NAME) {
-                /** @var OrderDeliveryEntity $orderDelivery */
-                $orderDelivery = $this->orderDeliveryRepository->search(new Criteria([$transition->getEntityId()]), $context)->first();
-                $order = $this->getOrder($orderDelivery->getOrderId(), $context);
+        if ($this->configService->isStateWatchingEnabled()
+            && $this->configService->getStateForShip()
+            && $transition->getEntityName() === OrderDeliveryDefinition::ENTITY_NAME) {
+            /** @var OrderDeliveryEntity $orderDelivery */
+            $orderDelivery = $this->orderDeliveryRepository->search(new Criteria([$transition->getEntityId()]), $context)->first();
+            $order = $this->getOrder($orderDelivery->getOrderId(), $context);
 
-                $transaction = $order ? $order->getTransactions()->first() : null;
-                $paymentMethod = $transaction ? $transaction->getPaymentMethod() : null;
-                if ($paymentMethod &&
-                    MethodHelper::isBilliePayment($paymentMethod) &&
-                    !$this->orderHasBillieInvoiceNumber($order)
-                ) {
-                    // ToDo: Own exception
-                    throw new IllegalTransitionException('1', '2', [3]);
-                }
+            $transaction = $order ? $order->getTransactions()->first() : null;
+            $paymentMethod = $transaction ? $transaction->getPaymentMethod() : null;
+            if ($paymentMethod &&
+                MethodHelper::isBilliePayment($paymentMethod) &&
+                !$this->orderHasBillieInvoiceNumber($order)
+            ) {
+                throw new InvoiceNumberMissingException();
             }
         }
 

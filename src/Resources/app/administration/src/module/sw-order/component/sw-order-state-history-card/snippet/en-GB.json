@@ -1,0 +1,9 @@
+{
+    "billie": {
+        "transition": {
+            "errors": {
+                "invoiceNumberMissing": "The delivery status cannot be changed as long as no Billie invoice number is available!"
+            }
+        }
+    }
+}
