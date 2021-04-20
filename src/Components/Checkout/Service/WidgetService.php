@@ -260,12 +260,16 @@ class WidgetService
         if ($productResults->first()) {
             /** @var ProductEntity $product */
             $product = $productResults->first();
+            $category = $product->getCategories()->first();
             $billieLineItem
                 ->setExternalId($product->getProductNumber())
-                ->setDescription(substr($product->getDescription(), 0, 255))
-                ->setCategory($product->getCategories()->first() ? $product->getCategories()->first()->getName() : null)
+                ->setCategory($category ? $category->getName() : null)
                 ->setBrand($product->getManufacturer() ? $product->getManufacturer()->getName() : null)
                 ->setGtin($product->getEan());
+
+            if($product->getDescription()) {
+                $billieLineItem->setDescription(substr($product->getDescription(), 0, 255));
+            }
         }
 
         /** @var WidgetDataLineItemBuilt $event */
