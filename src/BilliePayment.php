@@ -120,18 +120,14 @@ class BilliePayment extends Plugin
             $bootstrap->postActivate();
         }
     }
+}
 
-    public function boot(): void
-    {
-        parent::boot();
-        if (class_exists(BillieClient::class) === false) {
-            $autoloaderPath = dirname(__DIR__) . '/vendor/autoload.php';
-            if (file_exists($autoloaderPath)) {
-                /** @noinspection PhpIncludeInspection */
-                require_once $autoloaderPath;
-            } else {
-                throw new Exception('Missing Billie dependencies! Please run `composer require billie/shopware6-module` in project directory');
-            }
-        }
+if (class_exists(BillieClient::class) === false) {
+    $autoloaderPath = dirname(__DIR__) . '/vendor/autoload.php';
+    if (file_exists($autoloaderPath)) {
+        /** @noinspection PhpIncludeInspection */
+        require_once $autoloaderPath;
+    } else {
+        throw new Exception('Missing Billie dependencies! Please run `composer require billie/shopware6-module` in project directory');
     }
 }
