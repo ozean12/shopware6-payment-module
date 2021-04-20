@@ -3,7 +3,7 @@ import template from './billie-test-credentials-button.html.twig';
 import deDE from './snippet/de-DE.json';
 import enGB from './snippet/en-GB.json';
 
-const { Component, Mixin } = Shopware;
+const {Component, Mixin} = Shopware;
 
 Component.register('billie-test-credentials-button', {
   template,
@@ -24,35 +24,11 @@ Component.register('billie-test-credentials-button', {
   data() {
     return {
       isLoading: false,
-      isTestSuccessful: false,
-      currentConfig: null
+      isTestSuccessful: false
     };
   },
 
-  created() {
-    this.createdComponent();
-  },
-
-  destroyed() {
-    this.destroyedComponent();
-  },
-
   methods: {
-    createdComponent() {
-      this.$parent.$parent.$parent.$on('config-changed', this.onConfigChanged);
-    },
-
-    destroyedComponent() {
-      this.$parent.$parent.$parent.$off('config-changed');
-    },
-
-    onConfigChanged(config) {
-      this.currentConfig = config;
-    },
-
-    onClick() {
-      this.testCredentials();
-    },
 
     onTestFinish() {
       this.isTestSuccessful = false;
@@ -62,9 +38,9 @@ Component.register('billie-test-credentials-button', {
       this.isTestSuccessful = false;
       this.isLoading = true;
 
-      let id = this.currentConfig ? this.currentConfig['BilliePayment.config.clientId'] : null;
-      let secret = this.currentConfig ? this.currentConfig['BilliePayment.config.clientSecret'] : null;
-      let isSandbox = this.currentConfig ? this.currentConfig['BilliePayment.config.sandbox'] : null;
+      let id = document.querySelector('[name="BilliePayment.config.clientId"]').value;
+      let secret = document.querySelector('[name="BilliePayment.config.clientSecret"]').value;
+      let isSandbox = document.querySelector('[name="BilliePayment.config.sandbox"]').value === 'on';
 
       this.billieApiService.testCredentials(id, secret, isSandbox).then((response) => {
         this.isLoading = false;
@@ -81,7 +57,6 @@ Component.register('billie-test-credentials-button', {
         }
       }).catch(() => {
         this.isLoading = false;
-
         this.createNotificationError({
           message: this.$tc('billie.config.notification.failedToTestCredentials')
         });
