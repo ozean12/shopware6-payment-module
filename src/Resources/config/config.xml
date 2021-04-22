@@ -3,8 +3,8 @@
         xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd">
 
     <card>
-        <title>API</title>
-        <title lang="de-DE">API</title>
+        <title>API Mode</title>
+        <title lang="de-DE">API Modus</title>
 
         <input-field type="bool">
             <name>sandbox</name>
@@ -12,21 +12,50 @@
             <label lang="de-DE">Testmodus</label>
             <value>0</value>
         </input-field>
+    </card>
+
+    <card>
+        <title>Live API</title>
+        <title lang="de-DE">Live API</title>
 
         <input-field type="text">
-            <name>clientId</name>
+            <name>liveClientId</name>
             <label>Client ID</label>
             <label lang="de-DE">Client ID</label>
         </input-field>
 
         <input-field type="password">
-            <name>clientSecret</name>
-            <label>Client secret</label>
+            <name>liveClientSecret</name>
+            <label>Client Secret</label>
             <label lang="de-DE">Client Secret</label>
         </input-field>
 
         <component name="billie-test-credentials-button">
-            <name>testClientCredentialsButton</name>
+            <name>testLiveClientCredentialsButton</name>
+            <apiMode>live</apiMode>
+        </component>
+
+    </card>
+
+    <card>
+        <title>Test API</title>
+        <title lang="de-DE">Test API</title>
+
+        <input-field type="text">
+            <name>testClientId</name>
+            <label>Client ID</label>
+            <label lang="de-DE">Client ID</label>
+        </input-field>
+
+        <input-field type="password">
+            <name>testClientSecret</name>
+            <label>Client Secret</label>
+            <label lang="de-DE">Client Secret</label>
+        </input-field>
+
+        <component name="billie-test-credentials-button">
+            <name>testTestClientCredentialsButton</name>
+            <apiMode>test</apiMode>
         </component>
 
     </card>

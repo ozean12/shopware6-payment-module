@@ -43,14 +43,22 @@ class ConfigService
     {
         $config = $this->getPluginConfiguration();
 
-        return $config['clientId'] ?? null;
+        if ($this->isSandbox()) {
+            return $config['testClientId'] ?? null;
+        }
+
+        return $config['liveClientId'] ?? null;
     }
 
     public function getClientSecret(): ?string
     {
         $config = $this->getPluginConfiguration();
 
-        return $config['clientSecret'] ?? null;
+        if ($this->isSandbox()) {
+            return $config['testClientSecret'] ?? null;
+        }
+
+        return $config['liveClientSecret'] ?? null;
     }
 
     public function isSandbox(): bool
