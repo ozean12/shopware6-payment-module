@@ -20,5 +20,11 @@
             <argument key="$countryRepository" type="service" id="country.repository" />
         </service>
 
+        <service id="Billie\BilliePayment\Components\Checkout\Service\SetPaymentOrderRoute"
+                 decorates="Shopware\Core\Checkout\Order\SalesChannel\SetPaymentOrderRoute">
+            <argument type="service" id="Billie\BilliePayment\Components\Checkout\Service\SetPaymentOrderRoute.inner"/>
+            <argument key="$paymentMethodRepository" type="service" id="payment_method.repository" />
+        </service>
+
     </services>
 </container>

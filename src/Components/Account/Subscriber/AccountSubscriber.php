@@ -11,7 +11,11 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Components\Account\Subscriber;
 
+use Billie\BilliePayment\Components\PaymentMethod\Util\MethodHelper;
+use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Storefront\Event\RouteRequest\HandlePaymentMethodRouteRequestEvent;
+use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class AccountSubscriber implements EventSubscriberInterface
@@ -20,6 +24,7 @@ class AccountSubscriber implements EventSubscriberInterface
     {
         return [
             HandlePaymentMethodRouteRequestEvent::class => 'onHandlePaymentMethodRouteRequest',
+            AccountEditOrderPageLoadedEvent::class => 'onAccountEditOrderPageLoaded',
         ];
     }
 
@@ -31,5 +36,16 @@ class AccountSubscriber implements EventSubscriberInterface
                 $event->getStorefrontRequest()->request->get('billie_payment')
             );
         }
+    }
+
+    public function onAccountEditOrderPageLoaded(AccountEditOrderPageLoadedEvent $event): void
+    {
+        $page = $event->getPage();
+
+        $paymentMethods = $page->getPaymentMethods()->filter(static function (PaymentMethodEntity $paymentMethod) {
+            return MethodHelper::isBilliePayment($paymentMethod) === false;
+        });
+
+        $page->setPaymentMethods($paymentMethods);
     }
 }
