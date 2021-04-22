@@ -105,6 +105,6 @@ class ConfigService
     {
         $config = $this->getPluginConfiguration();
 
-        return (bool) $config['stateEnabled'];
+        return isset($config['stateEnabled']) && $config['stateEnabled'];
     }
 }

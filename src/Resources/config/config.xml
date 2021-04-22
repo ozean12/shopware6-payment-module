@@ -69,6 +69,7 @@
             <name>salutationFallback</name>
             <label>Salutation (Fallback)</label>
             <label lang="de-DE">Anrede (Fallback)</label>
+            <defaultValue>m</defaultValue>
             <options>
                 <option>
                     <id>m</id>
