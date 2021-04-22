@@ -21,6 +21,13 @@ Component.register('billie-test-credentials-button', {
     'en-GB': enGB
   },
 
+  props: {
+    apiMode: {
+      type: String,
+      required: true
+    }
+  },
+
   data() {
     return {
       isLoading: false,
@@ -38,9 +45,9 @@ Component.register('billie-test-credentials-button', {
       this.isTestSuccessful = false;
       this.isLoading = true;
 
-      let id = document.querySelector('[name="BilliePayment.config.clientId"]').value;
-      let secret = document.querySelector('[name="BilliePayment.config.clientSecret"]').value;
-      let isSandbox = document.querySelector('[name="BilliePayment.config.sandbox"]').value === 'on';
+      let id = document.querySelector(`[name="BilliePayment.config.${this.apiMode}ClientId"]`).value;
+      let secret = document.querySelector(`[name="BilliePayment.config.${this.apiMode}ClientSecret"]`).value;
+      let isSandbox = this.apiMode === 'test';
 
       this.billieApiService.testCredentials(id, secret, isSandbox).then((response) => {
         this.isLoading = false;

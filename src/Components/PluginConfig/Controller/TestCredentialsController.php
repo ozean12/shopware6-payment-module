@@ -42,11 +42,10 @@ class TestCredentialsController extends AbstractController
     {
         $success = true;
         try {
-            // Prefer the provided data and take stored data as fallback
             BillieClientFactory::getBillieClientInstance(
-                $request->request->get('id') ?? $this->configService->getClientId(),
-                $request->request->get('secret') ?? $this->configService->getClientSecret(),
-                $request->request->get('isSandbox') ?? $this->configService->isSandbox()
+                $request->request->get('id'),
+                $request->request->get('secret'),
+                $request->request->get('isSandbox')
             );
         } catch (UserNotAuthorizedException $exception) {
             $success = false;
