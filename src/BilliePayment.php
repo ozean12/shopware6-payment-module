@@ -14,6 +14,7 @@ namespace Billie\BilliePayment;
 use Billie\BilliePayment\Bootstrap\AbstractBootstrap;
 use Billie\BilliePayment\Bootstrap\Database;
 use Billie\BilliePayment\Bootstrap\PaymentMethods;
+use Billie\BilliePayment\Bootstrap\PluginConfig;
 use Billie\Sdk\HttpClient\BillieClient;
 use Exception;
 use Shopware\Core\Framework\Context;
@@ -36,33 +37,6 @@ class BilliePayment extends Plugin
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->postInstall();
         }
-    }
-
-    /**
-     * @return AbstractBootstrap[]
-     */
-    protected function getBootstrapClasses(Plugin\Context\InstallContext $context)
-    {
-        /** @var AbstractBootstrap[] $bootstrapper */
-        $bootstrapper = [
-            new Database(),
-            new PaymentMethods(),
-        ];
-
-        /** @var EntityRepositoryInterface $pluginRepository */
-        $pluginRepository = $this->container->get('plugin.repository');
-        $plugins = $pluginRepository->search((new Criteria())->addFilter(new EqualsFilter('baseClass', get_class($this))), Context::createDefaultContext());
-        $plugin = $plugins->first();
-        //$logger = new FileLogger($this->container->getParameter('kernel.logs_dir'));
-        foreach ($bootstrapper as $bootstrap) {
-            $bootstrap->setInstallContext($context);
-            //$bootstrap->setLogger($logger);
-            $bootstrap->setContainer($this->container);
-            $bootstrap->injectServices();
-            $bootstrap->setPlugin($plugin);
-        }
-
-        return $bootstrapper;
     }
 
     public function update(Plugin\Context\UpdateContext $context): void
@@ -119,6 +93,37 @@ class BilliePayment extends Plugin
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->postActivate();
         }
+    }
+
+    /**
+     * @return AbstractBootstrap[]
+     */
+    protected function getBootstrapClasses(Plugin\Context\InstallContext $context): array
+    {
+        /** @var AbstractBootstrap[] $bootstrapper */
+        $bootstrapper = [
+            new Database(),
+            new PaymentMethods(),
+            new PluginConfig(),
+        ];
+
+        /** @var EntityRepositoryInterface $pluginRepository */
+        $pluginRepository = $this->container->get('plugin.repository');
+        $plugins = $pluginRepository->search(
+            (new Criteria())->addFilter(new EqualsFilter('baseClass', get_class($this))),
+            $context->getContext()
+        );
+        $plugin = $plugins->first();
+        //$logger = new FileLogger($this->container->getParameter('kernel.logs_dir'));
+        foreach ($bootstrapper as $bootstrap) {
+            $bootstrap->setInstallContext($context);
+            //$bootstrap->setLogger($logger);
+            $bootstrap->setContainer($this->container);
+            $bootstrap->injectServices();
+            $bootstrap->setPlugin($plugin);
+        }
+
+        return $bootstrapper;
     }
 }
 
