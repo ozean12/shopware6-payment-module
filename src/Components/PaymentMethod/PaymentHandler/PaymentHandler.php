@@ -17,6 +17,8 @@ use Billie\Sdk\Exception\BillieException;
 use Billie\Sdk\Model\Request\UpdateOrderRequestModel;
 use Billie\Sdk\Service\Request\CheckoutSessionConfirmRequest;
 use Billie\Sdk\Service\Request\UpdateOrderRequest;
+use Monolog\Logger;
+use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
@@ -28,11 +30,6 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class PaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    /**
-     * @var CheckoutSessionConfirmRequest
-     */
-    private $checkoutSessionConfirmRequest;
-
     /**
      * @var ConfirmDataService
      */
@@ -48,14 +45,21 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
      */
     private $requestServiceLocator;
 
+    /**
+     * @var Logger
+     */
+    private $logger;
+
     public function __construct(
         ContainerInterface $requestServiceLocator,
         ConfirmDataService $confirmDataService,
-        EntityRepositoryInterface $orderDataRepository
+        EntityRepositoryInterface $orderDataRepository,
+        Logger $logger
     ) {
         $this->confirmDataService = $confirmDataService;
         $this->orderDataRepository = $orderDataRepository;
         $this->requestServiceLocator = $requestServiceLocator;
+        $this->logger = $logger;
     }
 
     public function pay(
@@ -85,14 +89,26 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
                     OrderDataEntity::FIELD_IS_SUCCESSFUL => true,
                 ],
             ], $salesChannelContext->getContext());
-
-            $updateOrderModel = (new UpdateOrderRequestModel($response->getUuid()))
-                ->setOrderId($order->getOrderNumber());
-
-            /** @noinspection NullPointerExceptionInspection */
-            $this->requestServiceLocator->get(UpdateOrderRequest::class)->execute($updateOrderModel);
         } catch (BillieException $exception) {
             throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
+
+        $updateOrderModel = (new UpdateOrderRequestModel($response->getUuid()))
+            ->setOrderId($order->getOrderNumber());
+        try {
+            /** @noinspection NullPointerExceptionInspection */
+            $this->requestServiceLocator->get(UpdateOrderRequest::class)->execute($updateOrderModel);
+        } catch (BillieException $exception) {
+            $this->logError($exception, $order, $response->getUuid());
+        }
+    }
+
+    private function logError(BillieException $exception, OrderEntity $order, string $billieReferenceId): void
+    {
+        $this->logger->addCritical('Exception during order update. (Exception: ' . $exception->getMessage() . ')', [
+            'error' => $exception->getBillieCode(),
+            'order' => $order->getId(),
+            'billie-reference-id' => $billieReferenceId,
+        ]);
     }
 }
