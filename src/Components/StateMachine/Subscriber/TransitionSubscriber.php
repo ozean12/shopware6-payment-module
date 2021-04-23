@@ -129,8 +129,7 @@ class TransitionSubscriber implements EventSubscriberInterface
                     }
 
                     $data = new ShipOrderRequestModel($billieData->getReferenceId());
-                    $data->setExternalOrderId($order->getOrderNumber())
-                        ->setInvoiceNumber($invoiceNumber)
+                    $data->setInvoiceNumber($invoiceNumber)
                         ->setInvoiceUrl($invoiceUrl ?? '.')
                         ->setShippingDocumentUrl($shippingUrl);
 

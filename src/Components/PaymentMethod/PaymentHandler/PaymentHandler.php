@@ -11,10 +11,15 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Components\PaymentMethod\PaymentHandler;
 
+use Billie\BilliePayment\Components\BillieApi\Util\AddressHelper;
 use Billie\BilliePayment\Components\Order\Model\OrderDataEntity;
 use Billie\BilliePayment\Components\PaymentMethod\Service\ConfirmDataService;
 use Billie\Sdk\Exception\BillieException;
+use Billie\Sdk\Model\AbstractModel;
+use Billie\Sdk\Model\Request\AbstractRequestModel;
+use Billie\Sdk\Model\Request\UpdateOrderRequestModel;
 use Billie\Sdk\Service\Request\CheckoutSessionConfirmRequest;
+use Billie\Sdk\Service\Request\UpdateOrderRequest;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
@@ -83,6 +88,12 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
                     OrderDataEntity::FIELD_IS_SUCCESSFUL => true,
                 ],
             ], $salesChannelContext->getContext());
+
+            $updateOrderModel = (new UpdateOrderRequestModel($response->getUuid()))
+                ->setOrderId($order->getOrderNumber());
+
+            /** @noinspection NullPointerExceptionInspection */
+            $this->requestServiceLocator->get(UpdateOrderRequest::class)->execute($updateOrderModel);
         } catch (BillieException $exception) {
             throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
