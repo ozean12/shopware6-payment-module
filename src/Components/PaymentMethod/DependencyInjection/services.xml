@@ -8,6 +8,7 @@
 
         <service id="Billie\BilliePayment\Components\PaymentMethod\PaymentHandler\PaymentHandler">
             <argument key="$orderDataRepository" type="service" id="billie_order_data.repository"/>
+            <argument key="$logger" id="billie_payment.logger" type="service" />
             <tag name="shopware.payment.method.sync"/>
         </service>
 
