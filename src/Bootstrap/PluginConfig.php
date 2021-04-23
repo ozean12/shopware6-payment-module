@@ -38,15 +38,22 @@ class PluginConfig extends AbstractBootstrap
     public function install(): void
     {
         // Because we can't define default values in the plugin config for entity selections,
-        // we add the default values here.
-        $salutationMale = $this->getSalutationId('mr');
-        $salutationFemale = $this->getSalutationId('mrs');
+        // we add the default values here, if they do not exist yet.
+        $currentValueMale = $this->systemConfigService->get('BilliePayment.config.salutationMale');
+        $currentValueFemale = $this->systemConfigService->get('BilliePayment.config.salutationMale');
 
-        if ($salutationMale) {
-            $this->systemConfigService->set('BilliePayment.config.salutationMale', $salutationMale);
+        if (!$currentValueMale) {
+            $salutationMale = $this->getSalutationId('mr');
+            if ($salutationMale) {
+                $this->systemConfigService->set('BilliePayment.config.salutationMale', $salutationMale);
+            }
         }
-        if ($salutationFemale) {
-            $this->systemConfigService->set('BilliePayment.config.salutationFemale', $salutationFemale);
+
+        if (!$currentValueFemale) {
+            $salutationFemale = $this->getSalutationId('mrs');
+            if ($salutationFemale) {
+                $this->systemConfigService->set('BilliePayment.config.salutationFemale', $salutationFemale);
+            }
         }
     }
 
