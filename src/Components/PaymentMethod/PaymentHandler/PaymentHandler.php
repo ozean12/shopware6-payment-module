@@ -11,12 +11,9 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Components\PaymentMethod\PaymentHandler;
 
-use Billie\BilliePayment\Components\BillieApi\Util\AddressHelper;
 use Billie\BilliePayment\Components\Order\Model\OrderDataEntity;
 use Billie\BilliePayment\Components\PaymentMethod\Service\ConfirmDataService;
 use Billie\Sdk\Exception\BillieException;
-use Billie\Sdk\Model\AbstractModel;
-use Billie\Sdk\Model\Request\AbstractRequestModel;
 use Billie\Sdk\Model\Request\UpdateOrderRequestModel;
 use Billie\Sdk\Service\Request\CheckoutSessionConfirmRequest;
 use Billie\Sdk\Service\Request\UpdateOrderRequest;
