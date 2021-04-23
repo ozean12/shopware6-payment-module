@@ -137,7 +137,14 @@ class TransitionSubscriber implements EventSubscriberInterface
                         /* @noinspection NullPointerExceptionInspection */
                         $this->container->get(ShipOrderRequest::class)->execute($data);
                     } catch (BillieException $e) {
-                        $this->logError($e, $order, $billieData);
+                        $this->logger->addCritical(
+                            'Exception during shipment. (Exception: ' . $e->getMessage() . ')',
+                            [
+                                'error' => $e->getBillieCode(),
+                                'order' => $order->getId(),
+                                'billie-reference-id' => $billieData->getReferenceId(),
+                            ]
+                        );
                     }
                     break;
             }
@@ -157,12 +164,17 @@ class TransitionSubscriber implements EventSubscriberInterface
                         $this->container->get(CancelOrderRequest::class)
                             ->execute(new OrderRequestModel($billieData->getReferenceId()));
                     } catch (BillieException $e) {
-                        $this->logError($e, $order, $billieData);
+                        $this->logger->addCritical(
+                            'Exception during cancellation. (Exception: ' . $e->getMessage() . ')',
+                            [
+                                'error' => $e->getBillieCode(),
+                                'order' => $order->getId(),
+                                'billie-reference-id' => $billieData->getReferenceId(),
+                            ]
+                        );
                     }
                     break;
             }
-
-            return;
         }
     }
 
@@ -172,14 +184,5 @@ class TransitionSubscriber implements EventSubscriberInterface
         $criteria->addAssociation('documents.documentType');
 
         return $this->orderRepository->search($criteria, $context)->first();
-    }
-
-    private function logError(BillieException $e, OrderEntity $order, OrderDataEntity $billieData): void
-    {
-        $this->logger->addCritical('Exception during ship. (Exception: ' . $e->getMessage() . ')', [
-            'error' => $e->getBillieCode(),
-            'order' => $order->getId(),
-            'billie-reference-id' => $billieData->getReferenceId(),
-        ]);
     }
 }

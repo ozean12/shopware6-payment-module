@@ -18,7 +18,6 @@ use Billie\Sdk\Model\Request\UpdateOrderRequestModel;
 use Billie\Sdk\Service\Request\CheckoutSessionConfirmRequest;
 use Billie\Sdk\Service\Request\UpdateOrderRequest;
 use Monolog\Logger;
-use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
@@ -90,6 +89,15 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
                 ],
             ], $salesChannelContext->getContext());
         } catch (BillieException $exception) {
+            $this->logger->addCritical(
+                'Exception during checkout session confirmation. (Exception: ' . $exception->getMessage() . ')',
+                [
+                    'error' => $exception->getBillieCode(),
+                    'order' => $order->getId(),
+                    'session-id' => $billieData->get('session-id'),
+                ]
+            );
+
             throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
         }
 
@@ -99,16 +107,14 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
             /** @noinspection NullPointerExceptionInspection */
             $this->requestServiceLocator->get(UpdateOrderRequest::class)->execute($updateOrderModel);
         } catch (BillieException $exception) {
-            $this->logError($exception, $order, $response->getUuid());
+            $this->logger->addCritical(
+                'Exception during order update. (Exception: ' . $exception->getMessage() . ')',
+                [
+                    'error' => $exception->getBillieCode(),
+                    'order' => $order->getId(),
+                    'billie-reference-id' => $response->getUuid(),
+                ]
+            );
         }
-    }
-
-    private function logError(BillieException $exception, OrderEntity $order, string $billieReferenceId): void
-    {
-        $this->logger->addCritical('Exception during order update. (Exception: ' . $exception->getMessage() . ')', [
-            'error' => $exception->getBillieCode(),
-            'order' => $order->getId(),
-            'billie-reference-id' => $billieReferenceId,
-        ]);
     }
 }
