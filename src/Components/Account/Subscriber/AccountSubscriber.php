@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Billie\BilliePayment\Components\Account\Subscriber;
 
 use Billie\BilliePayment\Components\PaymentMethod\Util\MethodHelper;
-use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Storefront\Event\RouteRequest\HandlePaymentMethodRouteRequestEvent;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;

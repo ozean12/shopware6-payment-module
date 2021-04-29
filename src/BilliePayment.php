@@ -17,7 +17,6 @@ use Billie\BilliePayment\Bootstrap\PaymentMethods;
 use Billie\BilliePayment\Bootstrap\PluginConfig;
 use Billie\Sdk\HttpClient\BillieClient;
 use Exception;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;

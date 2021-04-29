@@ -104,7 +104,7 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
         $updateOrderModel = (new UpdateOrderRequestModel($response->getUuid()))
             ->setOrderId($order->getOrderNumber());
         try {
-            /** @noinspection NullPointerExceptionInspection */
+            /* @noinspection NullPointerExceptionInspection */
             $this->container->get(UpdateOrderRequest::class)->execute($updateOrderModel);
         } catch (BillieException $exception) {
             $this->logger->addCritical(

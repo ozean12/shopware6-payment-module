@@ -267,7 +267,7 @@ class WidgetService
                 ->setBrand($product->getManufacturer() ? $product->getManufacturer()->getName() : null)
                 ->setGtin($product->getEan());
 
-            if($product->getDescription()) {
+            if ($product->getDescription()) {
                 $billieLineItem->setDescription(substr($product->getDescription(), 0, 255));
             }
         }
