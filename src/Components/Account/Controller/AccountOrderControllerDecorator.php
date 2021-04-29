@@ -40,7 +40,7 @@ class AccountOrderControllerDecorator extends AccountOrderController
         $billieData = $order ? $order->getExtension(OrderExtension::EXTENSION_NAME) : null;
 
         $paymentMethod = $order->getTransactions()->first()->getPaymentMethod();
-        if ($order && $billieData && MethodHelper::isBilliePayment($paymentMethod) && $billieData->isSuccessful()) {
+        if ($billieData && MethodHelper::isBilliePayment($paymentMethod) && $billieData->isSuccessful()) {
             // You can't change the payment if it is a billie order
             return $this->redirectToRoute('frontend.account.edit-order.page', ['orderId' => $orderId]);
         }
