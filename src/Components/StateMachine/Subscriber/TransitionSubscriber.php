@@ -103,6 +103,10 @@ class TransitionSubscriber implements EventSubscriberInterface
 
             /** @var OrderDataEntity $billieData */
             $billieData = $order->getExtension(OrderExtension::EXTENSION_NAME);
+            if($billieData === null) {
+                // this is not a billie order - or if it is, we can not process it, without the order-data extension
+                return;
+            }
 
             switch ($event->getToPlace()->getTechnicalName()) {
                 case $this->configService->getStateForShip():
