@@ -42,7 +42,7 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
     /**
      * @var ContainerInterface
      */
-    private $requestServiceLocator;
+    private $container;
 
     /**
      * @var Logger
@@ -50,14 +50,14 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
     private $logger;
 
     public function __construct(
-        ContainerInterface $requestServiceLocator,
+        ContainerInterface $container,
         ConfirmDataService $confirmDataService,
         EntityRepositoryInterface $orderDataRepository,
         Logger $logger
     ) {
         $this->confirmDataService = $confirmDataService;
         $this->orderDataRepository = $orderDataRepository;
-        $this->requestServiceLocator = $requestServiceLocator;
+        $this->container = $container;
         $this->logger = $logger;
     }
 
@@ -78,7 +78,7 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
         $confirmModel = $this->confirmDataService->getConfirmModel($billieData->get('session-id'), $order);
         try {
             /** @noinspection NullPointerExceptionInspection */
-            $response = $this->requestServiceLocator->get(CheckoutSessionConfirmRequest::class)->execute($confirmModel);
+            $response = $this->container->get(CheckoutSessionConfirmRequest::class)->execute($confirmModel);
 
             $this->orderDataRepository->upsert([
                 [
@@ -105,7 +105,7 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
             ->setOrderId($order->getOrderNumber());
         try {
             /** @noinspection NullPointerExceptionInspection */
-            $this->requestServiceLocator->get(UpdateOrderRequest::class)->execute($updateOrderModel);
+            $this->container->get(UpdateOrderRequest::class)->execute($updateOrderModel);
         } catch (BillieException $exception) {
             $this->logger->addCritical(
                 'Exception during order update. (Exception: ' . $exception->getMessage() . ')',
