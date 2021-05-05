@@ -14,8 +14,10 @@ namespace Billie\BilliePayment\Components\PaymentMethod\PaymentHandler;
 use Billie\BilliePayment\Components\Order\Model\OrderDataEntity;
 use Billie\BilliePayment\Components\PaymentMethod\Service\ConfirmDataService;
 use Billie\Sdk\Exception\BillieException;
+use Billie\Sdk\Model\Request\GetBankDataRequestModel;
 use Billie\Sdk\Model\Request\UpdateOrderRequestModel;
 use Billie\Sdk\Service\Request\CheckoutSessionConfirmRequest;
+use Billie\Sdk\Service\Request\GetBankDataRequest;
 use Billie\Sdk\Service\Request\UpdateOrderRequest;
 use Monolog\Logger;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
@@ -79,12 +81,17 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
         try {
             /** @noinspection NullPointerExceptionInspection */
             $response = $this->container->get(CheckoutSessionConfirmRequest::class)->execute($confirmModel);
+            $bankDataResponse = $this->container->get(GetBankDataRequest::class)->execute(new GetBankDataRequestModel());
 
             $this->orderDataRepository->upsert([
                 [
                     OrderDataEntity::FIELD_ORDER_ID => $order->getId(),
                     OrderDataEntity::FIELD_ORDER_VERSION_ID => $order->getVersionId(),
                     OrderDataEntity::FIELD_REFERENCE_ID => $response->getUuid(),
+                    OrderDataEntity::FIELD_EXTERNAL_BANK_IBAN => $response->getBankAccount()->getIban(),
+                    OrderDataEntity::FIELD_EXTERNAL_BANK_BIC => $response->getBankAccount()->getBic(),
+                    OrderDataEntity::FIELD_EXTERNAL_BANK_NAME => $bankDataResponse->getBankName($response->getBankAccount()->getBic() ?? '.'),
+                    OrderDataEntity::FIELD_DURATION => $response->getDuration(),
                     OrderDataEntity::FIELD_IS_SUCCESSFUL => true,
                 ],
             ], $salesChannelContext->getContext());

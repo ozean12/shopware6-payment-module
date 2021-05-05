@@ -1,0 +1,13 @@
+{
+    "billie": {
+        "invoice": {
+            "intro": "Please transfer the invoice amount until %dueDate with the invoice number to the following bank account:",
+            "account-holder": "Account owner",
+            "iban": "IBAN",
+            "bic": "BIC",
+            "bankName": "Bank",
+            "due-date": "Due date",
+            "purpose": "Purpose"
+        }
+    }
+}

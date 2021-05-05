@@ -20,6 +20,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\IntField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ReferenceVersionField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
@@ -93,6 +94,26 @@ class OrderDataDefinition extends EntityDefinition
                 'external_delivery_note_url',
                 OrderDataEntity::FIELD_EXTERNAL_DELIVERY_NOTE_URL
             )),
+
+            (new StringField(
+                'bank_iban',
+                OrderDataEntity::FIELD_EXTERNAL_BANK_IBAN
+            ))->addFlags(new Required()),
+
+            (new StringField(
+                'bank_bic',
+                OrderDataEntity::FIELD_EXTERNAL_BANK_BIC
+            ))->addFlags(new Required()),
+
+            (new StringField(
+                'bank_name',
+                OrderDataEntity::FIELD_EXTERNAL_BANK_NAME
+            ))->addFlags(new Required()),
+
+            (new IntField(
+                'duration',
+                OrderDataEntity::FIELD_DURATION
+            ))->addFlags(new Required()),
 
             (new BoolField(
                 'successful',

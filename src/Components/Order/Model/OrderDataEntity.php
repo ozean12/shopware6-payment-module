@@ -35,6 +35,12 @@ class OrderDataEntity extends Entity
 
     public const FIELD_EXTERNAL_DELIVERY_NOTE_URL = 'externalDeliveryNoteUrl';
 
+    public const FIELD_EXTERNAL_BANK_IBAN = 'bankIban';
+
+    public const FIELD_EXTERNAL_BANK_BIC = 'bankBic';
+
+    public const FIELD_EXTERNAL_BANK_NAME = 'bankName';
+
     /**
      * @var string
      */
@@ -69,6 +75,26 @@ class OrderDataEntity extends Entity
      * @var string|null
      */
     protected $externalDeliveryNoteUrl;
+
+    /**
+     * @var string|null
+     */
+    protected $bankIban;
+
+    /**
+     * @var string|null
+     */
+    protected $bankBic;
+
+    /**
+     * @var string|null
+     */
+    protected $bankName;
+
+    /**
+     * @var int|null
+     */
+    protected $duration;
 
     /**
      * @var bool
@@ -108,6 +134,26 @@ class OrderDataEntity extends Entity
     public function getExternalDeliveryNoteUrl(): ?string
     {
         return $this->externalDeliveryNoteUrl;
+    }
+
+    public function getBankIban(): ?string
+    {
+        return $this->bankIban;
+    }
+
+    public function getBankBic(): ?string
+    {
+        return $this->bankBic;
+    }
+
+    public function getBankName(): ?string
+    {
+        return $this->bankName;
+    }
+
+    public function getDuration(): ?int
+    {
+        return $this->duration;
     }
 
     public function isSuccessful(): bool

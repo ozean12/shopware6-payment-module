@@ -30,6 +30,7 @@ class Migration1617376765OrderExtension extends MigrationStep
               `order_id` binary(16) NOT NULL,
               `order_version_id` binary(16) NOT NULL,
               `reference_id` varchar(255) NOT NULL,
+              `duration` int NOT NULL,
               `external_invoice_number` VARCHAR(255) NULL,
               `external_invoice_url` TEXT NULL,
               `external_delivery_note_url` TEXT NULL,

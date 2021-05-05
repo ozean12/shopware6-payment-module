@@ -1,0 +1,69 @@
+{% sw_extends '@Framework/documents/invoice.html.twig' %}
+
+{% block document_head %}
+    {{ parent() }}
+
+    {% block billie_invoice_styles %}
+        <style>
+            .billie-payment-details p {
+                margin-bottom: 0;
+            }
+
+            .billie-payment-details table {
+                margin-left: -2px;
+            }
+
+            .billie-payment-details table td {
+                padding: 0;
+            }
+
+            .billie-payment-details table th {
+                text-align: left;
+                padding: 0 20px 0 0;
+            }
+        </style>
+    {% endblock %}
+{% endblock %}
+
+{% block document_payment_shipping %}
+    {{ parent() }}
+
+    {% block billie_invoice_payment_details %}
+        {# @var order \Shopware\Core\Checkout\Order\OrderEntity #}
+        {# @var billieData \Billie\BilliePayment\Components\Order\Model\OrderDataEntity #}
+        {% set billieData = order.extensions.billieData %}
+        {% if billieData %}
+            {% set billieDueDate = config.documentDate|date_modify("+"~billieData.duration~" day")|format_date('medium', locale=locale) %}
+            <div class="billie-payment-details">
+                {# TODO: Due date without shipment is not possible #}
+                <p>{{ "billie.invoice.intro"|trans({'%dueDate': billieDueDate}) }}</p>
+                <table>
+                    <tr>
+                        <th>{{ "billie.invoice.account-holder"|trans }}:</th>
+                        <td>{{ config.companyName }}</td>
+                    </tr>
+                    <tr>
+                        <th>{{ "billie.invoice.iban"|trans }}:</th>
+                        <td>{{ billieData.bankIban }}</td>
+                    </tr>
+                    <tr>
+                        <th>{{ "billie.invoice.bic"|trans }}:</th>
+                        <td>{{ billieData.bankBic }}</td>
+                    </tr>
+                    <tr>
+                        <th>{{ "billie.invoice.bankName"|trans }}:</th>
+                        <td>{{ billieData.bankName }}</td>
+                    </tr>
+                    <tr>
+                        <th>{{ "billie.invoice.due-date"|trans }}:</th>
+                        <td>{{ billieDueDate }}</td>
+                    </tr>
+                    <tr>
+                        <th>{{ "billie.invoice.purpose"|trans }}:</th>
+                        <td>{{ config.custom.invoiceNumber }}</td>
+                    </tr>
+                </table>
+            </div>
+        {% endif %}
+    {% endblock %}
+{% endblock %}
