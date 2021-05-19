@@ -35,11 +35,13 @@ class OrderDataEntity extends Entity
 
     public const FIELD_EXTERNAL_DELIVERY_NOTE_URL = 'externalDeliveryNoteUrl';
 
-    public const FIELD_EXTERNAL_BANK_IBAN = 'bankIban';
+    public const FIELD_BANK_IBAN = 'bankIban';
 
-    public const FIELD_EXTERNAL_BANK_BIC = 'bankBic';
+    public const FIELD_BANK_BIC = 'bankBic';
 
-    public const FIELD_EXTERNAL_BANK_NAME = 'bankName';
+    public const FIELD_BANK_NAME = 'bankName';
+
+    public const FIELD_DURATION = 'duration';
 
     /**
      * @var string

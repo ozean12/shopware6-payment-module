@@ -97,17 +97,17 @@ class OrderDataDefinition extends EntityDefinition
 
             (new StringField(
                 'bank_iban',
-                OrderDataEntity::FIELD_EXTERNAL_BANK_IBAN
+                OrderDataEntity::FIELD_BANK_IBAN
             ))->addFlags(new Required()),
 
             (new StringField(
                 'bank_bic',
-                OrderDataEntity::FIELD_EXTERNAL_BANK_BIC
+                OrderDataEntity::FIELD_BANK_BIC
             ))->addFlags(new Required()),
 
             (new StringField(
                 'bank_name',
-                OrderDataEntity::FIELD_EXTERNAL_BANK_NAME
+                OrderDataEntity::FIELD_BANK_NAME
             ))->addFlags(new Required()),
 
             (new IntField(
