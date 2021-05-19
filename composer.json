@@ -1,7 +1,7 @@
 {
     "name": "billie/shopware6-module",
     "description": "Billie payment for Shopware 6",
-    "version": "1.0.2",
+    "version": "1.0.0-alpha1",
     "license": "MIT",
     "authors": [
         {
