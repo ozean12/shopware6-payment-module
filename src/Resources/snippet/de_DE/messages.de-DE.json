@@ -1,7 +1,7 @@
 {
     "billie": {
         "invoice": {
-            "into": "Bitte überweisen Sie den Rechnungsbetrag bis zum %dueDate unter Angabe der Rechnungsnummer auf folgendes Konto:",
+            "intro": "Bitte überweisen Sie den Rechnungsbetrag bis zum %dueDate unter Angabe der Rechnungsnummer auf folgendes Konto:",
             "account-holder": "Kontoinhaber",
             "iban": "IBAN",
             "bic": "BIC",

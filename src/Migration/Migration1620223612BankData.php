@@ -18,7 +18,7 @@ class Migration1620223612BankData extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
-        return 1617376765;
+        return 1620223612;
     }
 
     public function update(Connection $connection): void
