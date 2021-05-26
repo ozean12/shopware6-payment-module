@@ -41,9 +41,13 @@ $criteria->addFilter(new \Shopware\Core\Framework\DataAbstractionLayer\Search\Fi
 $billieOrderData = $repository->search($criteria, \Shopware\Core\Framework\Context::createDefaultContext())->first();
 
 $billieOrderData->getId(); // ID of the Billie order data entity
+$billieOrderData->getReferenceId(); // billie order reference id (uui)
 $billieOrderData->getExternalInvoiceNumber(); // external invoice number
 $billieOrderData->getExternalInvoiceUrl(); // external invoice url
 $billieOrderData->getExternalDeliveryNoteUrl(); // external delivery note url
+$billieOrderData->getBankIban(); // bank account: iban
+$billieOrderData->getBankBic(); // bank account: bic
+$billieOrderData->getBankName(); // bank account: name
 ```
 
 ### Fetch Billie order data from loaded order entity
