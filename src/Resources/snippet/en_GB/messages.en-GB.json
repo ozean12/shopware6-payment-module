@@ -8,6 +8,9 @@
             "bankName": "Bank",
             "due-date": "Due date",
             "purpose": "Purpose"
+        },
+        "cookie":  {
+            "group_name": "Billie Payment Widget"
         }
     }
 }

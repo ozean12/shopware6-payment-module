@@ -11,4 +11,13 @@
         <import resource="../../Components/*/DependencyInjection/translations.xml"/>
     </imports>
 
+
+    <services>
+        <service id="Billie\BilliePayment\Components\CookieProvider"
+                 decorates="Shopware\Storefront\Framework\Cookie\CookieProviderInterface">
+            <argument type="service"
+                      id="Billie\BilliePayment\Components\CookieProvider.inner" />
+        </service>
+    </services>
+
 </container>
