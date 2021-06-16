@@ -21,32 +21,13 @@ class CookieProvider implements CookieProviderInterface
 
     public function getCookieGroups(): array
     {
-        $cookiesNames = [
-            'ajs_user_id',
-            'ajs_anonymous_id',
-            'intercom-session-*',
-            'fs_uid',
-            'mkjs_group_id',
-            'mkjs_user_id'
-        ];
-
-        $cookies = [];
-        foreach ($cookiesNames as $name) {
-            $cookies[] = [
-                'snippet_name' => 'Cookie: ' . $name,
-                'cookie' => $name,
-                'isRequired' => true,
-                'isHidden' => true
-            ];
-        }
-
         return array_merge(
             $this->originalService->getCookieGroups(),
             [
                 [
                     'snippet_name' => 'billie.cookie.group_name',
+                    'cookie' => 'billie-payment',
                     'isRequired' => true,
-                    'entries' => $cookies,
                 ]
             ]
         );
