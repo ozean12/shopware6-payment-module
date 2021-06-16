@@ -45,8 +45,8 @@ Component.register('billie-test-credentials-button', {
       this.isTestSuccessful = false;
       this.isLoading = true;
 
-      let id = document.querySelector(`[name="BilliePayment.config.${this.apiMode}ClientId"]`).value;
-      let secret = document.querySelector(`[name="BilliePayment.config.${this.apiMode}ClientSecret"]`).value;
+      let id = document.querySelector(`[name="BilliePaymentSW6.config.${this.apiMode}ClientId"]`).value;
+      let secret = document.querySelector(`[name="BilliePaymentSW6.config.${this.apiMode}ClientSecret"]`).value;
       let isSandbox = this.apiMode === 'test';
 
       this.billieApiService.testCredentials(id, secret, isSandbox).then((response) => {

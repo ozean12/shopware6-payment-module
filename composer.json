@@ -15,7 +15,7 @@
         }
     },
     "extra": {
-        "shopware-plugin-class": "Billie\\BilliePayment\\BilliePayment",
+        "shopware-plugin-class": "Billie\\BilliePayment\\BilliePaymentSW6",
         "copyright": "(c) by Billie GmbH",
         "plugin-icon": "src/Resources/public/plugin.png",
         "label": {

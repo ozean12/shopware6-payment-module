@@ -22,11 +22,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin;
 
-class BilliePayment extends Plugin
+class BilliePaymentSW6 extends Plugin
 {
-    public function install(Plugin\Context\InstallContext $context): void
+    public function install(Plugin\Context\InstallContext $installContext): void
     {
-        $bootstrapper = $this->getBootstrapClasses($context);
+        $bootstrapper = $this->getBootstrapClasses($installContext);
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->preInstall();
         }
@@ -38,9 +38,9 @@ class BilliePayment extends Plugin
         }
     }
 
-    public function update(Plugin\Context\UpdateContext $context): void
+    public function update(Plugin\Context\UpdateContext $updateContext): void
     {
-        $bootstrapper = $this->getBootstrapClasses($context);
+        $bootstrapper = $this->getBootstrapClasses($updateContext);
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->preUpdate();
         }
@@ -52,23 +52,23 @@ class BilliePayment extends Plugin
         }
     }
 
-    public function uninstall(Plugin\Context\UninstallContext $context): void
+    public function uninstall(Plugin\Context\UninstallContext $uninstallContext): void
     {
-        $bootstrapper = $this->getBootstrapClasses($context);
+        $bootstrapper = $this->getBootstrapClasses($uninstallContext);
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->preUninstall();
         }
         foreach ($bootstrapper as $bootstrap) {
-            $bootstrap->uninstall($context->keepUserData());
+            $bootstrap->uninstall($uninstallContext->keepUserData());
         }
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->postUninstall();
         }
     }
 
-    public function deactivate(Plugin\Context\DeactivateContext $context): void
+    public function deactivate(Plugin\Context\DeactivateContext $deactivateContext): void
     {
-        $bootstrapper = $this->getBootstrapClasses($context);
+        $bootstrapper = $this->getBootstrapClasses($deactivateContext);
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->preDeactivate();
         }
@@ -80,9 +80,9 @@ class BilliePayment extends Plugin
         }
     }
 
-    public function activate(Plugin\Context\ActivateContext $context): void
+    public function activate(Plugin\Context\ActivateContext $activateContext): void
     {
-        $bootstrapper = $this->getBootstrapClasses($context);
+        $bootstrapper = $this->getBootstrapClasses($activateContext);
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->preActivate();
         }
