@@ -12,6 +12,7 @@
             <argument key="$addressRepository" type="service" id="customer_address.repository"/>
             <argument key="$orderAddressRepository" type="service" id="order_address.repository"/>
             <argument key="$orderRepository" type="service" id="order.repository"/>
+            <argument key="$orderDeliveryRepository" type="service" id="order_delivery.repository"/>
             <call method="setContainer">
                 <argument id="service_container" type="service"/>
             </call>
