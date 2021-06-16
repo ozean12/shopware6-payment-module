@@ -5,8 +5,8 @@
                 "text": "Test credentials"
             },
             "notification": {
-                "correctCredentials": "The credentials are correct!",
-                "incorrectCredentials": "The credentials are unfortunately wrong!",
+                "validCredentials": "The credentials are correct!",
+                "invalidCredentials": "The credentials are unfortunately wrong!",
                 "failedToTestCredentials": "An error occurred while checking the credentials!"
             }
         }

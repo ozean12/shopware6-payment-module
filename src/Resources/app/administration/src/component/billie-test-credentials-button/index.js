@@ -55,11 +55,11 @@ Component.register('billie-test-credentials-button', {
         if (response.success) {
           this.isTestSuccessful = true;
           this.createNotificationSuccess({
-            message: this.$tc('billie.config.notification.correctCredentials')
+            message: this.$tc('billie.config.notification.validCredentials')
           });
         } else {
           this.createNotificationError({
-            message: this.$tc('billie.config.notification.incorrectCredentials')
+            message: this.$tc('billie.config.notification.invalidCredentials')
           });
         }
       }).catch(() => {
