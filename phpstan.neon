@@ -1,5 +1,5 @@
 parameters:
-    level: 0
+    level: 6
     paths:
         - %currentWorkingDirectory%/src
 
@@ -12,6 +12,8 @@ parameters:
         - '#Constant STARTTIME#'
 
     reportUnmatchedIgnoredErrors: false
+    treatPhpDocTypesAsCertain: false
+    checkMissingIterableValueType: false
     tipsOfTheDay: false
     bootstrapFiles:
         - ../../project/vendor/autoload.php

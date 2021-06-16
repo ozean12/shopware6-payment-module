@@ -65,7 +65,7 @@ class AddressHelper
     }
 
     /**
-     * @param OrderAddressEntity|CustomerAddressEntity $addressEntity
+     * @param OrderAddressEntity|CustomerAddressEntity $address
      */
     private static function validateParam($address): void
     {

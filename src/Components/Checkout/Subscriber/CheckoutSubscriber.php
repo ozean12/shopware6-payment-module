@@ -41,6 +41,10 @@ class CheckoutSubscriber implements EventSubscriberInterface
 
     public function addWidgetData(PageLoadedEvent $event): void
     {
+        if ($event instanceof CheckoutConfirmPageLoadedEvent === false && $event instanceof AccountEditOrderPageLoadedEvent === false) {
+            throw new \RuntimeException('method ' . __CLASS__ . '::' . __METHOD__ . ' does not supports a parameter of type' . get_class($event));
+        }
+
         $paymentMethod = $event->getSalesChannelContext()->getPaymentMethod();
         if (MethodHelper::isBilliePayment($paymentMethod) && $event->getPage()->getPaymentMethods()->has($paymentMethod->getId())) {
             if ($event instanceof CheckoutConfirmPageLoadedEvent) {
@@ -52,6 +56,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
             }
 
             if ($widgetData) {
+                /** @var ArrayStruct $extension */
                 $extension = $event->getPage()->getExtension('billie_payment') ?? new ArrayStruct();
                 $extension->set('widget', $widgetData->all());
 

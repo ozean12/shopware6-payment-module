@@ -36,7 +36,7 @@ class AccountOrderControllerDecorator extends AccountOrderController
     public function updateOrder(string $orderId, Request $request, SalesChannelContext $context): Response
     {
         $order = $this->fetchOrder($context->getContext(), $orderId);
-        /** @var OrderDataEntity $billieData */
+        /** @var OrderDataEntity|null $billieData */
         $billieData = $order ? $order->getExtension(OrderExtension::EXTENSION_NAME) : null;
 
         $paymentMethod = $order->getTransactions()->first()->getPaymentMethod();

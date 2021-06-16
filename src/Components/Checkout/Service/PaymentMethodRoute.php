@@ -81,6 +81,7 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
 
     public function load(Request $request, SalesChannelContext $salesChannelContext, ?Criteria $criteria = null): PaymentMethodRouteResponse
     {
+        /* @phpstan-ignore-next-line */
         $response = $this->innerService->load($request, $salesChannelContext, $criteria);
 
         $currentRequest = $this->requestStack->getCurrentRequest();
@@ -137,8 +138,6 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
 
     /**
      * @param CustomerAddressEntity|OrderAddressEntity $address
-     *
-     * @return string|null
      */
     private function getCountryIso($address): string
     {

@@ -48,11 +48,6 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class WidgetService
 {
     /**
-     * @var CreateSessionRequest
-     */
-    private $sessionRequestService;
-
-    /**
      * @var ConfigService
      */
     private $configService;
@@ -105,7 +100,7 @@ class WidgetService
         $this->cartService = $cartService;
     }
 
-    public function getWidgetDataByOrder(OrderEntity $orderEntity, SalesChannelContext $salesChannelContext)
+    public function getWidgetDataByOrder(OrderEntity $orderEntity, SalesChannelContext $salesChannelContext): ArrayStruct
     {
         $criteria = CriteriaHelper::getCriteriaForOrder($orderEntity->getId());
 

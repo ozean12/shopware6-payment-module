@@ -60,9 +60,9 @@ class CheckoutController extends StorefrontController
      * @Route(path="/update-addresses/{orderId}", name="billie-payment.checkout.update-addresses", methods={"POST"}, defaults={"XmlHttpRequest"=true})
      * @noinspection NullPointerExceptionInspection
      *
-     * @param null $orderId
+     * @return \Shopware\Core\System\SalesChannel\NoContentResponse|\Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-    public function updateCustomerAddress(Request $request, SalesChannelContext $salesChannelContext, $orderId = null)
+    public function updateCustomerAddress(Request $request, SalesChannelContext $salesChannelContext, string $orderId = null)
     {
         if ($orderId === null) {
             $this->updateAddress(
@@ -76,7 +76,7 @@ class CheckoutController extends StorefrontController
             $criteria = (new Criteria([$orderId]))
                 ->addAssociation('deliveries');
 
-            /** @var OrderEntity $orderEntity */
+            /** @var OrderEntity|null $orderEntity */
             $orderEntity = $this->orderRepository->search($criteria, $salesChannelContext->getContext())->first();
             if ($orderEntity === null) {
                 return $this->createNotFoundException('order with id ' . $orderId . ' was not found');

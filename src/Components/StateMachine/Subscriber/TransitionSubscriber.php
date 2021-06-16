@@ -101,7 +101,7 @@ class TransitionSubscriber implements EventSubscriberInterface
             $orderDelivery = $this->orderDeliveryRepository->search(new Criteria([$event->getEntityId()]), $event->getContext())->first();
             $order = $this->getOrder($orderDelivery->getOrderId(), $event->getContext());
 
-            /** @var OrderDataEntity $billieData */
+            /** @var OrderDataEntity|null $billieData */
             $billieData = $order->getExtension(OrderExtension::EXTENSION_NAME);
             if ($billieData === null) {
                 // this is not a billie order - or if it is, we can not process it, without the order-data extension

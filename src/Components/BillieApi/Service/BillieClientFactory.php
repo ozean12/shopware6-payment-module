@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Billie\BilliePayment\Components\BillieApi\Service;
 
 use Billie\BilliePayment\Components\PluginConfig\Service\ConfigService;
+use Billie\Sdk\HttpClient\BillieClient;
 
 class BillieClientFactory
 {
@@ -25,7 +26,7 @@ class BillieClientFactory
         $this->configService = $configService;
     }
 
-    public function createBillieClient()
+    public function createBillieClient(): BillieClient
     {
         return \Billie\Sdk\Util\BillieClientFactory::getBillieClientInstance(
             $this->configService->getClientId(),

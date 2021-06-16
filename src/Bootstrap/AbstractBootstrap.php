@@ -84,7 +84,7 @@ abstract class AbstractBootstrap implements ContainerAwareInterface
     {
     }
 
-    public function preUninstall($keepUserData = false): void
+    public function preUninstall(bool $keepUserData = false): void
     {
     }
 

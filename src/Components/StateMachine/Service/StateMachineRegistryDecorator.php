@@ -111,7 +111,7 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
         return true;
     }
 
-    protected function getOrder(string $orderId, Context $context): OrderEntity
+    protected function getOrder(string $orderId, Context $context): ?OrderEntity
     {
         $criteria = CriteriaHelper::getCriteriaForOrder($orderId);
         $criteria->addAssociation('documents.documentType');

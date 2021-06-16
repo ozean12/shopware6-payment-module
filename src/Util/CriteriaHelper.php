@@ -16,7 +16,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 
 class CriteriaHelper
 {
-    public static function getCriteriaForOrder($orderId)
+    public static function getCriteriaForOrder(string $orderId): Criteria
     {
         $criteria = (new Criteria([$orderId]))
             ->addAssociation('addresses.country')

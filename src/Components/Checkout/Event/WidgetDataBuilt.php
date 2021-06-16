@@ -19,7 +19,6 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
@@ -61,7 +60,7 @@ class WidgetDataBuilt
     private $lineItems;
 
     /**
-     * @var Context
+     * @var SalesChannelContext
      */
     private $salesChannelContext;
 
@@ -141,7 +140,7 @@ class WidgetDataBuilt
         return $this->lineItems;
     }
 
-    public function getSalesChannelContext(): Context
+    public function getSalesChannelContext(): SalesChannelContext
     {
         return $this->salesChannelContext;
     }

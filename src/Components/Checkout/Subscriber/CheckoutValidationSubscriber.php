@@ -17,6 +17,7 @@ use Shopware\Core\Framework\Validation\DataValidationDefinition;
 use Shopware\Core\PlatformRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -40,6 +41,10 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
     public function validateOrderData(BuildValidationEvent $event): void
     {
         $request = $this->requestStack->getCurrentRequest();
+        if ($request === null) {
+            // should never occur. just to be save.
+            return;
+        }
         $salesChannelContext = $this->getSalesContextFromRequest($request);
 
         if (MethodHelper::isBilliePayment($salesChannelContext->getPaymentMethod())) {
@@ -49,7 +54,7 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
         }
     }
 
-    private function getSalesContextFromRequest($request): SalesChannelContext
+    private function getSalesContextFromRequest(Request $request): SalesChannelContext
     {
         return $request->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
     }
