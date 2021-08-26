@@ -1,5 +1,5 @@
 {
-    "name": "billie/shopware6-module",
+    "name": "billie/shopware6-payment-module",
     "description": "Billie payment for Shopware 6",
     "version": "1.0.0-alpha3",
     "license": "MIT",
@@ -36,7 +36,7 @@
         "shopware/core": "^6.3.0.0",
         "shopware/administration": "^6.3.0.0",
         "shopware/storefront": "^6.3.0.0",
-        "billie/api-php-sdk": "2.0.x-dev"
+        "billie/api-php-sdk": "^2.0"
     },
     "require-dev": {
         "phpstan/phpstan": "^0.12",
