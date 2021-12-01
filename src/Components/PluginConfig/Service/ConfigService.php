@@ -36,7 +36,7 @@ class ConfigService
 
     public function getPluginConfiguration(): array
     {
-        return $this->systemConfigService->get('BilliePayment.config') ?: [];
+        return $this->systemConfigService->get('BilliePaymentSW6.config') ?: [];
     }
 
     public function getClientId(): ?string
