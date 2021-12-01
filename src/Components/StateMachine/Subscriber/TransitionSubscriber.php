@@ -138,7 +138,6 @@ class TransitionSubscriber implements EventSubscriberInterface
                         ->setShippingDocumentUrl($shippingUrl);
 
                     try {
-                        /* @noinspection NullPointerExceptionInspection */
                         $this->container->get(ShipOrderRequest::class)->execute($data);
                     } catch (BillieException $e) {
                         $this->logger->addCritical(
@@ -158,15 +157,18 @@ class TransitionSubscriber implements EventSubscriberInterface
 
         if ($event->getEntityName() === OrderDefinition::ENTITY_NAME) {
             $order = $this->getOrder($event->getEntityId(), $event->getContext());
-            /** @var OrderDataEntity $billieData */
+
+            /** @var OrderDataEntity|null $billieData */
             $billieData = $order->getExtension(OrderExtension::EXTENSION_NAME);
+            if ($billieData === null) {
+                // this is not a billie order - or if it is, we can not process it, without the order-data extension
+                return;
+            }
 
             switch ($event->getToPlace()->getTechnicalName()) {
                 case $this->configService->getStateCancel():
                     try {
-                        /* @noinspection NullPointerExceptionInspection */
-                        $this->container->get(CancelOrderRequest::class)
-                            ->execute(new OrderRequestModel($billieData->getReferenceId()));
+                        $this->container->get(CancelOrderRequest::class)->execute(new OrderRequestModel($billieData->getReferenceId()));
                     } catch (BillieException $e) {
                         $this->logger->addCritical(
                             'Exception during cancellation. (Exception: ' . $e->getMessage() . ')',
