@@ -100,87 +100,75 @@ class TransitionSubscriber implements EventSubscriberInterface
             /** @var OrderDeliveryEntity $orderDelivery */
             $orderDelivery = $this->orderDeliveryRepository->search(new Criteria([$event->getEntityId()]), $event->getContext())->first();
             $order = $this->getOrder($orderDelivery->getOrderId(), $event->getContext());
-
-            /** @var OrderDataEntity|null $billieData */
-            $billieData = $order->getExtension(OrderExtension::EXTENSION_NAME);
-            if ($billieData === null) {
-                // this is not a billie order - or if it is, we can not process it, without the order-data extension
-                return;
-            }
-
-            switch ($event->getToPlace()->getTechnicalName()) {
-                case $this->configService->getStateForShip():
-                    $invoiceNumber = $billieData->getExternalInvoiceNumber();
-                    $invoiceUrl = $billieData->getExternalInvoiceUrl();
-                    $shippingUrl = $billieData->getExternalDeliveryNoteUrl();
-
-                    if (!$invoiceNumber || !$shippingUrl) {
-                        foreach ($order->getDocuments() as $document) {
-                            if ($invoiceNumber === null &&
-                                $document->getDocumentType()->getTechnicalName() === InvoiceGenerator::INVOICE
-                            ) {
-                                $config = $document->getConfig();
-                                $invoiceNumber = isset($config['custom']['invoiceNumber']) ? $config['custom']['invoiceNumber'] : null;
-                                $invoiceUrl = $this->documentUrlHelper->generateRouteForDocument($document);
-                            }
-
-                            if ($shippingUrl === null &&
-                                $document->getDocumentType()->getTechnicalName() === DeliveryNoteGenerator::DELIVERY_NOTE
-                            ) {
-                                $shippingUrl = $this->documentUrlHelper->generateRouteForDocument($document);
-                            }
-                        }
-                    }
-
-                    $data = new ShipOrderRequestModel($billieData->getReferenceId());
-                    $data->setInvoiceNumber($invoiceNumber)
-                        ->setInvoiceUrl($invoiceUrl ?? '.')
-                        ->setShippingDocumentUrl($shippingUrl);
-
-                    try {
-                        $this->container->get(ShipOrderRequest::class)->execute($data);
-                    } catch (BillieException $e) {
-                        $this->logger->addCritical(
-                            'Exception during shipment. (Exception: ' . $e->getMessage() . ')',
-                            [
-                                'error' => $e->getBillieCode(),
-                                'order' => $order->getId(),
-                                'billie-reference-id' => $billieData->getReferenceId(),
-                            ]
-                        );
-                    }
-                    break;
-            }
-
+        } else if ($event->getEntityName() === OrderDefinition::ENTITY_NAME) {
+            $order = $this->getOrder($event->getEntityId(), $event->getContext());
+        } else {
             return;
         }
 
-        if ($event->getEntityName() === OrderDefinition::ENTITY_NAME) {
-            $order = $this->getOrder($event->getEntityId(), $event->getContext());
+        /** @var OrderDataEntity|null $billieData */
+        $billieData = $order->getExtension(OrderExtension::EXTENSION_NAME);
+        if ($billieData === null) {
+            // this is not a billie order - or if it is, we can not process it, without the order-data extension
+            return;
+        }
 
-            /** @var OrderDataEntity|null $billieData */
-            $billieData = $order->getExtension(OrderExtension::EXTENSION_NAME);
-            if ($billieData === null) {
-                // this is not a billie order - or if it is, we can not process it, without the order-data extension
-                return;
-            }
+        switch ($event->getToPlace()->getTechnicalName()) {
+            case $this->configService->getStateForShip():
+                $invoiceNumber = $billieData->getExternalInvoiceNumber();
+                $invoiceUrl = $billieData->getExternalInvoiceUrl();
+                $shippingUrl = $billieData->getExternalDeliveryNoteUrl();
 
-            switch ($event->getToPlace()->getTechnicalName()) {
-                case $this->configService->getStateCancel():
-                    try {
-                        $this->container->get(CancelOrderRequest::class)->execute(new OrderRequestModel($billieData->getReferenceId()));
-                    } catch (BillieException $e) {
-                        $this->logger->addCritical(
-                            'Exception during cancellation. (Exception: ' . $e->getMessage() . ')',
-                            [
-                                'error' => $e->getBillieCode(),
-                                'order' => $order->getId(),
-                                'billie-reference-id' => $billieData->getReferenceId(),
-                            ]
-                        );
+                if (!$invoiceNumber || !$shippingUrl) {
+                    foreach ($order->getDocuments() as $document) {
+                        if ($invoiceNumber === null &&
+                            $document->getDocumentType()->getTechnicalName() === InvoiceGenerator::INVOICE
+                        ) {
+                            $config = $document->getConfig();
+                            $invoiceNumber = isset($config['custom']['invoiceNumber']) ? $config['custom']['invoiceNumber'] : null;
+                            $invoiceUrl = $this->documentUrlHelper->generateRouteForDocument($document);
+                        }
+
+                        if ($shippingUrl === null &&
+                            $document->getDocumentType()->getTechnicalName() === DeliveryNoteGenerator::DELIVERY_NOTE
+                        ) {
+                            $shippingUrl = $this->documentUrlHelper->generateRouteForDocument($document);
+                        }
                     }
-                    break;
-            }
+                }
+
+                $data = new ShipOrderRequestModel($billieData->getReferenceId());
+                $data->setInvoiceNumber($invoiceNumber)
+                    ->setInvoiceUrl($invoiceUrl ?? '.')
+                    ->setShippingDocumentUrl($shippingUrl);
+
+                try {
+                    $this->container->get(ShipOrderRequest::class)->execute($data);
+                } catch (BillieException $e) {
+                    $this->logger->addCritical(
+                        'Exception during shipment. (Exception: ' . $e->getMessage() . ')',
+                        [
+                            'error' => $e->getBillieCode(),
+                            'order' => $order->getId(),
+                            'billie-reference-id' => $billieData->getReferenceId(),
+                        ]
+                    );
+                }
+                break;
+            case $this->configService->getStateCancel():
+                try {
+                    $this->container->get(CancelOrderRequest::class)->execute(new OrderRequestModel($billieData->getReferenceId()));
+                } catch (BillieException $e) {
+                    $this->logger->addCritical(
+                        'Exception during cancellation. (Exception: ' . $e->getMessage() . ')',
+                        [
+                            'error' => $e->getBillieCode(),
+                            'order' => $order->getId(),
+                            'billie-reference-id' => $billieData->getReferenceId(),
+                        ]
+                    );
+                }
+                break;
         }
     }
 
