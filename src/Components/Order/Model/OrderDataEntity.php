@@ -25,6 +25,8 @@ class OrderDataEntity extends Entity
 
     public const FIELD_ORDER_VERSION_ID = 'orderVersionId';
 
+    public const FIELD_ORDER_STATE = 'orderState';
+
     public const FIELD_REFERENCE_ID = 'referenceId';
 
     public const FIELD_IS_SUCCESSFUL = 'successful';
@@ -57,6 +59,11 @@ class OrderDataEntity extends Entity
      * @var OrderEntity
      */
     protected $order;
+
+    /**
+     * @var string
+     */
+    protected $orderState;
 
     /**
      * @var string
@@ -116,6 +123,11 @@ class OrderDataEntity extends Entity
     public function getOrder(): OrderEntity
     {
         return $this->order;
+    }
+
+    public function getOrderState(): string
+    {
+        return $this->orderState;
     }
 
     public function getReferenceId(): string

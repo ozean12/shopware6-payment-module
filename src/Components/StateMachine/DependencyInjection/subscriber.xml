@@ -11,8 +11,7 @@
         <service id="Billie\BilliePayment\Components\StateMachine\Subscriber\TransitionSubscriber">
             <argument key="$orderRepository" id="order.repository" type="service" />
             <argument key="$orderDeliveryRepository" id="order_delivery.repository" type="service" />
-            <argument key="$logger" id="billie_payment.logger" type="service" />
         </service>
-        
+
     </services>
 </container>

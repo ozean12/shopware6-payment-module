@@ -13,18 +13,23 @@
             <factory service="Billie\BilliePayment\Components\BillieApi\Service\BillieClientFactory" method="createBillieClient"/>
         </service>
 
+        <service id="Billie\BilliePayment\Components\BillieApi\Service\OperationService">
+            <argument key="$orderDataRepository" type="service" id="billie_order_data.repository"/>
+            <argument key="$logger" id="billie_payment.logger" type="service" />
+        </service>
+
         <!-- RequestServices -->
         <service id="Billie\Sdk\Service\Request\CreateSessionRequest"/>
-        <service id="Billie\Sdk\Service\Request\CancelOrderRequest" />
-        <service id="Billie\Sdk\Service\Request\CheckoutSessionConfirmRequest" />
-        <service id="Billie\Sdk\Service\Request\CreateOrderRequest" />
-        <service id="Billie\Sdk\Service\Request\GetLegalFormsRequest" />
-        <service id="Billie\Sdk\Service\Request\GetOrderDetailsRequest" />
-        <service id="Billie\Sdk\Service\Request\ShipOrderRequest" />
-        <service id="Billie\Sdk\Service\Request\UpdateOrderRequest" />
-        <service id="Billie\Sdk\Service\Request\PauseOrderDunningProcessRequest" />
-        <service id="Billie\Sdk\Service\Request\ConfirmPaymentRequest" />
-        <service id="Billie\Sdk\Service\Request\GetBankDataRequest" />
+        <service id="Billie\Sdk\Service\Request\CancelOrderRequest"/>
+        <service id="Billie\Sdk\Service\Request\CheckoutSessionConfirmRequest"/>
+        <service id="Billie\Sdk\Service\Request\CreateOrderRequest"/>
+        <service id="Billie\Sdk\Service\Request\GetLegalFormsRequest"/>
+        <service id="Billie\Sdk\Service\Request\GetOrderDetailsRequest"/>
+        <service id="Billie\Sdk\Service\Request\ShipOrderRequest"/>
+        <service id="Billie\Sdk\Service\Request\UpdateOrderRequest"/>
+        <service id="Billie\Sdk\Service\Request\PauseOrderDunningProcessRequest"/>
+        <service id="Billie\Sdk\Service\Request\ConfirmPaymentRequest"/>
+        <service id="Billie\Sdk\Service\Request\GetBankDataRequest"/>
 
     </services>
 </container>

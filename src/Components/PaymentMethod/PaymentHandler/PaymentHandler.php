@@ -88,6 +88,7 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
                     OrderDataEntity::FIELD_ORDER_ID => $order->getId(),
                     OrderDataEntity::FIELD_ORDER_VERSION_ID => $order->getVersionId(),
                     OrderDataEntity::FIELD_REFERENCE_ID => $response->getUuid(),
+                    OrderDataEntity::FIELD_ORDER_STATE => $response->getState(),
                     OrderDataEntity::FIELD_BANK_IBAN => $response->getBankAccount()->getIban(),
                     OrderDataEntity::FIELD_BANK_BIC => $response->getBankAccount()->getBic(),
                     OrderDataEntity::FIELD_BANK_NAME => $bankDataResponse->getBankName($response->getBankAccount()->getBic() ?? '.'),

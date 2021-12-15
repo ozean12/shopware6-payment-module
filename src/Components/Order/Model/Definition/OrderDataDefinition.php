@@ -76,6 +76,11 @@ class OrderDataDefinition extends EntityDefinition
             (new ReferenceVersionField(OrderDefinition::class))->addFlags(new Required()),
 
             (new StringField(
+                'order_state',
+                OrderDataEntity::FIELD_ORDER_STATE
+            ))->addFlags(new Required()),
+
+            (new StringField(
                 'reference_id',
                 OrderDataEntity::FIELD_REFERENCE_ID
             ))->addFlags(new Required()),
