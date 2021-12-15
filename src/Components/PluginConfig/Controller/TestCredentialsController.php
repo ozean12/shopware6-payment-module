@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Components\PluginConfig\Controller;
 
-use Billie\BilliePayment\Components\PluginConfig\Service\ConfigService;
 use Billie\Sdk\Exception\UserNotAuthorizedException;
 use Billie\Sdk\Util\BillieClientFactory;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
@@ -26,17 +25,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class TestCredentialsController extends AbstractController
 {
     /**
-     * @var ConfigService
-     */
-    private $configService;
-
-    public function __construct(ConfigService $configService)
-    {
-        $this->configService = $configService;
-    }
-
-    /**
-     * @Route("/api/v{version}/billie/test-credentials", name="api.action.billie.test-credentials", methods={"POST"})
+     * @Route("/api/v{version}/billie/test-credentials", methods={"POST"})
+     * @Route("/api/billie/test-credentials", methods={"POST"})
      */
     public function testCredentials(Request $request): JsonResponse
     {
