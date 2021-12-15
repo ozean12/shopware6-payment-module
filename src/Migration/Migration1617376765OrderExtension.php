@@ -23,7 +23,7 @@ class Migration1617376765OrderExtension extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->exec('
+        $connection->executeStatement('
             CREATE TABLE `billie_order_data` (
               `id` binary(16) NOT NULL,
               `version_id` BINARY(16) NOT NULL,
@@ -44,6 +44,5 @@ class Migration1617376765OrderExtension extends MigrationStep
 
     public function updateDestructive(Connection $connection): void
     {
-        $connection->executeQuery('DROP TABLE IF EXISTS `billie_order_data`');
     }
 }

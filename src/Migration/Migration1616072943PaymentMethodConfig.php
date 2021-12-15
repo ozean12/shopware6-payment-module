@@ -27,7 +27,7 @@ class Migration1616072943PaymentMethodConfig extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeQuery("
+        $connection->executeStatement("
             CREATE TABLE `billie_payment_config` (
                 `payment_method_id` binary(16) NOT NULL,
                 `duration` int(11) NOT NULL DEFAULT '14',
@@ -41,7 +41,7 @@ class Migration1616072943PaymentMethodConfig extends MigrationStep
         // so we must insert the "duration" values after we added the tables.
         // TODO: we should think about a better solution to insert these values
         foreach (PaymentMethods::PAYMENT_METHODS as $method) {
-            $connection->executeQuery('
+            $connection->executeStatement('
                 REPLACE INTO ' . PaymentMethodConfigDefinition::ENTITY_NAME . '
                     SELECT
                         payment_method.id,
@@ -58,6 +58,5 @@ class Migration1616072943PaymentMethodConfig extends MigrationStep
 
     public function updateDestructive(Connection $connection): void
     {
-        $connection->executeQuery('DROP TABLE IF EXISTS `billie_payment_config`');
     }
 }

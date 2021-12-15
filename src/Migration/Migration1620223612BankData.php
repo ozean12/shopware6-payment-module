@@ -23,7 +23,7 @@ class Migration1620223612BankData extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->exec('
+        $connection->executeStatement('
             ALTER TABLE `billie_order_data`
                 ADD `bank_iban` VARCHAR(255) NOT NULL AFTER `external_delivery_note_url`,
                 ADD `bank_bic` VARCHAR(255) NOT NULL AFTER `bank_iban`,
@@ -33,11 +33,5 @@ class Migration1620223612BankData extends MigrationStep
 
     public function updateDestructive(Connection $connection): void
     {
-        $connection->executeQuery('
-            ALTER TABLE `billie_order_data`
-                DROP `bank_iban`,
-                DROP `bank_bic`,
-                DROP `bank_name`;
-        ');
     }
 }
