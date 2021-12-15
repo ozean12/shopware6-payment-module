@@ -25,8 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class TestCredentialsController extends AbstractController
 {
     /**
-     * @Route("/api/v{version}/billie/test-credentials", methods={"POST"})
-     * @Route("/api/billie/test-credentials", methods={"POST"})
+     * @Route("/api/billie/test-credentials", name="api.action.billie.test-credentials", methods={"POST"})
      */
     public function testCredentials(Request $request): JsonResponse
     {
