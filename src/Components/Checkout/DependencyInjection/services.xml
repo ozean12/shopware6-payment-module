@@ -18,6 +18,7 @@
             <argument type="service" id="request_stack"/>
             <argument key="$orderRepository" type="service" id="order.repository"/>
             <argument key="$countryRepository" type="service" id="country.repository" />
+            <argument key="$paymentMethodRepository" type="service" id="payment_method.repository" />
         </service>
 
         <service id="Billie\BilliePayment\Components\Checkout\Service\SetPaymentOrderRoute"

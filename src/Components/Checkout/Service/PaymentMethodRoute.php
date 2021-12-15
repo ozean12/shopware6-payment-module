@@ -20,7 +20,6 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Checkout\Payment\SalesChannel\AbstractPaymentMethodRoute;
-use Shopware\Core\Checkout\Payment\SalesChannel\PaymentMethodRoute as CorePaymentMethodRoute;
 use Shopware\Core\Checkout\Payment\SalesChannel\PaymentMethodRouteResponse;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -29,7 +28,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class PaymentMethodRoute extends CorePaymentMethodRoute
+class PaymentMethodRoute extends AbstractPaymentMethodRoute
 {
     /**
      * @var AbstractPaymentMethodRoute
@@ -52,6 +51,11 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
     private $countryRepository;
 
     /**
+     * @var \Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
+     */
+    private EntityRepositoryInterface $paymentMethodRepository;
+
+    /**
      * @var ConfigService
      */
     private $configService;
@@ -62,16 +66,19 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
      */
     public function __construct(
         AbstractPaymentMethodRoute $innerService,
-        RequestStack $requestStack,
-        EntityRepositoryInterface $orderRepository,
-        EntityRepositoryInterface $countryRepository,
-        ConfigService $configService
-    ) {
+        RequestStack               $requestStack,
+        EntityRepositoryInterface  $orderRepository,
+        EntityRepositoryInterface  $countryRepository,
+        EntityRepositoryInterface  $paymentMethodRepository,
+        ConfigService              $configService
+    )
+    {
         $this->innerService = $innerService;
         $this->requestStack = $requestStack;
         $this->orderRepository = $orderRepository;
         $this->countryRepository = $countryRepository;
         $this->configService = $configService;
+        $this->paymentMethodRepository = $paymentMethodRepository;
     }
 
     public function getDecorated(): AbstractPaymentMethodRoute
@@ -81,19 +88,18 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
 
     public function load(Request $request, SalesChannelContext $salesChannelContext, ?Criteria $criteria = null): PaymentMethodRouteResponse
     {
-        /* @phpstan-ignore-next-line */
         $response = $this->innerService->load($request, $salesChannelContext, $criteria);
 
         $currentRequest = $this->requestStack->getCurrentRequest();
         if (!$currentRequest) {
             return $response;
         }
+
         $filterMethods = $request->query->getBoolean('onlyAvailable', false);
         $isPluginReady = $this->configService->isConfigReady();
 
         if ($isPluginReady === false && $filterMethods) {
-            // remove all billie payments
-            return $this->removeAllBillieMethods($response);
+            return $this->removeAllBillieMethods($response, $salesChannelContext->getContext());
         }
 
         // Replace variables of billie payment descriptions, names and other translatable fields
@@ -103,7 +109,7 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
             }
         }
 
-        // if the order id is set, the oder has been already placed, and the customer may tries to change/edit
+        // if the order id is set, the oder has been already placed, and the customer may try to change/edit
         // the payment method. - e.g. in case of a failed payment
         $orderId = $currentRequest->get('orderId');
         $order = null;
@@ -119,21 +125,26 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
         }
 
         if ($order || $filterMethods) {
-            if ($billingAddress === null || empty($billingAddress->getCompany()) || $this->getCountryIso($billingAddress) !== 'DE') {
-                return $this->removeAllBillieMethods($response);
+            if ($billingAddress === null ||
+                empty($billingAddress->getCompany()) || $this->getCountryIso($billingAddress) !== 'DE'
+            ) {
+                return $this->removeAllBillieMethods($response, $salesChannelContext->getContext());
             }
         }
 
         return $response;
     }
 
-    private function removeAllBillieMethods(PaymentMethodRouteResponse $response): PaymentMethodRouteResponse
+    private function removeAllBillieMethods(PaymentMethodRouteResponse $response, Context $context): PaymentMethodRouteResponse
     {
-        $paymentMethods = $response->getPaymentMethods()->filter(static function (PaymentMethodEntity $paymentMethod) {
-            return MethodHelper::isBilliePayment($paymentMethod) === false;
-        });
+        $ids = [];
+        foreach ($response->getPaymentMethods() as $paymentMethod) {
+            if (!MethodHelper::isBilliePayment($paymentMethod)) {
+                $ids[] = $paymentMethod->getId();
+            }
+        }
 
-        return new PaymentMethodRouteResponse($paymentMethods);
+        return new PaymentMethodRouteResponse($this->paymentMethodRepository->search(new Criteria($ids), $context));
     }
 
     /**
@@ -161,7 +172,7 @@ class PaymentMethodRoute extends CorePaymentMethodRoute
         $extension = $paymentMethod->getExtension(PaymentMethodExtension::EXTENSION_NAME);
         if ($extension) {
             // Prepare variables
-            $duration = (string) $extension->getDuration();
+            $duration = (string)$extension->getDuration();
 
             // Description
             $description = $paymentMethod->getDescription();
