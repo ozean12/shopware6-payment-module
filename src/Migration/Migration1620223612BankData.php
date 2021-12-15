@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Migration;
 
+use Billie\BilliePayment\Util\MigrationHelper;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;
 
@@ -23,7 +24,9 @@ class Migration1620223612BankData extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeStatement('
+        $methodName = MigrationHelper::getExecuteStatementMethod();
+
+        $connection->{$methodName}('
             ALTER TABLE `billie_order_data`
                 ADD `bank_iban` VARCHAR(255) NOT NULL AFTER `external_delivery_note_url`,
                 ADD `bank_bic` VARCHAR(255) NOT NULL AFTER `bank_iban`,

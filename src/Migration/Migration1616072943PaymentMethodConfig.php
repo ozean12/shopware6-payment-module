@@ -14,6 +14,7 @@ namespace Billie\BilliePayment\Migration;
 use Billie\BilliePayment\Bootstrap\PaymentMethods;
 use Billie\BilliePayment\Components\PaymentMethod\Model\Definition\PaymentMethodConfigDefinition;
 use Billie\BilliePayment\Components\PaymentMethod\Model\Extension\PaymentMethodExtension;
+use Billie\BilliePayment\Util\MigrationHelper;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
 use Shopware\Core\Framework\Migration\MigrationStep;
@@ -27,7 +28,9 @@ class Migration1616072943PaymentMethodConfig extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeStatement("
+        $methodName = MigrationHelper::getExecuteStatementMethod();
+
+        $connection->{$methodName}("
             CREATE TABLE `billie_payment_config` (
                 `payment_method_id` binary(16) NOT NULL,
                 `duration` int(11) NOT NULL DEFAULT '14',
@@ -41,7 +44,7 @@ class Migration1616072943PaymentMethodConfig extends MigrationStep
         // so we must insert the "duration" values after we added the tables.
         // TODO: we should think about a better solution to insert these values
         foreach (PaymentMethods::PAYMENT_METHODS as $method) {
-            $connection->executeStatement('
+            $connection->{$methodName}('
                 REPLACE INTO ' . PaymentMethodConfigDefinition::ENTITY_NAME . '
                     SELECT
                         payment_method.id,

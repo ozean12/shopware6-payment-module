@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Bootstrap;
 
+use Billie\BilliePayment\Util\MigrationHelper;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 
@@ -43,10 +44,11 @@ class Database extends AbstractBootstrap
             return;
         }
 
-        $this->connection->exec('SET FOREIGN_KEY_CHECKS=0;');
-        $this->connection->executeQuery('DROP TABLE IF EXISTS `billie_payment_config`');
-        $this->connection->executeQuery('DROP TABLE IF EXISTS `billie_order_data`');
-        $this->connection->exec('SET FOREIGN_KEY_CHECKS=1;');
+        $method = MigrationHelper::getExecuteStatementMethod();
+        $this->connection->{$method === 'executeStatement' ? $method : 'exec'}('SET FOREIGN_KEY_CHECKS=0;');
+        $this->connection->{$method}('DROP TABLE IF EXISTS `billie_payment_config`');
+        $this->connection->{$method}('DROP TABLE IF EXISTS `billie_order_data`');
+        $this->connection->{$method === 'executeStatement' ? $method : 'exec'}('SET FOREIGN_KEY_CHECKS=1;');
     }
 
     public function activate(): void

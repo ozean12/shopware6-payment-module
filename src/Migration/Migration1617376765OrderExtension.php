@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Migration;
 
+use Billie\BilliePayment\Util\MigrationHelper;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;
 
@@ -23,7 +24,9 @@ class Migration1617376765OrderExtension extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeStatement('
+        $methodName = MigrationHelper::getExecuteStatementMethod();
+
+        $connection->{$methodName}('
             CREATE TABLE `billie_order_data` (
               `id` binary(16) NOT NULL,
               `version_id` BINARY(16) NOT NULL,
