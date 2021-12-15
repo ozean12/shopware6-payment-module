@@ -79,7 +79,6 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
 
         $confirmModel = $this->confirmDataService->getConfirmModel($billieData->get('session-id'), $order);
         try {
-            /** @noinspection NullPointerExceptionInspection */
             $response = $this->container->get(CheckoutSessionConfirmRequest::class)->execute($confirmModel);
             $bankDataResponse = $this->container->get(GetBankDataRequest::class)->execute(new GetBankDataRequestModel());
 
@@ -97,7 +96,7 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
                 ],
             ], $salesChannelContext->getContext());
         } catch (BillieException $exception) {
-            $this->logger->addCritical(
+            $this->logger->critical(
                 'Exception during checkout session confirmation. (Exception: ' . $exception->getMessage() . ')',
                 [
                     'error' => $exception->getBillieCode(),
@@ -112,10 +111,9 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
         $updateOrderModel = (new UpdateOrderRequestModel($response->getUuid()))
             ->setOrderId($order->getOrderNumber());
         try {
-            /* @noinspection NullPointerExceptionInspection */
             $this->container->get(UpdateOrderRequest::class)->execute($updateOrderModel);
         } catch (BillieException $exception) {
-            $this->logger->addCritical(
+            $this->logger->critical(
                 'Exception during order update. (Exception: ' . $exception->getMessage() . ')',
                 [
                     'error' => $exception->getBillieCode(),
