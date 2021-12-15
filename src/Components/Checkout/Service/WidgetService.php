@@ -83,14 +83,15 @@ class WidgetService
     private $container;
 
     public function __construct(
-        ContainerInterface $container,
-        EventDispatcherInterface $eventDispatcher,
+        ContainerInterface        $container,
+        EventDispatcherInterface  $eventDispatcher,
         EntityRepositoryInterface $productRepository,
         EntityRepositoryInterface $orderRepository,
         EntityRepositoryInterface $salutationRepository,
-        CartService $cartService,
-        ConfigService $configService
-    ) {
+        CartService               $cartService,
+        ConfigService             $configService
+    )
+    {
         $this->container = $container;
         $this->eventDispatcher = $eventDispatcher;
         $this->productRepository = $productRepository;
@@ -136,9 +137,9 @@ class WidgetService
     }
 
     /**
-     * @param CustomerEntity|OrderCustomerEntity         $customer
-     * @param CustomerAddressEntity|OrderAddressEntity   $billingAddress
-     * @param CustomerAddressEntity|OrderAddressEntity   $shippingAddress
+     * @param CustomerEntity|OrderCustomerEntity $customer
+     * @param CustomerAddressEntity|OrderAddressEntity $billingAddress
+     * @param CustomerAddressEntity|OrderAddressEntity $shippingAddress
      * @param LineItemCollection|OrderLineItemCollection $lineItems
      * @noinspection PhpDocMissingThrowsInspection
      */
@@ -149,13 +150,14 @@ class WidgetService
         CartPrice $price,
         $lineItems,
         SalesChannelContext $salesChannelContext
-    ): ?ArrayStruct {
+    ): ?ArrayStruct
+    {
         try {
             /** @noinspection NullPointerExceptionInspection */
             $checkoutSessionId = $this->container->get(CreateSessionRequest::class)
                 ->execute((new CreateSessionRequestModel())
-                ->setMerchantCustomerId($customer->getCustomerNumber())
-            )->getCheckoutSessionId();
+                    ->setMerchantCustomerId($customer->getCustomerNumber())
+                )->getCheckoutSessionId();
         } catch (BillieException $e) {
             // TODO Log error
             return null;
@@ -166,19 +168,14 @@ class WidgetService
 
         $salutation = $this->salutationRepository->search(new Criteria([$billingAddress->getSalutationId()]), $salesChannelContext->getContext())->first();
 
-        $combinedTaxRate = 0;
-        foreach ($price->getCalculatedTaxes()->getElements() as $tax) {
-            $combinedTaxRate += $tax->getTaxRate();
-        }
-        $combinedTaxRate /= $price->getCalculatedTaxes()->count();
-
         $widgetData = new ArrayStruct([
             'src' => WidgetHelper::getWidgetUrl($this->configService->isSandbox()),
             'checkoutSessionId' => $checkoutSessionId,
             'checkoutData' => [
                 'amount' => (new Amount())
                     ->setGross($price->getTotalPrice())
-                    ->setTaxRate($combinedTaxRate)
+                    ->setNet($price->getNetPrice())
+                    ->setTax($price->getCalculatedTaxes()->getAmount())
                     ->toArray(),
                 'duration' => $billieConfig->getDuration(),
                 'debtor_company' => AddressHelper::createDebtorCompany($billingAddress)->toArray(),
@@ -234,17 +231,19 @@ class WidgetService
      */
     protected function getLineItem($lineItem, Context $context): LineItem
     {
+        $amount = (new Amount())
+            ->setGross($lineItem->getPrice()->getTotalPrice())
+            ->setTax($lineItem->getPrice()->getCalculatedTaxes()->getAmount());
+        $amount->setNet($amount->getGross() - $amount->getTax());
+
         $billieLineItem = (new LineItem())
             ->setExternalId($lineItem->getId())
             ->setTitle($lineItem->getLabel())
             ->setQuantity($lineItem->getQuantity())
-            ->setAmount((new Amount())
-                ->setGross($lineItem->getPrice()->getTotalPrice())
-                ->setTaxRate($lineItem->getPrice()->getCalculatedTaxes()->first()->getTaxRate())
-            );
+            ->setAmount($amount);
 
         $productCriteria = (new Criteria([$lineItem->getReferencedId()])) // TODO product identifier?!
-            ->addAssociation('manufacturer')
+        ->addAssociation('manufacturer')
             ->addAssociation('categories')
             ->setLimit(1);
 

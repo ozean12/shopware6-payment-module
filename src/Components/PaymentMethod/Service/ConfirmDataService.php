@@ -63,6 +63,7 @@ class ConfirmDataService
             ->setAmount((new Amount())
                 ->setGross($orderEntity->getAmountTotal())
                 ->setNet($orderEntity->getAmountNet())
+                ->setTax($orderEntity->getPrice()->getCalculatedTaxes()->getAmount())
             );
 
         /** @var ConfirmModelBuilt $event */
