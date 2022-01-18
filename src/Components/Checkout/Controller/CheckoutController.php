@@ -180,7 +180,13 @@ class CheckoutController extends StorefrontController
 
             if ($isNewAddress) {
                 if ($referencedEntity instanceof CustomerEntity) {
-                    $this->accountService->setDefaultShippingAddress($shippingAddressData['id'], $salesChannelContext);
+                    $refAccountService = new \ReflectionClass($this->accountService);
+                    $arguments = [$shippingAddressData['id'], $salesChannelContext];
+
+                    if ($refAccountService->getMethod('setDefaultShippingAddress')->getNumberOfParameters() === 3) {
+                        $arguments[] = $referencedEntity;
+                    }
+                    call_user_func_array([$this->accountService, 'setDefaultShippingAddress'], $arguments);
                 } elseif ($referencedEntity instanceof OrderEntity) {
                     /** @var \Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity $delivery */
                     $delivery = $referencedEntity->getDeliveries()->first();
