@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 BASEDIR=$(cd `dirname $0` && pwd)
 PLUGIN_DIR=$(dirname "$BASEDIR")
@@ -11,7 +12,7 @@ tar -C "$PLUGIN_DIR"/../ --exclude-from="$BASEDIR"/.release_exclude -czf "$BUILD
 tar -xzf "$BUILD_DIR"/dist.tar.gz -C "$BUILD_DIR"/dist/
 
 
-composer remove shopware/core shopware/administration shopware/storefront --no-install --ignore-platform-reqs -d "$BUILD_DIR"/dist/"$PLUGIN_NAME"
+composer remove shopware/core --no-install --ignore-platform-reqs -d "$BUILD_DIR"/dist/"$PLUGIN_NAME"
 composer remove --unused --ignore-platform-reqs -d "$BUILD_DIR"/dist/"$PLUGIN_NAME"
 composer install --ignore-platform-reqs --no-dev -d "$BUILD_DIR"/dist/"$PLUGIN_NAME"
 
@@ -24,4 +25,9 @@ rm -rf "$BUILD_DIR"/dist/"$PLUGIN_NAME"/vendor/billie/api-php-sdk/tests
 rm -rf "$BUILD_DIR"/dist/"$PLUGIN_NAME"/vendor/billie/api-php-sdk/.git
 rm -rf "$BUILD_DIR"/dist.tar.gz
 
-(cd "$BUILD_DIR"/dist && zip -r "$PLUGIN_NAME".zip "$PLUGIN_NAME")
+
+(cd "$BUILD_DIR"/dist && zip -r "$PLUGIN_NAME"-github.zip "$PLUGIN_NAME")
+
+# somebody has setup the module in the shopware store as proprietary. So we need to change the license to pass the checks
+sed -i 's#"MIT"#"proprietary"#g' "$BUILD_DIR"/dist/"$PLUGIN_NAME"/composer.json
+(cd "$BUILD_DIR"/dist && zip -r "$PLUGIN_NAME"-shopware.zip "$PLUGIN_NAME")
