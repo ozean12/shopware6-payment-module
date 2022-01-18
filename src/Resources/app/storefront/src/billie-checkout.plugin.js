@@ -1,5 +1,5 @@
 import Plugin from 'src/plugin-system/plugin.class';
-import StoreApiClient from 'src/service/store-api-client.service';
+import HttpClient from 'src/service/http-client.service';
 
 export default class BilliePayment extends Plugin {
 
@@ -35,7 +35,7 @@ export default class BilliePayment extends Plugin {
         },
         billie_order_data: this.options.checkoutData
       }).then((data) => {
-        const client = new StoreApiClient;
+        const client = new HttpClient(window.accessKey, window.contextToken);
         let url = '/billie-payment/update-addresses';
         let locationMatch = window.location.href.match(/account\/order\/edit\/([A-Za-z0-9]+)/);
         if (locationMatch && locationMatch.length === 2) {
@@ -52,6 +52,7 @@ export default class BilliePayment extends Plugin {
           this.el.form.submit();
         });
       }).catch((err) => {
+        event.preventDefault();
         console.error('Error occurred', err);
         window.location.reload();
       });
