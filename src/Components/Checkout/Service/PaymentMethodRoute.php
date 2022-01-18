@@ -50,7 +50,10 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
      */
     private $countryRepository;
 
-    private EntityRepositoryInterface $paymentMethodRepository;
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $paymentMethodRepository;
 
     /**
      * @var ConfigService
