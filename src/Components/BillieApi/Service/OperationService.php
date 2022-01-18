@@ -42,6 +42,9 @@ class OperationService
      */
     private $container;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
     private $orderDataRepository;
 
     public function __construct(

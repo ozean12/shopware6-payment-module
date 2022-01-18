@@ -30,11 +30,6 @@ class WidgetDataBuilt
     private $widgetData;
 
     /**
-     * @var PaymentMethodEntity
-     */
-    private $paymentMethodEntity;
-
-    /**
      * @var CustomerEntity|OrderCustomerEntity
      */
     private $customer;
@@ -96,11 +91,6 @@ class WidgetDataBuilt
     public function setWidgetData(ArrayStruct $widgetData): void
     {
         $this->widgetData = $widgetData;
-    }
-
-    public function getPaymentMethodEntity(): PaymentMethodEntity
-    {
-        return $this->paymentMethodEntity;
     }
 
     /**

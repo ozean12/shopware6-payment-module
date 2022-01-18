@@ -58,11 +58,6 @@ class CheckoutController extends StorefrontController
     private $orderDeliveryRepository;
 
     /**
-     * @var \Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
-     */
-    private $customerRepository;
-
-    /**
      * @var \Shopware\Core\Checkout\Customer\SalesChannel\AccountService
      */
     private $accountService;
