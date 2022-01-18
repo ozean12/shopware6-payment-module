@@ -83,15 +83,14 @@ class WidgetService
     private $container;
 
     public function __construct(
-        ContainerInterface        $container,
-        EventDispatcherInterface  $eventDispatcher,
+        ContainerInterface $container,
+        EventDispatcherInterface $eventDispatcher,
         EntityRepositoryInterface $productRepository,
         EntityRepositoryInterface $orderRepository,
         EntityRepositoryInterface $salutationRepository,
-        CartService               $cartService,
-        ConfigService             $configService
-    )
-    {
+        CartService $cartService,
+        ConfigService $configService
+    ) {
         $this->container = $container;
         $this->eventDispatcher = $eventDispatcher;
         $this->productRepository = $productRepository;
@@ -137,9 +136,9 @@ class WidgetService
     }
 
     /**
-     * @param CustomerEntity|OrderCustomerEntity $customer
-     * @param CustomerAddressEntity|OrderAddressEntity $billingAddress
-     * @param CustomerAddressEntity|OrderAddressEntity $shippingAddress
+     * @param CustomerEntity|OrderCustomerEntity         $customer
+     * @param CustomerAddressEntity|OrderAddressEntity   $billingAddress
+     * @param CustomerAddressEntity|OrderAddressEntity   $shippingAddress
      * @param LineItemCollection|OrderLineItemCollection $lineItems
      * @noinspection PhpDocMissingThrowsInspection
      */
@@ -150,8 +149,7 @@ class WidgetService
         CartPrice $price,
         $lineItems,
         SalesChannelContext $salesChannelContext
-    ): ?ArrayStruct
-    {
+    ): ?ArrayStruct {
         try {
             /** @noinspection NullPointerExceptionInspection */
             $checkoutSessionId = $this->container->get(CreateSessionRequest::class)

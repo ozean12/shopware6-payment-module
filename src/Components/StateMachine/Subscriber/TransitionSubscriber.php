@@ -51,10 +51,9 @@ class TransitionSubscriber implements EventSubscriberInterface
     public function __construct(
         EntityRepositoryInterface $orderDeliveryRepository,
         EntityRepositoryInterface $orderRepository,
-        ConfigService             $configService,
-        OperationService          $operationService
-    )
-    {
+        ConfigService $configService,
+        OperationService $operationService
+    ) {
         $this->orderDeliveryRepository = $orderDeliveryRepository;
         $this->orderRepository = $orderRepository;
         $this->configService = $configService;
@@ -78,7 +77,7 @@ class TransitionSubscriber implements EventSubscriberInterface
             /** @var OrderDeliveryEntity $orderDelivery */
             $orderDelivery = $this->orderDeliveryRepository->search(new Criteria([$event->getEntityId()]), $event->getContext())->first();
             $order = $this->getOrder($orderDelivery->getOrderId(), $event->getContext());
-        } else if ($event->getEntityName() === OrderDefinition::ENTITY_NAME) {
+        } elseif ($event->getEntityName() === OrderDefinition::ENTITY_NAME) {
             $order = $this->getOrder($event->getEntityId(), $event->getContext());
         } else {
             return;

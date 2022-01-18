@@ -1,8 +1,15 @@
-<?php declare(strict_types=1);
+<?php
 
+declare(strict_types=1);
+
+/*
+ * Copyright (c) Billie GmbH
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Billie\BilliePayment\Components\BillieApi\Service;
-
 
 use Billie\BilliePayment\Components\Order\Model\Extension\OrderExtension;
 use Billie\BilliePayment\Components\Order\Model\OrderDataEntity;
@@ -26,7 +33,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class OperationService
 {
-
     /**
      * @var Logger
      */
@@ -48,12 +54,11 @@ class OperationService
     private $orderDataRepository;
 
     public function __construct(
-        ContainerInterface        $container,
+        ContainerInterface $container,
         EntityRepositoryInterface $orderDataRepository,
-        DocumentUrlHelper         $documentUrlHelper,
-        Logger                    $logger
-    )
-    {
+        DocumentUrlHelper $documentUrlHelper,
+        Logger $logger
+    ) {
         $this->container = $container;
         $this->logger = $logger;
         $this->documentUrlHelper = $documentUrlHelper;
@@ -152,10 +157,9 @@ class OperationService
             $this->orderDataRepository->update([
                 [
                     OrderDataEntity::FIELD_ID => $billieData->getId(),
-                    OrderDataEntity::FIELD_ORDER_STATE => $state
-                ]
+                    OrderDataEntity::FIELD_ORDER_STATE => $state,
+                ],
             ], Context::createDefaultContext());
-
         } catch (\Exception $e) {
             $this->logger->critical(
                 'Order state can not be updated. (Exception: ' . $e->getMessage() . ')',

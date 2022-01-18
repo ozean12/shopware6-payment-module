@@ -50,9 +50,6 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
      */
     private $countryRepository;
 
-    /**
-     * @var \Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
-     */
     private EntityRepositoryInterface $paymentMethodRepository;
 
     /**
@@ -66,13 +63,12 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
      */
     public function __construct(
         AbstractPaymentMethodRoute $innerService,
-        RequestStack               $requestStack,
-        EntityRepositoryInterface  $orderRepository,
-        EntityRepositoryInterface  $countryRepository,
-        EntityRepositoryInterface  $paymentMethodRepository,
-        ConfigService              $configService
-    )
-    {
+        RequestStack $requestStack,
+        EntityRepositoryInterface $orderRepository,
+        EntityRepositoryInterface $countryRepository,
+        EntityRepositoryInterface $paymentMethodRepository,
+        ConfigService $configService
+    ) {
         $this->innerService = $innerService;
         $this->requestStack = $requestStack;
         $this->orderRepository = $orderRepository;
@@ -172,7 +168,7 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
         $extension = $paymentMethod->getExtension(PaymentMethodExtension::EXTENSION_NAME);
         if ($extension) {
             // Prepare variables
-            $duration = (string)$extension->getDuration();
+            $duration = (string) $extension->getDuration();
 
             // Description
             $description = $paymentMethod->getDescription();
