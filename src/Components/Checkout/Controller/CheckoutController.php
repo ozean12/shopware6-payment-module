@@ -84,14 +84,14 @@ class CheckoutController extends StorefrontController
      */
     public function updateCustomerAddress(Request $request, SalesChannelContext $salesChannelContext, string $orderId = null)
     {
-        //###############################################################################################################
-        //## PLEASE NOTE ################################################################################################
-        //## This action will update the address according the widget response.
-        //## Currently the billie payment methods are not available if the payment has been failed,
-        //## cause the customer can not change his address after the order has been placed. This is a concept of Shopware.
-        //## but this action has been already implemented the function to replace the addresses on a *placed* order.
-        //## currently the implementation (for the placed order) is not used, but has been fully tested.
-        //###############################################################################################################
+        // ###############################################################################################################
+        // ## PLEASE NOTE ################################################################################################
+        // ## This action will update the address according the widget response.
+        // ## Currently the billie payment methods are not available if the payment has been failed,
+        // ## cause the customer can not change his address after the order has been placed. This is a concept of Shopware.
+        // ## but this action has been already implemented the function to replace the addresses on a *placed* order.
+        // ## currently the implementation (for the placed order) is not used, but has been fully tested.
+        // ###############################################################################################################
 
         if ($orderId === null) {
             $this->updateAddress(

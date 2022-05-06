@@ -113,10 +113,10 @@ class BilliePaymentSW6 extends Plugin
             $context->getContext()
         );
         $plugin = $plugins->first();
-        //$logger = new FileLogger($this->container->getParameter('kernel.logs_dir'));
+        // $logger = new FileLogger($this->container->getParameter('kernel.logs_dir'));
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->setInstallContext($context);
-            //$bootstrap->setLogger($logger);
+            // $bootstrap->setLogger($logger);
             $bootstrap->setContainer($this->container);
             $bootstrap->injectServices();
             $bootstrap->setPlugin($plugin);
