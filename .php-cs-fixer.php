@@ -20,13 +20,13 @@ $rules = [
     'list_syntax' => ['syntax' => 'short'],
     'no_unused_imports' => true,
     'concat_space' => ['spacing' => 'one'],
-    'trailing_comma_in_multiline_array' => true,
+    'trailing_comma_in_multiline' => ['elements' => ['arrays']],
     'no_blank_lines_after_phpdoc' => true,
     'class_attributes_separation' => true,
     'declare_strict_types' => true,
 ];
 
-return Config::create()
+return (new Config())
     ->setRiskyAllowed(true)
     ->setRules($rules)
     ->setFinder($finder);

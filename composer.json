@@ -37,7 +37,7 @@
         "billie/api-php-sdk": "^2.0"
     },
     "require-dev": {
-        "phpstan/phpstan": "^0.12",
-        "friendsofphp/php-cs-fixer": "^2.18"
+        "phpstan/phpstan": "*",
+        "friendsofphp/php-cs-fixer": "*"
     }
 }
