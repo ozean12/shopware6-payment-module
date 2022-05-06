@@ -10,8 +10,7 @@ tests
 .DS_Store
 vendor
 src/Resources/node_modules
-.php_cs
-.php_cs.dist
+.php-cs-fixer.php
 phpstan.neon
 README-dev.md
 bin
