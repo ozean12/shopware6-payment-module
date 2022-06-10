@@ -40,11 +40,10 @@ class AccountSubscriber implements EventSubscriberInterface
     public function onAccountEditOrderPageLoaded(AccountEditOrderPageLoadedEvent $event): void
     {
         $page = $event->getPage();
-
-        $paymentMethods = $page->getPaymentMethods()->filter(static function (PaymentMethodEntity $paymentMethod) {
-            return MethodHelper::isBilliePayment($paymentMethod) === false;
-        });
-
-        $page->setPaymentMethods($paymentMethods);
+        $order = $page->getOrder();
+        if (MethodHelper::isBilliePayment($order->getTransactions()->last()->getPaymentMethod())) {
+            // You can't change the payment if it is a billie order
+            $page->setPaymentChangeable(false);
+        }
     }
 }

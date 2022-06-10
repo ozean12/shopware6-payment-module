@@ -25,7 +25,7 @@ class PaymentMethods extends AbstractBootstrap
             'handlerIdentifier' => PaymentHandler::class,
             'name' => 'Billie Invoice',
             'description' => 'Pay comfortably and securely on invoice - within {duration} days after receiving the goods.',
-            'afterOrderEnabled' => false,
+            'afterOrderEnabled' => true,
             'translations' => [
                 'de-DE' => [
                     'name' => 'Billie Rechnungskauf',
