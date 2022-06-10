@@ -5,6 +5,7 @@ BASEDIR=$(cd `dirname $0` && pwd)
 PLUGIN_DIR=$(dirname "$BASEDIR")
 PLUGIN_NAME="BilliePaymentSW6"
 BUILD_DIR=$(dirname "PLUGIN_DIR")/build/
+MODULE_VERSION=$(grep -Po '(?<="version": ")(.*)(?=",)' "$PLUGIN_DIR"/composer.json)
 
 rm -rf "$BUILD_DIR"
 mkdir -p build/dist/"$PLUGIN_NAME"
@@ -24,9 +25,8 @@ rm -rf "$BUILD_DIR"/dist/"$PLUGIN_NAME"/vendor/billie/api-php-sdk/tests
 rm -rf "$BUILD_DIR"/dist/"$PLUGIN_NAME"/vendor/billie/api-php-sdk/.git
 rm -rf "$BUILD_DIR"/dist.tar.gz
 
-
-(cd "$BUILD_DIR"/dist && zip -r "$PLUGIN_NAME"-github.zip "$PLUGIN_NAME")
+(cd "$BUILD_DIR"/dist && zip -r "$PLUGIN_NAME"-"$MODULE_VERSION"-github.zip "$PLUGIN_NAME")
 
 # somebody has setup the module in the shopware store as proprietary. So we need to change the license to pass the checks
 sed -i 's#"MIT"#"proprietary"#g' "$BUILD_DIR"/dist/"$PLUGIN_NAME"/composer.json
-(cd "$BUILD_DIR"/dist && zip -r "$PLUGIN_NAME"-shopware.zip "$PLUGIN_NAME")
+(cd "$BUILD_DIR"/dist && zip -r "$PLUGIN_NAME"-"$MODULE_VERSION"-shopware.zip "$PLUGIN_NAME")
