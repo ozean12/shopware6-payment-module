@@ -70,6 +70,7 @@
             <label>Salutation (Fallback)</label>
             <label lang="de-DE">Anrede (Fallback)</label>
             <defaultValue>m</defaultValue>
+            <required>true</required>
             <options>
                 <option>
                     <id>m</id>
@@ -90,6 +91,7 @@
             <label lang="de-DE">Anrede (Mann)</label>
             <entity>salutation</entity>
             <labelProperty>displayName</labelProperty>
+            <required>true</required>
         </component>
 
         <component name="sw-entity-single-select">
@@ -98,6 +100,7 @@
             <label lang="de-DE">Anrede (Frau)</label>
             <entity>salutation</entity>
             <labelProperty>displayName</labelProperty>
+            <required>true</required>
         </component>
     </card>
 

@@ -72,6 +72,11 @@ class ConfigService
     {
         $config = $this->getPluginConfiguration();
 
+        // these fields are required, but shopware does not validate them. So we will set default NULL values, if the index are not set
+        $config['salutationMale'] = $config['salutationMale'] ?? null;
+        $config['salutationFemale'] = $config['salutationFemale'] ?? null;
+        $config['salutationFallback'] = $config['salutationFallback'] ?? null;
+
         switch ($salutationEntity->getId()) {
             case $config['salutationMale']:
                 $return = 'm';
