@@ -11,6 +11,8 @@ tests
 vendor
 src/Resources/node_modules
 .php-cs-fixer.php
+.php-cs-fixer.cache
 phpstan.neon
 README-dev.md
 bin
+.editorconfig
