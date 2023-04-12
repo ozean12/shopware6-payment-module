@@ -13,14 +13,13 @@ namespace Billie\BilliePayment\Components\PluginConfig\Controller;
 
 use Billie\Sdk\Exception\UserNotAuthorizedException;
 use Billie\Sdk\Util\BillieClientFactory;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @RouteScope(scopes={"api"})
+ * @Route(defaults={"_routeScope"={"api"}})
  */
 class TestCredentialsController extends AbstractController
 {
