@@ -10,10 +10,12 @@ parameters:
         - '#imagettftext#'
         - '#class Redis#'
         - '#Constant STARTTIME#'
+        - '#EntityRepositoryInterface#'
+        - '#Repository with no type specified#'
 
     reportUnmatchedIgnoredErrors: false
     treatPhpDocTypesAsCertain: false
     checkMissingIterableValueType: false
     tipsOfTheDay: false
     bootstrapFiles:
-        - vendor/autoload.php
+        - ../../../vendor/autoload.php

@@ -21,7 +21,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\StateMachine\Event\StateMachineTransitionEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -34,12 +34,14 @@ class TransitionSubscriber implements EventSubscriberInterface
     private $configService;
 
     /**
-     * @var EntityRepositoryInterface
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
     private $orderDeliveryRepository;
 
     /**
-     * @var EntityRepositoryInterface
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
     private $orderRepository;
 
@@ -49,8 +51,8 @@ class TransitionSubscriber implements EventSubscriberInterface
     private $operationService;
 
     public function __construct(
-        EntityRepositoryInterface $orderDeliveryRepository,
-        EntityRepositoryInterface $orderRepository,
+        $orderDeliveryRepository,
+        $orderRepository,
         ConfigService $configService,
         OperationService $operationService
     ) {

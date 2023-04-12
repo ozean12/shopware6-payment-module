@@ -38,7 +38,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -58,7 +58,8 @@ class WidgetService
     private $cartService;
 
     /**
-     * @var EntityRepositoryInterface
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
     private $productRepository;
 
@@ -68,12 +69,14 @@ class WidgetService
     private $eventDispatcher;
 
     /**
-     * @var EntityRepositoryInterface
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
     private $salutationRepository;
 
     /**
-     * @var EntityRepositoryInterface
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
     private $orderRepository;
 
@@ -85,9 +88,9 @@ class WidgetService
     public function __construct(
         ContainerInterface $container,
         EventDispatcherInterface $eventDispatcher,
-        EntityRepositoryInterface $productRepository,
-        EntityRepositoryInterface $orderRepository,
-        EntityRepositoryInterface $salutationRepository,
+        $productRepository,
+        $orderRepository,
+        $salutationRepository,
         CartService $cartService,
         ConfigService $configService
     ) {

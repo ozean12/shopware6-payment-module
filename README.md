@@ -12,14 +12,14 @@ for this, or integrate it into the adaptor of your WaWi/ERP system.
 
 You should inject the entity repository via DI of Symfony. The name of the service is called
 `billie_order_data.repository` and will be an instance
-of `\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface`
+of `\Shopware\Core\Framework\DataAbstractionLayer\EntityRepository`
 
 You can also get it via the container (not the recommended):
 
 ```php
 /** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
 
-/** @var \Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface $repository */
+/** @var \Shopware\Core\Framework\DataAbstractionLayer\EntityRepository $repository */
 $repository = $container->get('billie_order_data.repository');
 ```
 
@@ -28,7 +28,7 @@ $repository = $container->get('billie_order_data.repository');
 If you do only have the entity id of the order, you need to use the repository to find the billie data by the order id.
 
 ```php
-/** @var \Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface $repository */
+/** @var \Shopware\Core\Framework\DataAbstractionLayer\EntityRepository $repository */
 
 $orderId = 'YOUR_ORDER_ID';
 $criteria = new \Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria();
@@ -71,7 +71,7 @@ $billieOrderData->getExternalDeliveryNoteUrl(); // external delivery note url
 If you need to modify the Billie data, you should do this with the entity repository and the `upsert`-method.
 
 ```php
-/** @var \Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface $repository */
+/** @var \Shopware\Core\Framework\DataAbstractionLayer\EntityRepository $repository */
 
 $repository->upsert([
     [

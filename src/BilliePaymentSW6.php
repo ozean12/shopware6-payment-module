@@ -17,7 +17,7 @@ use Billie\BilliePayment\Bootstrap\PaymentMethods;
 use Billie\BilliePayment\Bootstrap\PluginConfig;
 use Billie\Sdk\HttpClient\BillieClient;
 use Exception;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin;
@@ -106,7 +106,7 @@ class BilliePaymentSW6 extends Plugin
             new PluginConfig(),
         ];
 
-        /** @var EntityRepositoryInterface $pluginRepository */
+        /** @var EntityRepository $pluginRepository */
         $pluginRepository = $this->container->get('plugin.repository');
         $plugins = $pluginRepository->search(
             (new Criteria())->addFilter(new EqualsFilter('baseClass', get_class($this))),

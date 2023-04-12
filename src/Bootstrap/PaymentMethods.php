@@ -14,7 +14,7 @@ namespace Billie\BilliePayment\Bootstrap;
 use Billie\BilliePayment\Components\PaymentMethod\Model\Extension\PaymentMethodExtension;
 use Billie\BilliePayment\Components\PaymentMethod\PaymentHandler\PaymentHandler;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
@@ -43,7 +43,8 @@ class PaymentMethods extends AbstractBootstrap
     ];
 
     /**
-     * @var EntityRepositoryInterface
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
     private $paymentRepository;
 

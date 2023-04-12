@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Billie\BilliePayment\Bootstrap;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
@@ -25,7 +25,8 @@ class PluginConfig extends AbstractBootstrap
     private $systemConfigService;
 
     /**
-     * @var EntityRepositoryInterface
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
     private $salutationRepository;
 

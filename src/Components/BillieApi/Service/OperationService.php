@@ -25,7 +25,7 @@ use Shopware\Core\Checkout\Document\DocumentGenerator\DeliveryNoteGenerator;
 use Shopware\Core\Checkout\Document\DocumentGenerator\InvoiceGenerator;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -49,13 +49,14 @@ class OperationService
     private $container;
 
     /**
-     * @var EntityRepositoryInterface
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
     private $orderDataRepository;
 
     public function __construct(
         ContainerInterface $container,
-        EntityRepositoryInterface $orderDataRepository,
+        $orderDataRepository,
         DocumentUrlHelper $documentUrlHelper,
         Logger $logger
     ) {

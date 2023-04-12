@@ -20,7 +20,7 @@ use Shopware\Core\Checkout\Customer\SalesChannel\AccountService;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -38,22 +38,26 @@ use Symfony\Component\Routing\Annotation\Route;
 class CheckoutController extends StorefrontController
 {
     /**
-     * @var EntityRepositoryInterface
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
     private $customerAddressRepository;
 
     /**
-     * @var EntityRepositoryInterface
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
     private $orderAddressRepository;
 
     /**
-     * @var EntityRepositoryInterface
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
     private $orderRepository;
 
     /**
-     * @var \Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
     private $orderDeliveryRepository;
 
@@ -63,10 +67,10 @@ class CheckoutController extends StorefrontController
     private $accountService;
 
     public function __construct(
-        EntityRepositoryInterface $addressRepository,
-        EntityRepositoryInterface $orderRepository,
-        EntityRepositoryInterface $orderAddressRepository,
-        EntityRepositoryInterface $orderDeliveryRepository,
+        $addressRepository,
+        $orderRepository,
+        $orderAddressRepository,
+        $orderDeliveryRepository,
         AccountService $accountService
     ) {
         $this->customerAddressRepository = $addressRepository;
@@ -125,11 +129,15 @@ class CheckoutController extends StorefrontController
         return new NoContentResponse();
     }
 
+    /**
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @param EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface $repository
+     */
     protected function updateAddress(
         string $shopwareBillingAddressId,
         string $shopwareShippingAddressId,
         array $requestParams,
-        EntityRepositoryInterface $repository,
+        $repository,
         Entity $referencedEntity,
         SalesChannelContext $salesChannelContext
     ): void {

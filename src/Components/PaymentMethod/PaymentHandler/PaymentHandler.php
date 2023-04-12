@@ -23,7 +23,7 @@ use Monolog\Logger;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
 use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -37,7 +37,8 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
     private $confirmDataService;
 
     /**
-     * @var EntityRepositoryInterface
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
     private $orderDataRepository;
 
@@ -54,7 +55,7 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
     public function __construct(
         ContainerInterface $container,
         ConfirmDataService $confirmDataService,
-        EntityRepositoryInterface $orderDataRepository,
+        $orderDataRepository,
         Logger $logger
     ) {
         $this->confirmDataService = $confirmDataService;

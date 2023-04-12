@@ -22,7 +22,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryDefinition
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateCollection;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
@@ -38,12 +38,14 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
     protected $configService;
 
     /**
-     * @var EntityRepositoryInterface
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
     protected $orderRepository;
 
     /**
-     * @var EntityRepositoryInterface
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
     protected $orderDeliveryRepository;
 
@@ -59,8 +61,8 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
     public function __construct(
         StateMachineRegistry $innerService,
         ConfigService $configService,
-        EntityRepositoryInterface $orderRepository,
-        EntityRepositoryInterface $orderDeliveryRepository
+        $orderRepository,
+        $orderDeliveryRepository
     ) {
         $this->innerService = $innerService;
         $this->configService = $configService;

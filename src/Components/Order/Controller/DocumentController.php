@@ -14,7 +14,7 @@ namespace Billie\BilliePayment\Components\Order\Controller;
 use Billie\BilliePayment\Components\Order\Util\DocumentUrlHelper;
 use Shopware\Core\Checkout\Document\DocumentService;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,7 +32,7 @@ class DocumentController extends \Shopware\Core\Checkout\Document\Controller\Doc
 
     public function __construct(
         DocumentService $documentService,
-        EntityRepositoryInterface $documentRepository,
+        EntityRepository $documentRepository,
         DocumentUrlHelper $documentUrlHelper
     ) {
         parent::__construct($documentService, $documentRepository);

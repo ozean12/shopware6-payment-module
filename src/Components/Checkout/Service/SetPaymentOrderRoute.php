@@ -16,7 +16,7 @@ use Billie\BilliePayment\Components\PaymentMethod\Util\MethodHelper;
 use Shopware\Core\Checkout\Order\SalesChannel\AbstractSetPaymentOrderRoute;
 use Shopware\Core\Checkout\Order\SalesChannel\SetPaymentOrderRoute as CoreSetPaymentOrderRoute;
 use Shopware\Core\Checkout\Order\SalesChannel\SetPaymentOrderRouteResponse;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +29,8 @@ class SetPaymentOrderRoute extends CoreSetPaymentOrderRoute
     private $innerService;
 
     /**
-     * @var EntityRepositoryInterface
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
     private $paymentMethodRepository;
 
@@ -39,7 +40,7 @@ class SetPaymentOrderRoute extends CoreSetPaymentOrderRoute
      */
     public function __construct(
         AbstractSetPaymentOrderRoute $innerService,
-        EntityRepositoryInterface $paymentMethodRepository
+        $paymentMethodRepository
     ) {
         $this->innerService = $innerService;
         $this->paymentMethodRepository = $paymentMethodRepository;

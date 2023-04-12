@@ -22,7 +22,7 @@ use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Checkout\Payment\SalesChannel\AbstractPaymentMethodRoute;
 use Shopware\Core\Checkout\Payment\SalesChannel\PaymentMethodRouteResponse;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,17 +41,20 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
     private $requestStack;
 
     /**
-     * @var EntityRepositoryInterface
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
     private $orderRepository;
 
     /**
-     * @var EntityRepositoryInterface
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
     private $countryRepository;
 
     /**
-     * @var EntityRepositoryInterface
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
     private $paymentMethodRepository;
 
@@ -67,9 +70,9 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
     public function __construct(
         AbstractPaymentMethodRoute $innerService,
         RequestStack $requestStack,
-        EntityRepositoryInterface $orderRepository,
-        EntityRepositoryInterface $countryRepository,
-        EntityRepositoryInterface $paymentMethodRepository,
+        $orderRepository,
+        $countryRepository,
+        $paymentMethodRepository,
         ConfigService $configService
     ) {
         $this->innerService = $innerService;

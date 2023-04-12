@@ -20,7 +20,7 @@ use Billie\Sdk\Model\Amount;
 use Billie\Sdk\Model\Request\CheckoutSessionConfirmRequestModel;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ConfirmDataService
@@ -31,12 +31,13 @@ class ConfirmDataService
     private $eventDispatcher;
 
     /**
-     * @var EntityRepositoryInterface
+     * TODO remove interface and increase min. SW Version to 6.5
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
     private $orderRepository;
 
     public function __construct(
-        EntityRepositoryInterface $orderRepository,
+        $orderRepository,
         EventDispatcherInterface $eventDispatcher
     ) {
         $this->eventDispatcher = $eventDispatcher;
