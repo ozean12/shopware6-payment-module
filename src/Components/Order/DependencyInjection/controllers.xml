@@ -9,7 +9,8 @@
         </defaults>
 
         <service id="Billie\BilliePayment\Components\Order\Controller\DocumentController">
-            <argument key="$documentRepository" type="service" id="document.repository" />
+            <argument key="$documentRoute" type="service" id="Shopware\Core\Checkout\Document\SalesChannel\DocumentRoute"/>
+
             <call method="setContainer">
                 <argument id="service_container" type="service"/>
             </call>

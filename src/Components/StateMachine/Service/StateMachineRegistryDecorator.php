@@ -17,7 +17,7 @@ use Billie\BilliePayment\Components\PaymentMethod\Util\MethodHelper;
 use Billie\BilliePayment\Components\PluginConfig\Service\ConfigService;
 use Billie\BilliePayment\Components\StateMachine\Exception\InvoiceNumberMissingException;
 use Billie\BilliePayment\Util\CriteriaHelper;
-use Shopware\Core\Checkout\Document\DocumentGenerator\InvoiceGenerator;
+use Shopware\Core\Checkout\Document\Renderer\InvoiceRenderer;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -100,7 +100,7 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
         $invoiceNumber = $billieData->getExternalInvoiceNumber();
         if (!$invoiceNumber) {
             foreach ($order->getDocuments() as $document) {
-                if ($document->getDocumentType()->getTechnicalName() === InvoiceGenerator::INVOICE) {
+                if ($document->getDocumentType()->getTechnicalName() === InvoiceRenderer::TYPE) {
                     $config = $document->getConfig();
 
                     return isset($config['custom']['invoiceNumber']);

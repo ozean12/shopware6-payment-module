@@ -21,8 +21,8 @@ use Billie\Sdk\Model\Request\ShipOrderRequestModel;
 use Billie\Sdk\Service\Request\CancelOrderRequest;
 use Billie\Sdk\Service\Request\ShipOrderRequest;
 use Monolog\Logger;
-use Shopware\Core\Checkout\Document\DocumentGenerator\DeliveryNoteGenerator;
-use Shopware\Core\Checkout\Document\DocumentGenerator\InvoiceGenerator;
+use Shopware\Core\Checkout\Document\Renderer\DeliveryNoteRenderer;
+use Shopware\Core\Checkout\Document\Renderer\InvoiceRenderer;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -85,7 +85,7 @@ class OperationService
         if (!$invoiceNumber || !$shippingUrl) {
             foreach ($order->getDocuments() as $document) {
                 if ($invoiceNumber === null &&
-                    $document->getDocumentType()->getTechnicalName() === InvoiceGenerator::INVOICE
+                    $document->getDocumentType()->getTechnicalName() === InvoiceRenderer::TYPE
                 ) {
                     $config = $document->getConfig();
                     $invoiceNumber = isset($config['custom']['invoiceNumber']) ? $config['custom']['invoiceNumber'] : null;
@@ -93,7 +93,7 @@ class OperationService
                 }
 
                 if ($shippingUrl === null &&
-                    $document->getDocumentType()->getTechnicalName() === DeliveryNoteGenerator::DELIVERY_NOTE
+                    $document->getDocumentType()->getTechnicalName() === DeliveryNoteRenderer::TYPE
                 ) {
                     $shippingUrl = $this->documentUrlHelper->generateRouteForDocument($document);
                 }

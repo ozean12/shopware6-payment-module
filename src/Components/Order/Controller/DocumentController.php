@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace Billie\BilliePayment\Components\Order\Controller;
 
 use Billie\BilliePayment\Components\Order\Util\DocumentUrlHelper;
-use Shopware\Core\Checkout\Document\DocumentService;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Checkout\Document\SalesChannel\AbstractDocumentRoute;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,31 +22,33 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route(defaults={"_routeScope"={"storefront"}})
  */
-class DocumentController extends \Shopware\Core\Checkout\Document\Controller\DocumentController
+class DocumentController extends StorefrontController
 {
     /**
      * @var DocumentUrlHelper
      */
     private $documentUrlHelper;
 
-    public function __construct(
-        DocumentService $documentService,
-        EntityRepository $documentRepository,
-        DocumentUrlHelper $documentUrlHelper
-    ) {
-        parent::__construct($documentService, $documentRepository);
+    /**
+     * @var AbstractDocumentRoute
+     */
+    private $documentRoute;
+
+    public function __construct(AbstractDocumentRoute $documentRoute, DocumentUrlHelper $documentUrlHelper)
+    {
+        $this->documentRoute = $documentRoute;
         $this->documentUrlHelper = $documentUrlHelper;
     }
 
     /**
      * @Route(name="billie.payment.document", path="/billie/document/{documentId}/{deepLinkCode}/{token}")
      */
-    public function downloadDocument(Request $request, string $documentId, string $deepLinkCode, Context $context): Response
+    public function downloadDocument(Request $request, string $documentId, string $deepLinkCode, SalesChannelContext $context): Response
     {
         if ($this->documentUrlHelper->getToken() !== $request->attributes->get('token')) {
             throw $this->createNotFoundException();
         }
 
-        return parent::downloadDocument($request, $documentId, $deepLinkCode, $context);
+        return $this->documentRoute->download($documentId, $request, $context, $deepLinkCode);
     }
 }
