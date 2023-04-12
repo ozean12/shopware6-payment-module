@@ -43,9 +43,10 @@ export default class BilliePayment extends Plugin {
                     url += '/' + locationMatch[1];
                 }
 
-                if (window.csrf.enabled && window.csrf.mode === 'twig') {
+                if ('csrf' in window && window.csrf.enabled && window.csrf.mode === 'twig') {
                     data['_csrf_token'] = this.options.csrfToken;
                 }
+
                 client.post(url, JSON.stringify(data), (response) => {
                     this._setAddressConfirmed(true);
                     this.el.value = this.options.checkoutSessionId;

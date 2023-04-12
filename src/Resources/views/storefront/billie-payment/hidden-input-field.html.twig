@@ -1,6 +1,6 @@
 {% if page.extensions.billie_payment.widget %}
     {% set billieCheckoutOptions = page.extensions.billie_payment.widget|merge({
-        csrfToken: sw_csrf("billie-payment.checkout.update-addresses", {"mode": "token"})
+        csrfToken: billie_sw_csrf("billie-payment.checkout.update-addresses", {"mode": "token"})
     }) %}
 
     <input

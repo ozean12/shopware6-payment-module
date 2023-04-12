@@ -13,10 +13,14 @@
 
 
     <services>
-        <service id="Billie\BilliePayment\Components\CookieProvider"
-                 decorates="Shopware\Storefront\Framework\Cookie\CookieProviderInterface">
-            <argument type="service"
-                      id="Billie\BilliePayment\Components\CookieProvider.inner" />
+        <service id="Billie\BilliePayment\Components\CookieProvider" decorates="Shopware\Storefront\Framework\Cookie\CookieProviderInterface">
+            <argument type="service" id="Billie\BilliePayment\Components\CookieProvider.inner" />
+        </service>
+
+        <!-- SW 6.5.0.0 backward compatibility -->
+        <service id="Billie\BilliePayment\Twig\CsrfWrapper" public="false">
+            <argument key="$twig" type="service" id="twig"/>
+            <tag name="twig.extension"/>
         </service>
     </services>
 
