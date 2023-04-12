@@ -101,7 +101,7 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
         $isPluginReady = $this->configService->isConfigReady();
 
         if ($isPluginReady === false && $filterMethods) {
-            return $this->removeAllBillieMethods($response, $salesChannelContext->getContext());
+            return $this->removeAllBillieMethods($response);
         }
 
         // Replace variables of billie payment descriptions, names and other translatable fields
@@ -130,23 +130,22 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
             if ($billingAddress === null ||
                 empty($billingAddress->getCompany()) || $this->getCountryIso($billingAddress) !== 'DE'
             ) {
-                return $this->removeAllBillieMethods($response, $salesChannelContext->getContext());
+                return $this->removeAllBillieMethods($response);
             }
         }
 
         return $response;
     }
 
-    private function removeAllBillieMethods(PaymentMethodRouteResponse $response, Context $context): PaymentMethodRouteResponse
+    private function removeAllBillieMethods(PaymentMethodRouteResponse $response): PaymentMethodRouteResponse
     {
-        $ids = [];
-        foreach ($response->getPaymentMethods() as $paymentMethod) {
-            if (!MethodHelper::isBilliePayment($paymentMethod)) {
-                $ids[] = $paymentMethod->getId();
+        foreach ($response->getPaymentMethods() as $key => $paymentMethod) {
+            if (MethodHelper::isBilliePayment($paymentMethod)) {
+                $response->getPaymentMethods()->remove($key);
             }
         }
 
-        return new PaymentMethodRouteResponse($this->paymentMethodRepository->search(new Criteria($ids), $context));
+        return $response;
     }
 
     /**
