@@ -1,0 +1,15 @@
+{% block sw_order_detail_content_tabs_extension %}
+    {% parent %}
+
+    {% block sw_order_detail_content_tabs_billie %}
+        <sw-tabs-item
+            v-if="order && order.extensions.billieData"
+            class="sw-order-detail__tabs-tab-billie-payment"
+            :route="{ name: 'sw.order.detail.billie-payment', params: { id: $route.params.id } }"
+            :title="$tc('sw-order.detail.billie-payment')"
+        >
+            {{ $tc('sw-order.detail.billie-payment') }}
+        </sw-tabs-item>
+    {% endblock %}
+
+{% endblock %}
