@@ -1,0 +1,22 @@
+build:
+    zip:
+        composer:
+            enabled: true
+        assets:
+            enabled: true
+            enable_es_build_for_admin: true
+            enable_es_build_for_storefront: false
+        pack:
+            excludes:
+                paths:
+                    - __COMPOSER_HOME__
+                    - bin
+                    - tests
+                    - var
+                    - .gitignore
+                    - .shopware-extension.yml
+                    - ecs.php
+                    - phpstan.neon
+                    - phpunit.xml
+                    - rector.php
+                    - composer.lock

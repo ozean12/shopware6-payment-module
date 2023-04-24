@@ -1,7 +1,7 @@
 parameters:
     level: 6
     paths:
-        - %currentWorkingDirectory%/src
+        - src
 
     ignoreErrors:
         - '#with no value type specified in iterable type array#'
@@ -11,6 +11,8 @@ parameters:
         - '#has unknown class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepositoryInterface as its type#'
         - '#on an unknown class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepositoryInterface.#'
         - '#has invalid type Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepositoryInterface.#'
+        # only for Shopware 6.4.14.x ignore error, which is related to php-doc
+        - '#Class .+Collection @extends tag contains incompatible type iterable<.+Entity>&Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityCollection#'
 
     reportUnmatchedIgnoredErrors: false
     tipsOfTheDay: false

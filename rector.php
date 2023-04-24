@@ -17,6 +17,8 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->skip([
         \Rector\Php74\Rector\LNumber\AddLiteralSeparatorToNumberRector::class,
         \Rector\CodeQuality\Rector\Ternary\SwitchNegatedTernaryRector::class,
+        # this rule tried to change the method signature of vendor files during GitHub action
+        \Rector\CodingStyle\Rector\ClassMethod\UnSpreadOperatorRector::class,
     ]);
 
     $rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
@@ -36,7 +38,6 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->ruleWithConfiguration(ConsistentPregDelimiterRector::class, [
         ConsistentPregDelimiterRector::DELIMITER => '/',
     ]);
-
 
     $rectorConfig->phpstanConfig(__DIR__ . '/phpstan.neon');
 };

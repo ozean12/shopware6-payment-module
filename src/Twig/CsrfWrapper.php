@@ -47,6 +47,7 @@ class CsrfWrapper extends AbstractExtension
             $extension = $this->twig->getExtension($extensionClass);
 
             return [
+                /** @noRector CallableThisArrayToAnonymousFunctionRector */
                 new TwigFunction('billie_sw_csrf', [$extension, 'createCsrfPlaceholder'], [
                     'is_safe' => ['html'],
                 ]),

@@ -36,8 +36,25 @@
         "shopware/core": "^6.4.14",
         "billie/api-php-sdk": "^2.0"
     },
-    "require-dev": {
-        "phpstan/phpstan": "*",
-        "friendsofphp/php-cs-fixer": "*"
+    "scripts": {
+        "init-dev-ops": [
+            "composer req rector/rector symplify/easy-coding-standard phpstan/phpstan --dev --no-scripts --no-plugins -d ../../../"
+        ],
+        "rector-fix": "../../../vendor/bin/rector process",
+        "rector-lint": "../../../vendor/bin/rector process --dry-run",
+        "phpstan-lint": "../../../vendor/bin/phpstan analyse",
+        "code-style-fix": "../../../vendor/bin/ecs --fix",
+        "code-style-lint": "../../../vendor/bin/ecs",
+        "lint": [
+            "@rector-lint",
+            "@phpstan-lint",
+            "@code-style-lint"
+        ],
+        "fix": [
+            "@rector-fix",
+            "@code-style-fix"
+        ],
+        "release": "shopware-cli extension zip . --disable-git --release",
+        "build": "shopware-cli extension build ."
     }
 }

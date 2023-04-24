@@ -1,71 +1,182 @@
-
 on:
   push:
     branches:
       - '*'
       - '*/*'
 
+env:
+  MODULE_NAME: BilliePaymentSW6
+  COMPOSER_NAME: billie/shopware6-payment-module
+
 permissions:
   contents: read
 
 jobs:
   phpstan:
-    name: Run PHPSTAN (PHP ${{ matrix.php-versions }} on  ${{ matrix.operating-system }})
-    runs-on:  ${{ matrix.operating-system }}
+    name: PhpStan (Shopware ${{ matrix.shopware-versions }}, PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }})
+    runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
-        operating-system: ['ubuntu-latest']
-        php-versions: ['7.4', '8.0']
-
+        operating-system: [ 'ubuntu-latest' ]
+        php-versions: [ '8.1', '8.2' ]
+        shopware-versions: [ 'v6.5.0.0-rc4' ]
+      fail-fast: false
+      max-parallel: 10
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - name: "checkout Shopware"
+        uses: actions/checkout@v3
         with:
-          php-version: ${{ matrix.php-versions }}
-          tools: phpstan
+          repository: shopware/platform
+          ref: ${{ matrix.shopware-versions }}
 
-      - name: install dependencies
-        run: composer remove shopware/core --no-update && composer req shopware/platform
-        
-      - name: run PHPSTAN
-        run: phpstan analyse -c phpstan.neon
-        
-  php-cs:
-    name: Check PHP CodeStyle (PHP ${{ matrix.php-versions }} on  ${{ matrix.operating-system }})
-    runs-on:  ${{ matrix.operating-system }}
+      - name: "checkout module"
+        uses: actions/checkout@v3
+        with:
+          path: custom/plugins/${{ env.MODULE_NAME }}
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: /tmp/composer-cache
+          key: ${{ matrix.operating-system }}-${{ matrix.php-versions }}-${{ matrix.shopware-versions }}-${{ hashFiles('**/composer.lock') }}
+
+      - name: "composer config: prefer stable"
+        uses: php-actions/composer@v6
+        with:
+          command: config prefer-stable true
+
+      - name: "composer config: minimum stability"
+        uses: php-actions/composer@v6
+        with:
+          command: config minimum-stability dev
+
+      - uses: php-actions/composer@v6
+        with:
+          command: req phpstan/phpstan ${{ env.COMPOSER_NAME }}
+          args: --dev --no-scripts --no-plugins --ignore-platform-req=ext-gd --ignore-platform-req=ext-intl --ignore-platform-req=ext-pdo_mysql --ignore-platform-req=ext-zip
+          php_version: ${{ matrix.php-versions }}
+
+      - uses: php-actions/phpstan@v3
+        with:
+          php_version: ${{ matrix.php-versions }}
+          configuration: custom/plugins/${{ env.MODULE_NAME }}/phpstan.neon
+          memory_limit: -1
+
+  rector:
+    name: Rector (Shopware ${{ matrix.shopware-versions }}, PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }})
+    runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
-        operating-system: ['ubuntu-latest']
-        php-versions: ['7.4', '8.0']
-
+        operating-system: [ 'ubuntu-latest' ]
+        php-versions: [ '8.1', '8.2' ]
+        shopware-versions: [ 'v6.5.0.0-rc4' ]
+      fail-fast: false
+      max-parallel: 10
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - name: "checkout Shopware"
+        uses: actions/checkout@v3
         with:
-          php-version: ${{ matrix.php-versions }}
-          tools: php-cs-fixer
+          repository: shopware/platform
+          ref: ${{ matrix.shopware-versions }}
 
-      - name: run PHP-CS
-        run: php-cs-fixer fix --dry-run --verbose
-  
+      - name: "checkout module"
+        uses: actions/checkout@v3
+        with:
+          path: custom/plugins/${{ env.MODULE_NAME }}
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: /tmp/composer-cache
+          key: ${{ matrix.operating-system }}-${{ matrix.php-versions }}-${{ matrix.shopware-versions }}-${{ hashFiles('**/composer.lock') }}
+
+      - name: "composer config: prefer stable"
+        uses: php-actions/composer@v6
+        with:
+          command: config prefer-stable true
+
+      - name: "composer config: minimum stability"
+        uses: php-actions/composer@v6
+        with:
+          command: config minimum-stability dev
+
+      - uses: php-actions/composer@v6
+        with:
+          command: req rector/rector phpstan/phpstan ${{ env.COMPOSER_NAME }}
+          args: --dev --no-scripts --no-plugins --ignore-platform-req=ext-gd --ignore-platform-req=ext-intl --ignore-platform-req=ext-pdo_mysql --ignore-platform-req=ext-zip
+          php_version: ${{ matrix.php-versions }}
+
+      - uses: php-actions/composer@v6
+        with:
+          command: rector-lint
+          working_dir: custom/plugins/${{ env.MODULE_NAME }}
+          php_version: ${{ matrix.php-versions }}
+
+  coding-style:
+    name: CodingStyle lint (Shopware ${{ matrix.shopware-versions }}, PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }})
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: [ 'ubuntu-latest' ]
+        php-versions: [ '8.1', '8.2' ]
+        shopware-versions: [ 'v6.5.0.0-rc4' ]
+      fail-fast: false
+      max-parallel: 10
+    steps:
+      - name: "checkout Shopware"
+        uses: actions/checkout@v3
+        with:
+          repository: shopware/platform
+          ref: ${{ matrix.shopware-versions }}
+
+      - name: "checkout module"
+        uses: actions/checkout@v3
+        with:
+          path: custom/plugins/${{ env.MODULE_NAME }}
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: /tmp/composer-cache
+          key: ${{ matrix.operating-system }}-${{ matrix.php-versions }}-${{ matrix.shopware-versions }}-${{ hashFiles('**/composer.lock') }}
+
+      - name: "composer config: prefer stable"
+        uses: php-actions/composer@v6
+        with:
+          command: config prefer-stable true
+
+      - name: "composer config: minimum stability"
+        uses: php-actions/composer@v6
+        with:
+          command: config minimum-stability dev
+
+      - uses: php-actions/composer@v6
+        with:
+          command: req symplify/easy-coding-standard ${{ env.COMPOSER_NAME }}
+          args: --dev --no-scripts --no-plugins --ignore-platform-req=ext-gd --ignore-platform-req=ext-intl --ignore-platform-req=ext-pdo_mysql --ignore-platform-req=ext-zip
+          php_version: ${{ matrix.php-versions }}
+          memory_limit: -1
+
+      - uses: php-actions/composer@v6
+        with:
+          command: code-style-lint
+          working_dir: custom/plugins/${{ env.MODULE_NAME }}
+          php_version: ${{ matrix.php-versions }}
+
   build:
     name: Build installable packages
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Build module
-      run: ./bin/build.sh
-      
-    - name: create artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: Module bundles
-        path: build/dist/*.zip
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-go@v4
+
+      - run: go install github.com/FriendsOfShopware/shopware-cli@latest
+
+      - run: shopware-cli extension zip . --disable-git --release
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Module bundles
+          path: "*.zip"
