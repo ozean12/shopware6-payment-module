@@ -47,7 +47,6 @@ class CsrfWrapper extends AbstractExtension
             $extension = $this->twig->getExtension($extensionClass);
 
             return [
-                /** @noRector CallableThisArrayToAnonymousFunctionRector */
                 new TwigFunction('billie_sw_csrf', [$extension, 'createCsrfPlaceholder'], [
                     'is_safe' => ['html'],
                 ]),
@@ -55,7 +54,7 @@ class CsrfWrapper extends AbstractExtension
         }
 
         return [
-            new TwigFunction('billie_sw_csrf', fn (string $intent, array $parameters = []): string => $this->returnNothing($intent, $parameters)),
+            new TwigFunction('billie_sw_csrf', [$this, 'returnNothing']),
         ];
     }
 

@@ -36,6 +36,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Content\Category\CategoryEntity;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerEntity;
 use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Framework\Context;
@@ -53,22 +54,31 @@ class WidgetService
     private CartService $cartService;
 
     /**
-     * TODO remove interface and increase min. SW Version to 6.5
-     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
+     * @var EntityRepository
+     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
+     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
+     * After Shopware has removed the decorator, we can replace this by a normal definition
+     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
     private object $productRepository;
 
     private EventDispatcherInterface $eventDispatcher;
 
     /**
-     * TODO remove interface and increase min. SW Version to 6.5
-     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
+     * @var EntityRepository
+     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
+     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
+     * After Shopware has removed the decorator, we can replace this by a normal definition
+     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
     private object $salutationRepository;
 
     /**
-     * TODO remove interface and increase min. SW Version to 6.5
-     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
+     * @var EntityRepository
+     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
+     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
+     * After Shopware has removed the decorator, we can replace this by a normal definition
+     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
     private object $orderRepository;
 
@@ -251,7 +261,7 @@ class WidgetService
             $category = $product->getCategories()->first();
             $billieLineItem
                 ->setExternalId($product->getProductNumber())
-                ->setCategory($category ? $category->getName() : null)
+                ->setCategory($category instanceof CategoryEntity ? $category->getName() : '')
                 ->setBrand($product->getManufacturer() instanceof ProductManufacturerEntity ? $product->getManufacturer()->getName() : null)
                 ->setGtin($product->getEan());
 

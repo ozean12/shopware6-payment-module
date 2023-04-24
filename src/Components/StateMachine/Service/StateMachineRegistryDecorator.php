@@ -20,6 +20,7 @@ use Billie\BilliePayment\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Document\Renderer\InvoiceRenderer;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -35,14 +36,20 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
     protected ConfigService $configService;
 
     /**
-     * TODO remove interface and increase min. SW Version to 6.5
-     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
+     * @var EntityRepository
+     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
+     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
+     * After Shopware has removed the decorator, we can replace this by a normal definition
+     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
     protected object $orderRepository;
 
     /**
-     * TODO remove interface and increase min. SW Version to 6.5
-     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
+     * @var EntityRepository
+     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
+     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
+     * After Shopware has removed the decorator, we can replace this by a normal definition
+     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
     protected object $orderDeliveryRepository;
 
@@ -74,7 +81,7 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
             $order = $this->getOrder($orderDelivery->getOrderId(), $context);
 
             $transaction = $order instanceof OrderEntity ? $order->getTransactions()->first() : null;
-            $paymentMethod = $transaction ? $transaction->getPaymentMethod() : null;
+            $paymentMethod = $transaction instanceof OrderTransactionEntity ? $transaction->getPaymentMethod() : null;
             if ($paymentMethod &&
                 MethodHelper::isBilliePayment($paymentMethod) &&
                 !$this->orderHasBillieInvoiceNumber($order)

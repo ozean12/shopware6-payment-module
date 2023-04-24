@@ -17,6 +17,7 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->skip([
         \Rector\Php74\Rector\LNumber\AddLiteralSeparatorToNumberRector::class,
         \Rector\CodeQuality\Rector\Ternary\SwitchNegatedTernaryRector::class,
+        \Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector::class,
         # this rule tried to change the method signature of vendor files during GitHub action
         \Rector\CodingStyle\Rector\ClassMethod\UnSpreadOperatorRector::class,
     ]);

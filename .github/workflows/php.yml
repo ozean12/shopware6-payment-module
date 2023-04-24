@@ -113,7 +113,7 @@ jobs:
           php_version: ${{ matrix.php-versions }}
 
   coding-style:
-    name: CodingStyle lint (Shopware ${{ matrix.shopware-versions }}, PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }})
+    name: CodingStyle (Shopware ${{ matrix.shopware-versions }}, PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }})
     runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
