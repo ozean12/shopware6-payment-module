@@ -88,7 +88,7 @@ class OrderDataEntity extends Entity
 
     protected string $orderVersionId;
 
-    protected OrderEntity $order;
+    protected ?OrderEntity $order = null;
 
     protected string $orderState;
 
@@ -120,7 +120,7 @@ class OrderDataEntity extends Entity
         return $this->orderVersionId;
     }
 
-    public function getOrder(): OrderEntity
+    public function getOrder(): ?OrderEntity
     {
         return $this->order;
     }
