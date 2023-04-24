@@ -33,7 +33,7 @@
     },
     "require": {
         "php": "^7.2 || ^8.0",
-        "shopware/core": "^6.4.14",
+        "shopware/core": "~6.5.0@dev",
         "billie/api-php-sdk": "^2.0"
     },
     "scripts": {
