@@ -23,10 +23,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class WidgetDataBuilt
 {
-    /**
-     * @var ArrayStruct
-     */
-    private $widgetData;
+    private ArrayStruct $widgetData;
 
     /**
      * @var CustomerEntity|OrderCustomerEntity
@@ -43,20 +40,14 @@ class WidgetDataBuilt
      */
     private $shippingAddress;
 
-    /**
-     * @var CartPrice
-     */
-    private $price;
+    private CartPrice $price;
 
     /**
      * @var LineItemCollection|OrderLineItemCollection
      */
     private $lineItems;
 
-    /**
-     * @var SalesChannelContext
-     */
-    private $salesChannelContext;
+    private SalesChannelContext $salesChannelContext;
 
     /**
      * @param CustomerEntity|OrderCustomerEntity         $customer

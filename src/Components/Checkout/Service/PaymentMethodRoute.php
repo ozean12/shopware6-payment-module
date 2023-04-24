@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Components\Checkout\Service;
 
+use Shopware\Core\Checkout\Customer\CustomerEntity;
+use Shopware\Core\System\Country\CountryEntity;
 use Billie\BilliePayment\Components\PaymentMethod\Model\Extension\PaymentMethodExtension;
 use Billie\BilliePayment\Components\PaymentMethod\Model\PaymentMethodConfigEntity;
 use Billie\BilliePayment\Components\PaymentMethod\Util\MethodHelper;
@@ -30,15 +32,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class PaymentMethodRoute extends AbstractPaymentMethodRoute
 {
-    /**
-     * @var AbstractPaymentMethodRoute
-     */
-    private $innerService;
+    private AbstractPaymentMethodRoute $innerService;
 
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private RequestStack $requestStack;
 
     /**
      * TODO remove interface and increase min. SW Version to 6.5
@@ -58,10 +54,7 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
      */
     private $paymentMethodRepository;
 
-    /**
-     * @var ConfigService
-     */
-    private $configService;
+    private ConfigService $configService;
 
     /**
      * @noinspection MagicMethodsValidityInspection
@@ -93,7 +86,7 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
         $response = $this->innerService->load($request, $salesChannelContext, $criteria);
 
         $currentRequest = $this->requestStack->getCurrentRequest();
-        if (!$currentRequest) {
+        if (!$currentRequest instanceof Request) {
             return $response;
         }
 
@@ -123,15 +116,12 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
             $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
         } else {
             $customer = $salesChannelContext->getCustomer();
-            $billingAddress = $customer ? $customer->getActiveBillingAddress() : null;
+            $billingAddress = $customer instanceof CustomerEntity ? $customer->getActiveBillingAddress() : null;
         }
 
-        if ($order || $filterMethods) {
-            if ($billingAddress === null ||
-                empty($billingAddress->getCompany()) || $this->getCountryIso($billingAddress) !== 'DE'
-            ) {
-                return $this->removeAllBillieMethods($response);
-            }
+        if (($order || $filterMethods) && ($billingAddress === null ||
+            empty($billingAddress->getCompany()) || $this->getCountryIso($billingAddress) !== 'DE')) {
+            return $this->removeAllBillieMethods($response);
         }
 
         return $response;
@@ -158,7 +148,7 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
         // but the payment methods will be also requested on the success/finish page. On this page, the country-assoc isn't loaded.
         // there is no reason to load the payment methods on the finish page. - so this is just a fix, during the methods will be loaded on the success-page.
 
-        if ($address->getCountry() === null) {
+        if (!$address->getCountry() instanceof CountryEntity) {
             $country = $this->countryRepository->search(new Criteria([$address->getCountryId()]), Context::createDefaultContext())->first();
         } else {
             $country = $address->getCountry();
@@ -171,7 +161,7 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
     {
         /** @var PaymentMethodConfigEntity|null $extension */
         $extension = $paymentMethod->getExtension(PaymentMethodExtension::EXTENSION_NAME);
-        if ($extension) {
+        if ($extension instanceof PaymentMethodConfigEntity) {
             // Prepare variables
             $duration = (string) $extension->getDuration();
 
@@ -191,8 +181,10 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
                 if (is_string($translated)) {
                     $translated = str_replace('{duration}', $duration, $translated);
                 }
+
                 $prepared[$key] = $translated;
             }
+
             $paymentMethod->setTranslated($prepared);
         }
     }

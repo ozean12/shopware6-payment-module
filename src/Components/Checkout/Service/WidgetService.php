@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Components\Checkout\Service;
 
+use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerEntity;
 use Billie\BilliePayment\Components\BillieApi\Util\AddressHelper;
 use Billie\BilliePayment\Components\Checkout\Event\WidgetDataBuilt;
 use Billie\BilliePayment\Components\Checkout\Event\WidgetDataLineItemBuilt;
@@ -47,15 +48,9 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class WidgetService
 {
-    /**
-     * @var ConfigService
-     */
-    private $configService;
+    private ConfigService $configService;
 
-    /**
-     * @var CartService
-     */
-    private $cartService;
+    private CartService $cartService;
 
     /**
      * TODO remove interface and increase min. SW Version to 6.5
@@ -63,10 +58,7 @@ class WidgetService
      */
     private $productRepository;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private EventDispatcherInterface $eventDispatcher;
 
     /**
      * TODO remove interface and increase min. SW Version to 6.5
@@ -80,10 +72,7 @@ class WidgetService
      */
     private $orderRepository;
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private ContainerInterface $container;
 
     public function __construct(
         ContainerInterface $container,
@@ -159,7 +148,7 @@ class WidgetService
                 ->execute((new CreateSessionRequestModel())
                     ->setMerchantCustomerId($customer->getCustomerNumber())
                 )->getCheckoutSessionId();
-        } catch (BillieException $e) {
+        } catch (BillieException $billieException) {
             // TODO Log error
             return null;
         }
@@ -220,6 +209,7 @@ class WidgetService
                 // item is not a product (it is a voucher etc.). Billie does only accepts real products
                 continue;
             }
+
             $lineItems[] = $this->getLineItem($lineItem, $context)->toArray();
         }
 
@@ -259,7 +249,7 @@ class WidgetService
             $billieLineItem
                 ->setExternalId($product->getProductNumber())
                 ->setCategory($category ? $category->getName() : null)
-                ->setBrand($product->getManufacturer() ? $product->getManufacturer()->getName() : null)
+                ->setBrand($product->getManufacturer() instanceof ProductManufacturerEntity ? $product->getManufacturer()->getName() : null)
                 ->setGtin($product->getEan());
 
             if ($product->getDescription()) {

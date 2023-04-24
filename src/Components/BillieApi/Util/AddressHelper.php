@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Components\BillieApi\Util;
 
+use InvalidArgumentException;
 use Billie\Sdk\Model\Address;
 use Billie\Sdk\Model\DebtorCompany;
 use Billie\Sdk\Util\AddressHelper as SdkHelper;
@@ -69,8 +70,8 @@ class AddressHelper
      */
     private static function validateParam($address): void
     {
-        if ($address instanceof OrderAddressEntity === false && $address instanceof CustomerAddressEntity === false) {
-            throw new \InvalidArgumentException('the param `address` must be type of ' . OrderAddressEntity::class . ' or ' . CustomerAddressEntity::class . '. Given type: ' . get_class($address));
+        if (!$address instanceof OrderAddressEntity && !$address instanceof CustomerAddressEntity) {
+            throw new InvalidArgumentException('the param `address` must be type of ' . OrderAddressEntity::class . ' or ' . CustomerAddressEntity::class . '. Given type: ' . get_class($address));
         }
     }
 }

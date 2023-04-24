@@ -31,10 +31,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class PaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    /**
-     * @var ConfirmDataService
-     */
-    private $confirmDataService;
+    private ConfirmDataService $confirmDataService;
 
     /**
      * TODO remove interface and increase min. SW Version to 6.5
@@ -42,15 +39,9 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
      */
     private $orderDataRepository;
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private ContainerInterface $container;
 
-    /**
-     * @var Logger
-     */
-    private $logger;
+    private Logger $logger;
 
     public function __construct(
         ContainerInterface $container,
@@ -74,7 +65,7 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
 
         $order = $transaction->getOrder();
 
-        if ($billieData->count() === 0 || $billieData->has('session-id') === false) {
+        if ($billieData->count() === 0 || !$billieData->has('session-id')) {
             throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'unknown error during payment');
         }
 
@@ -96,28 +87,28 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
                     OrderDataEntity::FIELD_IS_SUCCESSFUL => true,
                 ],
             ], $salesChannelContext->getContext());
-        } catch (BillieException $exception) {
+        } catch (BillieException $billieException) {
             $this->logger->critical(
-                'Exception during checkout session confirmation. (Exception: ' . $exception->getMessage() . ')',
+                'Exception during checkout session confirmation. (Exception: ' . $billieException->getMessage() . ')',
                 [
-                    'error' => $exception->getBillieCode(),
+                    'error' => $billieException->getBillieCode(),
                     'order' => $order->getId(),
                     'session-id' => $billieData->get('session-id'),
                 ]
             );
 
-            throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $exception->getMessage());
+            throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $billieException->getMessage());
         }
 
         $updateOrderModel = (new UpdateOrderRequestModel($response->getUuid()))
             ->setOrderId($order->getOrderNumber());
         try {
             $this->container->get(UpdateOrderRequest::class)->execute($updateOrderModel);
-        } catch (BillieException $exception) {
+        } catch (BillieException $billieException) {
             $this->logger->critical(
-                'Exception during order update. (Exception: ' . $exception->getMessage() . ')',
+                'Exception during order update. (Exception: ' . $billieException->getMessage() . ')',
                 [
-                    'error' => $exception->getBillieCode(),
+                    'error' => $billieException->getBillieCode(),
                     'order' => $order->getId(),
                     'billie-reference-id' => $response->getUuid(),
                 ]

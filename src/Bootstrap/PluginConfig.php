@@ -19,16 +19,13 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class PluginConfig extends AbstractBootstrap
 {
-    /**
-     * @var SystemConfigService
-     */
-    private $systemConfigService;
+    private ?object $systemConfigService = null;
 
     /**
      * TODO remove interface and increase min. SW Version to 6.5
-     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
+     * @var EntityRepository|Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface|null
      */
-    private $salutationRepository;
+    private ?object $salutationRepository = null;
 
     public function injectServices(): void
     {

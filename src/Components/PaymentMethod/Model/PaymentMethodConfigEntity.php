@@ -18,14 +18,17 @@ class PaymentMethodConfigEntity extends Entity
 {
     use EntityIdTrait;
 
+    /**
+     * @var string
+     */
     public const FIELD_ID = 'id';
 
+    /**
+     * @var string
+     */
     public const FIELD_DURATION = 'duration';
 
-    /**
-     * @var int
-     */
-    protected $duration;
+    protected int $duration;
 
     public function getDuration(): int
     {

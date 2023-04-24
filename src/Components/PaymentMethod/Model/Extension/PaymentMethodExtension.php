@@ -20,6 +20,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class PaymentMethodExtension extends EntityExtension
 {
+    /**
+     * @var string
+     */
     public const EXTENSION_NAME = 'billieConfig';
 
     public function extendFields(FieldCollection $collection): void

@@ -36,7 +36,7 @@ class AccountOrderControllerDecorator extends AccountOrderController
     {
         $order = $this->fetchOrder($context->getContext(), $orderId);
         /** @var OrderDataEntity|null $billieData */
-        $billieData = $order ? $order->getExtension(OrderExtension::EXTENSION_NAME) : null;
+        $billieData = $order instanceof OrderEntity ? $order->getExtension(OrderExtension::EXTENSION_NAME) : null;
 
         $paymentMethod = $order->getTransactions()->first()->getPaymentMethod();
         if ($billieData && MethodHelper::isBilliePayment($paymentMethod) && $billieData->isSuccessful()) {

@@ -20,6 +20,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
 class PaymentMethods extends AbstractBootstrap
 {
+    /**
+     * @var array<string, array<string, (class-string<PaymentHandler> | bool | array<string, array<string, string>> | array<string, int> | string)>>
+     */
     public const PAYMENT_METHODS = [
         PaymentHandler::class => [
             'handlerIdentifier' => PaymentHandler::class,
@@ -44,9 +47,9 @@ class PaymentMethods extends AbstractBootstrap
 
     /**
      * TODO remove interface and increase min. SW Version to 6.5
-     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
+     * @var EntityRepository|Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface|null
      */
-    private $paymentRepository;
+    private ?object $paymentRepository = null;
 
     public function injectServices(): void
     {
@@ -58,6 +61,7 @@ class PaymentMethods extends AbstractBootstrap
         foreach (self::PAYMENT_METHODS as $paymentMethod) {
             $this->upsertPaymentMethod($paymentMethod);
         }
+
         // Keep active flags as they are
     }
 
@@ -97,7 +101,7 @@ class PaymentMethods extends AbstractBootstrap
 
         /** @var PaymentMethodEntity|null $paymentEntity */
         $paymentEntity = $paymentSearchResult->first();
-        if ($paymentEntity) {
+        if ($paymentEntity instanceof PaymentMethodEntity) {
             $paymentMethod['id'] = $paymentEntity->getId();
         }
 
@@ -112,12 +116,10 @@ class PaymentMethods extends AbstractBootstrap
             $this->defaultContext
         );
 
-        $updateData = array_map(static function (PaymentMethodEntity $entity) use ($activated) {
-            return [
-                'id' => $entity->getId(),
-                'active' => $activated,
-            ];
-        }, $paymentEntities->getElements());
+        $updateData = array_map(static fn(PaymentMethodEntity $entity): array => [
+            'id' => $entity->getId(),
+            'active' => $activated,
+        ], $paymentEntities->getElements());
 
         $this->paymentRepository->update(array_values($updateData), $this->defaultContext);
     }

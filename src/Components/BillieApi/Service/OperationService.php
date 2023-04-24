@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Components\BillieApi\Service;
 
+use Exception;
+use RuntimeException;
 use Billie\BilliePayment\Components\Order\Model\Extension\OrderExtension;
 use Billie\BilliePayment\Components\Order\Model\OrderDataEntity;
 use Billie\BilliePayment\Components\Order\Util\DocumentUrlHelper;
@@ -33,20 +35,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class OperationService
 {
-    /**
-     * @var Logger
-     */
-    private $logger;
+    private Logger $logger;
 
-    /**
-     * @var DocumentUrlHelper
-     */
-    private $documentUrlHelper;
+    private DocumentUrlHelper $documentUrlHelper;
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private ContainerInterface $container;
 
     /**
      * TODO remove interface and increase min. SW Version to 6.5
@@ -88,7 +81,7 @@ class OperationService
                     $document->getDocumentType()->getTechnicalName() === InvoiceRenderer::TYPE
                 ) {
                     $config = $document->getConfig();
-                    $invoiceNumber = isset($config['custom']['invoiceNumber']) ? $config['custom']['invoiceNumber'] : null;
+                    $invoiceNumber = $config['custom']['invoiceNumber'] ?? null;
                     $invoiceUrl = $this->documentUrlHelper->generateRouteForDocument($document);
                 }
 
@@ -106,16 +99,16 @@ class OperationService
             ->setShippingDocumentUrl($shippingUrl);
 
         try {
-            /** @var \Billie\Sdk\Model\Order $response */
+            /** @var Order $response */
             $response = $this->container->get(ShipOrderRequest::class)->execute($data);
             $this->updateOrderState($billieData, $response->getState());
 
             return true;
-        } catch (BillieException $e) {
+        } catch (BillieException $billieException) {
             $this->logger->critical(
-                'Exception during shipment. (Exception: ' . $e->getMessage() . ')',
+                'Exception during shipment. (Exception: ' . $billieException->getMessage() . ')',
                 [
-                    'error' => $e->getBillieCode(),
+                    'error' => $billieException->getBillieCode(),
                     'order' => $order->getId(),
                     'billie-reference-id' => $billieData->getReferenceId(),
                 ]
@@ -138,11 +131,11 @@ class OperationService
             $this->updateOrderState($billieData, Order::STATE_CANCELLED);
 
             return true;
-        } catch (BillieException $e) {
+        } catch (BillieException $billieException) {
             $this->logger->critical(
-                'Exception during cancellation. (Exception: ' . $e->getMessage() . ')',
+                'Exception during cancellation. (Exception: ' . $billieException->getMessage() . ')',
                 [
-                    'error' => $e->getBillieCode(),
+                    'error' => $billieException->getBillieCode(),
                     'order' => $order->getId(),
                     'billie-reference-id' => $billieData->getReferenceId(),
                 ]
@@ -161,11 +154,11 @@ class OperationService
                     OrderDataEntity::FIELD_ORDER_STATE => $state,
                 ],
             ], Context::createDefaultContext());
-        } catch (\Exception $e) {
+        } catch (Exception $exception) {
             $this->logger->critical(
-                'Order state can not be updated. (Exception: ' . $e->getMessage() . ')',
+                'Order state can not be updated. (Exception: ' . $exception->getMessage() . ')',
                 [
-                    'code' => $e->getCode(),
+                    'code' => $exception->getCode(),
                     'order' => $billieData->getOrderId(),
                     'billie-reference-id' => $billieData->getReferenceId(),
                     'new-status' => $state,
@@ -179,7 +172,7 @@ class OperationService
         $billieData = $order->getExtension(OrderExtension::EXTENSION_NAME);
 
         if (!$billieData instanceof OrderDataEntity) {
-            throw new \RuntimeException('The order `' . $order->getId() . '` is not a billie order, or the billie order data extension has not been loaded');
+            throw new RuntimeException('The order `' . $order->getId() . '` is not a billie order, or the billie order data extension has not been loaded');
         }
 
         return $billieData;

@@ -11,6 +11,11 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment;
 
+use Shopware\Core\Framework\Plugin\Context\InstallContext;
+use Shopware\Core\Framework\Plugin\Context\UpdateContext;
+use Shopware\Core\Framework\Plugin\Context\UninstallContext;
+use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
+use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Billie\BilliePayment\Bootstrap\AbstractBootstrap;
 use Billie\BilliePayment\Bootstrap\Database;
 use Billie\BilliePayment\Bootstrap\PaymentMethods;
@@ -24,71 +29,81 @@ use Shopware\Core\Framework\Plugin;
 
 class BilliePaymentSW6 extends Plugin
 {
-    public function install(Plugin\Context\InstallContext $installContext): void
+    public function install(InstallContext $installContext): void
     {
         $bootstrapper = $this->getBootstrapClasses($installContext);
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->preInstall();
         }
+
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->install();
         }
+
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->postInstall();
         }
     }
 
-    public function update(Plugin\Context\UpdateContext $updateContext): void
+    public function update(UpdateContext $updateContext): void
     {
         $bootstrapper = $this->getBootstrapClasses($updateContext);
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->preUpdate();
         }
+
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->update();
         }
+
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->postUpdate();
         }
     }
 
-    public function uninstall(Plugin\Context\UninstallContext $uninstallContext): void
+    public function uninstall(UninstallContext $uninstallContext): void
     {
         $bootstrapper = $this->getBootstrapClasses($uninstallContext);
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->preUninstall();
         }
+
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->uninstall($uninstallContext->keepUserData());
         }
+
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->postUninstall();
         }
     }
 
-    public function deactivate(Plugin\Context\DeactivateContext $deactivateContext): void
+    public function deactivate(DeactivateContext $deactivateContext): void
     {
         $bootstrapper = $this->getBootstrapClasses($deactivateContext);
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->preDeactivate();
         }
+
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->deactivate();
         }
+
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->postDeactivate();
         }
     }
 
-    public function activate(Plugin\Context\ActivateContext $activateContext): void
+    public function activate(ActivateContext $activateContext): void
     {
         $bootstrapper = $this->getBootstrapClasses($activateContext);
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->preActivate();
         }
+
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->activate();
         }
+
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->postActivate();
         }
@@ -97,7 +112,7 @@ class BilliePaymentSW6 extends Plugin
     /**
      * @return AbstractBootstrap[]
      */
-    protected function getBootstrapClasses(Plugin\Context\InstallContext $context): array
+    protected function getBootstrapClasses(InstallContext $context): array
     {
         /** @var AbstractBootstrap[] $bootstrapper */
         $bootstrapper = [
@@ -126,7 +141,7 @@ class BilliePaymentSW6 extends Plugin
     }
 }
 
-if (class_exists(BillieClient::class) === false) {
+if (!class_exists(BillieClient::class)) {
     $autoloaderPath = dirname(__DIR__) . '/vendor/autoload.php';
     if (file_exists($autoloaderPath)) {
         /** @noinspection PhpIncludeInspection */

@@ -16,10 +16,7 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class ConfigService
 {
-    /**
-     * @var SystemConfigService
-     */
-    private $systemConfigService;
+    private SystemConfigService $systemConfigService;
 
     public function __construct(SystemConfigService $systemConfigService)
     {
@@ -73,9 +70,9 @@ class ConfigService
         $config = $this->getPluginConfiguration();
 
         // these fields are required, but shopware does not validate them. So we will set default NULL values, if the index are not set
-        $config['salutationMale'] = $config['salutationMale'] ?? null;
-        $config['salutationFemale'] = $config['salutationFemale'] ?? null;
-        $config['salutationFallback'] = $config['salutationFallback'] ?? null;
+        $config['salutationMale'] ??= null;
+        $config['salutationFemale'] ??= null;
+        $config['salutationFallback'] ??= null;
 
         switch ($salutationEntity->getId()) {
             case $config['salutationMale']:

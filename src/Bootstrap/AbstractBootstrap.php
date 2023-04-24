@@ -27,10 +27,7 @@ abstract class AbstractBootstrap implements ContainerAwareInterface
      */
     protected $installContext;
 
-    /**
-     * @var Context
-     */
-    protected $defaultContext;
+    protected Context $defaultContext;
 
     /**
      * @var Logger

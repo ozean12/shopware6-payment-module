@@ -30,6 +30,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class OrderDataDefinition extends EntityDefinition
 {
+    /**
+     * @var string
+     */
     public const ENTITY_NAME = 'billie_order_data';
 
     public function getEntityName(): string

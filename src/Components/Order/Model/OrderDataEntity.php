@@ -19,96 +19,96 @@ class OrderDataEntity extends Entity
 {
     use EntityIdTrait;
 
+    /**
+     * @var string
+     */
     public const FIELD_ID = 'id';
 
+    /**
+     * @var string
+     */
     public const FIELD_ORDER_ID = 'orderId';
 
+    /**
+     * @var string
+     */
     public const FIELD_ORDER_VERSION_ID = 'orderVersionId';
 
+    /**
+     * @var string
+     */
     public const FIELD_ORDER_STATE = 'orderState';
 
+    /**
+     * @var string
+     */
     public const FIELD_REFERENCE_ID = 'referenceId';
 
+    /**
+     * @var string
+     */
     public const FIELD_IS_SUCCESSFUL = 'successful';
 
+    /**
+     * @var string
+     */
     public const FIELD_EXTERNAL_INVOICE_NUMBER = 'externalInvoiceNumber';
 
+    /**
+     * @var string
+     */
     public const FIELD_EXTERNAL_INVOICE_URL = 'externalInvoiceUrl';
 
+    /**
+     * @var string
+     */
     public const FIELD_EXTERNAL_DELIVERY_NOTE_URL = 'externalDeliveryNoteUrl';
 
+    /**
+     * @var string
+     */
     public const FIELD_BANK_IBAN = 'bankIban';
 
+    /**
+     * @var string
+     */
     public const FIELD_BANK_BIC = 'bankBic';
 
+    /**
+     * @var string
+     */
     public const FIELD_BANK_NAME = 'bankName';
 
+    /**
+     * @var string
+     */
     public const FIELD_DURATION = 'duration';
 
-    /**
-     * @var string
-     */
-    protected $orderId;
+    protected string $orderId;
 
-    /**
-     * @var string
-     */
-    protected $orderVersionId;
+    protected string $orderVersionId;
 
-    /**
-     * @var OrderEntity
-     */
-    protected $order;
+    protected OrderEntity $order;
 
-    /**
-     * @var string
-     */
-    protected $orderState;
+    protected string $orderState;
 
-    /**
-     * @var string
-     */
-    protected $referenceId;
+    protected string $referenceId;
 
-    /**
-     * @var string|null
-     */
-    protected $externalInvoiceNumber;
+    protected ?string $externalInvoiceNumber = null;
 
-    /**
-     * @var string|null
-     */
-    protected $externalInvoiceUrl;
+    protected ?string $externalInvoiceUrl = null;
 
-    /**
-     * @var string|null
-     */
-    protected $externalDeliveryNoteUrl;
+    protected ?string $externalDeliveryNoteUrl = null;
 
-    /**
-     * @var string|null
-     */
-    protected $bankIban;
+    protected ?string $bankIban = null;
 
-    /**
-     * @var string|null
-     */
-    protected $bankBic;
+    protected ?string $bankBic = null;
 
-    /**
-     * @var string|null
-     */
-    protected $bankName;
+    protected ?string $bankName = null;
 
-    /**
-     * @var int|null
-     */
-    protected $duration;
+    protected ?int $duration = null;
 
-    /**
-     * @var bool
-     */
-    protected $successful;
+    protected bool $successful;
 
     public function getOrderId(): string
     {

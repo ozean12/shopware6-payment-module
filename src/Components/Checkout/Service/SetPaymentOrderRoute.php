@@ -23,10 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class SetPaymentOrderRoute extends CoreSetPaymentOrderRoute
 {
-    /**
-     * @var AbstractSetPaymentOrderRoute
-     */
-    private $innerService;
+    private AbstractSetPaymentOrderRoute $innerService;
 
     /**
      * TODO remove interface and increase min. SW Version to 6.5

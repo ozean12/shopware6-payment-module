@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Components\Checkout\Controller;
 
+use ReflectionClass;
+use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
 use Billie\Sdk\Model\Address;
 use Billie\Sdk\Model\DebtorCompany;
 use Billie\Sdk\Model\Person;
@@ -59,10 +61,7 @@ class CheckoutController extends StorefrontController
      */
     private $orderDeliveryRepository;
 
-    /**
-     * @var \Shopware\Core\Checkout\Customer\SalesChannel\AccountService
-     */
-    private $accountService;
+    private AccountService $accountService;
 
     public function __construct(
         $addressRepository,
@@ -110,7 +109,7 @@ class CheckoutController extends StorefrontController
 
             /** @var OrderEntity|null $orderEntity */
             $orderEntity = $this->orderRepository->search($criteria, $salesChannelContext->getContext())->first();
-            if ($orderEntity === null) {
+            if (!$orderEntity instanceof OrderEntity) {
                 return $this->createNotFoundException('order with id ' . $orderId . ' was not found');
             }
 
@@ -181,15 +180,16 @@ class CheckoutController extends StorefrontController
 
             if ($isNewAddress) {
                 if ($referencedEntity instanceof CustomerEntity) {
-                    $refAccountService = new \ReflectionClass($this->accountService);
+                    $refAccountService = new ReflectionClass($this->accountService);
                     $arguments = [$shippingAddressData['id'], $salesChannelContext];
 
                     if ($refAccountService->getMethod('setDefaultShippingAddress')->getNumberOfParameters() === 3) {
                         $arguments[] = $referencedEntity;
                     }
-                    call_user_func_array([$this->accountService, 'setDefaultShippingAddress'], $arguments);
+
+                    $this->accountService->setDefaultShippingAddress(...$arguments);
                 } elseif ($referencedEntity instanceof OrderEntity) {
-                    /** @var \Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity $delivery */
+                    /** @var OrderDeliveryEntity $delivery */
                     $delivery = $referencedEntity->getDeliveries()->first();
                     $this->orderDeliveryRepository->upsert([[
                         'id' => $delivery->getId(),
@@ -206,7 +206,7 @@ class CheckoutController extends StorefrontController
             return false;
         }
 
-        $keys = array_unique(array_merge(array_keys($array1), array_keys($array2)));
+        $keys = array_unique([...array_keys($array1), ...array_keys($array2)]);
 
         foreach ($keys as $key) {
             if (($array1[$key] ?? null) !== ($array2[$key] ?? null)) {

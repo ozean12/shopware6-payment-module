@@ -22,6 +22,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class PaymentMethodConfigDefinition extends EntityDefinition
 {
+    /**
+     * @var string
+     */
     public const ENTITY_NAME = 'billie_payment_config';
 
     public function getEntityName(): string

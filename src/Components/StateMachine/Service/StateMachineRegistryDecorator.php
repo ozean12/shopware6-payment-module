@@ -32,10 +32,7 @@ use Shopware\Core\System\StateMachine\Transition;
 
 class StateMachineRegistryDecorator extends StateMachineRegistry // we must extend it, cause there is no interface
 {
-    /**
-     * @var ConfigService
-     */
-    protected $configService;
+    protected ConfigService $configService;
 
     /**
      * TODO remove interface and increase min. SW Version to 6.5
@@ -49,10 +46,7 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
      */
     protected $orderDeliveryRepository;
 
-    /**
-     * @var StateMachineRegistry
-     */
-    private $innerService;
+    private StateMachineRegistry $innerService;
 
     /**
      * @noinspection MagicMethodsValidityInspection
@@ -79,7 +73,7 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
             $orderDelivery = $this->orderDeliveryRepository->search(new Criteria([$transition->getEntityId()]), $context)->first();
             $order = $this->getOrder($orderDelivery->getOrderId(), $context);
 
-            $transaction = $order ? $order->getTransactions()->first() : null;
+            $transaction = $order instanceof OrderEntity ? $order->getTransactions()->first() : null;
             $paymentMethod = $transaction ? $transaction->getPaymentMethod() : null;
             if ($paymentMethod &&
                 MethodHelper::isBilliePayment($paymentMethod) &&

@@ -15,10 +15,7 @@ use Shopware\Storefront\Framework\Cookie\CookieProviderInterface;
 
 class CookieProvider implements CookieProviderInterface
 {
-    /**
-     * @var CookieProviderInterface
-     */
-    private $originalService;
+    private CookieProviderInterface $originalService;
 
     public function __construct(CookieProviderInterface $service)
     {

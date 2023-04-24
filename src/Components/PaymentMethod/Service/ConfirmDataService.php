@@ -25,10 +25,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ConfirmDataService
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private EventDispatcherInterface $eventDispatcher;
 
     /**
      * TODO remove interface and increase min. SW Version to 6.5

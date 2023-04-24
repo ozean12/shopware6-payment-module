@@ -17,15 +17,9 @@ use Shopware\Storefront\Framework\Routing\Router;
 
 class DocumentUrlHelper
 {
-    /**
-     * @var ConfigService
-     */
-    private $configService;
+    private ConfigService $configService;
 
-    /**
-     * @var Router
-     */
-    private $router;
+    private Router $router;
 
     public function __construct(
         ConfigService $configService,

@@ -21,6 +21,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
 class OrderExtension extends EntityExtension
 {
+    /**
+     * @var string
+     */
     public const EXTENSION_NAME = 'billieData';
 
     public function extendFields(FieldCollection $collection): void

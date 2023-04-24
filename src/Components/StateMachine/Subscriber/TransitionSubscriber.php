@@ -28,10 +28,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class TransitionSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var ConfigService
-     */
-    private $configService;
+    private ConfigService $configService;
 
     /**
      * TODO remove interface and increase min. SW Version to 6.5
@@ -45,10 +42,7 @@ class TransitionSubscriber implements EventSubscriberInterface
      */
     private $orderRepository;
 
-    /**
-     * @var \Billie\BilliePayment\Components\BillieApi\Service\OperationService
-     */
-    private $operationService;
+    private OperationService $operationService;
 
     public function __construct(
         $orderDeliveryRepository,
@@ -71,7 +65,7 @@ class TransitionSubscriber implements EventSubscriberInterface
 
     public function onTransition(StateMachineTransitionEvent $event): void
     {
-        if ($this->configService->isStateWatchingEnabled() === false) {
+        if (!$this->configService->isStateWatchingEnabled()) {
             return;
         }
 
@@ -87,7 +81,7 @@ class TransitionSubscriber implements EventSubscriberInterface
 
         /** @var OrderDataEntity|null $billieData */
         $billieData = $order->getExtension(OrderExtension::EXTENSION_NAME);
-        if ($billieData === null) {
+        if (!$billieData instanceof OrderDataEntity) {
             // this is not a billie order - or if it is, the order data is broken
             return;
         }

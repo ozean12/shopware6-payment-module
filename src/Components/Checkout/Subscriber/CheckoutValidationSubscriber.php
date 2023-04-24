@@ -23,8 +23,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class CheckoutValidationSubscriber implements EventSubscriberInterface
 {
-    /** @var RequestStack */
-    private $requestStack;
+    private RequestStack $requestStack;
 
     public function __construct(RequestStack $requestStack)
     {
@@ -41,10 +40,11 @@ class CheckoutValidationSubscriber implements EventSubscriberInterface
     public function validateOrderData(BuildValidationEvent $event): void
     {
         $request = $this->requestStack->getCurrentRequest();
-        if ($request === null) {
+        if (!$request instanceof Request) {
             // should never occur. just to be save.
             return;
         }
+
         $salesChannelContext = $this->getSalesContextFromRequest($request);
 
         if (MethodHelper::isBilliePayment($salesChannelContext->getPaymentMethod())) {

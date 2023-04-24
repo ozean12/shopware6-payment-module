@@ -18,20 +18,14 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 
 class WidgetDataLineItemCriteriaPrepare
 {
-    /**
-     * @var Criteria
-     */
-    private $criteria;
+    private Criteria $criteria;
 
     /**
      * @var LineItem|OrderLineItemEntity
      */
     private $lineItem;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
     /**
      * WidgetDataLineItemCriteriaPrepare constructor.

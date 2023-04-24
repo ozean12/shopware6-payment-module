@@ -18,25 +18,16 @@ use Shopware\Core\Framework\Context;
 
 class WidgetDataLineItemBuilt
 {
-    /**
-     * @var LineItem
-     */
-    private $billieLineItem;
+    private LineItem $billieLineItem;
 
     /**
      * @var \Shopware\Core\Checkout\Cart\LineItem\LineItem|OrderLineItemEntity
      */
     private $shopwareLineItem;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var ProductEntity|null
-     */
-    private $product;
+    private ?ProductEntity $product;
 
     /**
      * WidgetDataLineItemBuilt constructor.

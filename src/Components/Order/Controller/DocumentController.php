@@ -24,15 +24,9 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class DocumentController extends StorefrontController
 {
-    /**
-     * @var DocumentUrlHelper
-     */
-    private $documentUrlHelper;
+    private DocumentUrlHelper $documentUrlHelper;
 
-    /**
-     * @var AbstractDocumentRoute
-     */
-    private $documentRoute;
+    private AbstractDocumentRoute $documentRoute;
 
     public function __construct(AbstractDocumentRoute $documentRoute, DocumentUrlHelper $documentUrlHelper)
     {

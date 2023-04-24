@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Components\Checkout\Subscriber;
 
+use RuntimeException;
 use Billie\BilliePayment\Components\Checkout\Service\WidgetService;
 use Billie\BilliePayment\Components\PaymentMethod\Util\MethodHelper;
 use Shopware\Core\Framework\Struct\ArrayStruct;
@@ -21,10 +22,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var WidgetService
-     */
-    private $widgetService;
+    private WidgetService $widgetService;
 
     public function __construct(WidgetService $widgetService)
     {
@@ -41,8 +39,8 @@ class CheckoutSubscriber implements EventSubscriberInterface
 
     public function addWidgetData(PageLoadedEvent $event): void
     {
-        if ($event instanceof CheckoutConfirmPageLoadedEvent === false && $event instanceof AccountEditOrderPageLoadedEvent === false) {
-            throw new \RuntimeException('method ' . __CLASS__ . '::' . __METHOD__ . ' does not supports a parameter of type' . get_class($event));
+        if (!$event instanceof CheckoutConfirmPageLoadedEvent && !$event instanceof AccountEditOrderPageLoadedEvent) {
+            throw new RuntimeException('method ' . self::class . '::' . __METHOD__ . ' does not supports a parameter of type' . get_class($event));
         }
 
         $paymentMethod = $event->getSalesChannelContext()->getPaymentMethod();
@@ -52,10 +50,10 @@ class CheckoutSubscriber implements EventSubscriberInterface
             } elseif ($event instanceof AccountEditOrderPageLoadedEvent) {
                 $widgetData = $this->widgetService->getWidgetDataByOrder($event->getPage()->getOrder(), $event->getSalesChannelContext());
             } else {
-                throw new \RuntimeException('invalid event: ' . gettype($event));
+                throw new RuntimeException('invalid event: ' . gettype($event));
             }
 
-            if ($widgetData) {
+            if ($widgetData instanceof ArrayStruct) {
                 /** @var ArrayStruct $extension */
                 $extension = $event->getPage()->getExtension('billie_payment') ?? new ArrayStruct();
                 $extension->set('widget', $widgetData->all());
