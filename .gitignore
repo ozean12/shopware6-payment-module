@@ -3,3 +3,5 @@
 .DS_Store
 composer.lock
 .php-cs-fixer.cache
+/var/cache/
+__COMPOSER_HOME__
