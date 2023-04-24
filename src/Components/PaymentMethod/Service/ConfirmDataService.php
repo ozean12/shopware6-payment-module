@@ -58,10 +58,11 @@ class ConfirmDataService
             ->setCompany(AddressHelper::createDebtorCompany($orderEntity->getAddresses()->get($billingAddressId)))
             ->setDeliveryAddress(AddressHelper::createAddress($orderEntity->getAddresses()->get($shippingAddressId)))
             ->setDuration($paymentConfig->getDuration())
-            ->setAmount((new Amount())
-                ->setGross($orderEntity->getAmountTotal())
-                ->setNet($orderEntity->getAmountNet())
-                ->setTax($orderEntity->getPrice()->getCalculatedTaxes()->getAmount())
+            ->setAmount(
+                (new Amount())
+                    ->setGross($orderEntity->getAmountTotal())
+                    ->setNet($orderEntity->getAmountNet())
+                    ->setTax($orderEntity->getPrice()->getCalculatedTaxes()->getAmount())
             );
 
         /** @var ConfirmModelBuilt $event */

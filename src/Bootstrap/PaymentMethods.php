@@ -92,9 +92,10 @@ class PaymentMethods extends AbstractBootstrap
     protected function upsertPaymentMethod(array $paymentMethod): void
     {
         $paymentSearchResult = $this->paymentRepository->search(
-            ((new Criteria())
-                ->addFilter(new EqualsFilter('handlerIdentifier', $paymentMethod['handlerIdentifier']))
-                ->setLimit(1)
+            (
+                (new Criteria())
+                    ->addFilter(new EqualsFilter('handlerIdentifier', $paymentMethod['handlerIdentifier']))
+                    ->setLimit(1)
             ),
             $this->defaultContext
         );
@@ -116,7 +117,7 @@ class PaymentMethods extends AbstractBootstrap
             $this->defaultContext
         );
 
-        $updateData = array_map(static fn(PaymentMethodEntity $entity): array => [
+        $updateData = array_map(static fn (PaymentMethodEntity $entity): array => [
             'id' => $entity->getId(),
             'active' => $activated,
         ], $paymentEntities->getElements());

@@ -44,8 +44,8 @@ class Migration1616072943PaymentMethodConfig extends MigrationStep
         // so we must insert the "duration" values after we added the tables.
         // TODO: we should think about a better solution to insert these values
         foreach (PaymentMethods::PAYMENT_METHODS as $method) {
-            $connection->{$methodName}('
-                REPLACE INTO ' . PaymentMethodConfigDefinition::ENTITY_NAME . '
+            $connection->{$methodName}(
+                'REPLACE INTO ' . PaymentMethodConfigDefinition::ENTITY_NAME . '
                     SELECT
                         payment_method.id,
                         ?

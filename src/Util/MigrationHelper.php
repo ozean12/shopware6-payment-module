@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Util;
 
-use ReflectionClass;
 use Doctrine\DBAL\Connection;
+use ReflectionClass;
 
 class MigrationHelper
 {

@@ -86,7 +86,7 @@ class ConfigService
                 break;
         }
 
-        return in_array($return, ['m', 'f']) ? $return : 'm';
+        return in_array($return, ['m', 'f'], true) ? $return : 'm';
     }
 
     public function getStateForShip(): ?string

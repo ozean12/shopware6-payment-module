@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Components\BillieApi\Util;
 
-use InvalidArgumentException;
 use Billie\Sdk\Model\Address;
 use Billie\Sdk\Model\DebtorCompany;
 use Billie\Sdk\Util\AddressHelper as SdkHelper;
+use InvalidArgumentException;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 

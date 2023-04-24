@@ -41,7 +41,7 @@ class AccountSubscriber implements EventSubscriberInterface
     {
         $page = $event->getPage();
 
-        $paymentMethods = $page->getPaymentMethods()->filter(static fn(PaymentMethodEntity $paymentMethod): bool => !MethodHelper::isBilliePayment($paymentMethod));
+        $paymentMethods = $page->getPaymentMethods()->filter(static fn (PaymentMethodEntity $paymentMethod): bool => !MethodHelper::isBilliePayment($paymentMethod));
 
         $page->setPaymentMethods($paymentMethods);
     }

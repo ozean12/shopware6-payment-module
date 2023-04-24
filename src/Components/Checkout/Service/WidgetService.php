@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Components\Checkout\Service;
 
-use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerEntity;
 use Billie\BilliePayment\Components\BillieApi\Util\AddressHelper;
 use Billie\BilliePayment\Components\Checkout\Event\WidgetDataBuilt;
 use Billie\BilliePayment\Components\Checkout\Event\WidgetDataLineItemBuilt;
@@ -37,6 +36,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerEntity;
 use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -112,7 +112,9 @@ class WidgetService
         );
     }
 
-    /** @noinspection NullPointerExceptionInspection */
+    /**
+     * @noinspection NullPointerExceptionInspection
+     */
     public function getWidgetDataBySalesChannelContext(SalesChannelContext $salesChannelContext): ?ArrayStruct
     {
         $cart = $this->cartService->getCart($salesChannelContext->getToken(), $salesChannelContext);
@@ -145,8 +147,9 @@ class WidgetService
         try {
             /** @noinspection NullPointerExceptionInspection */
             $checkoutSessionId = $this->container->get(CreateSessionRequest::class)
-                ->execute((new CreateSessionRequestModel())
-                    ->setMerchantCustomerId($customer->getCustomerNumber())
+                ->execute(
+                    (new CreateSessionRequestModel())
+                        ->setMerchantCustomerId($customer->getCustomerNumber())
                 )->getCheckoutSessionId();
         } catch (BillieException $billieException) {
             // TODO Log error
@@ -234,7 +237,7 @@ class WidgetService
             ->setAmount($amount);
 
         $productCriteria = (new Criteria([$lineItem->getReferencedId()])) // TODO product identifier?!
-        ->addAssociation('manufacturer')
+            ->addAssociation('manufacturer')
             ->addAssociation('categories')
             ->setLimit(1);
 

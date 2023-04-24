@@ -86,6 +86,23 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
         return $this->innerService->transition($transition, $context);
     }
 
+    // not changed methods
+
+    public function getInitialState(string $stateMachineName, Context $context): StateMachineStateEntity
+    {
+        return $this->innerService->getInitialState($stateMachineName, $context);
+    }
+
+    public function getAvailableTransitions(string $entityName, string $entityId, string $stateFieldName, Context $context): array
+    {
+        return $this->innerService->getAvailableTransitions($entityName, $entityId, $stateFieldName, $context);
+    }
+
+    public function getStateMachine(string $name, Context $context): StateMachineEntity
+    {
+        return $this->innerService->getStateMachine($name, $context);
+    }
+
     protected function orderHasBillieInvoiceNumber(OrderEntity $order): bool
     {
         /** @var OrderDataEntity $billieData */
@@ -113,22 +130,5 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
         $criteria->addAssociation('documents.documentType');
 
         return $this->orderRepository->search($criteria, $context)->first();
-    }
-
-    // not changed methods
-
-    public function getInitialState(string $stateMachineName, Context $context): StateMachineStateEntity
-    {
-        return $this->innerService->getInitialState($stateMachineName, $context);
-    }
-
-    public function getAvailableTransitions(string $entityName, string $entityId, string $stateFieldName, Context $context): array
-    {
-        return $this->innerService->getAvailableTransitions($entityName, $entityId, $stateFieldName, $context);
-    }
-
-    public function getStateMachine(string $name, Context $context): StateMachineEntity
-    {
-        return $this->innerService->getStateMachine($name, $context);
     }
 }

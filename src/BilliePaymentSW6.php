@@ -11,11 +11,6 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment;
 
-use Shopware\Core\Framework\Plugin\Context\InstallContext;
-use Shopware\Core\Framework\Plugin\Context\UpdateContext;
-use Shopware\Core\Framework\Plugin\Context\UninstallContext;
-use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
-use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Billie\BilliePayment\Bootstrap\AbstractBootstrap;
 use Billie\BilliePayment\Bootstrap\Database;
 use Billie\BilliePayment\Bootstrap\PaymentMethods;
@@ -26,6 +21,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin;
+use Shopware\Core\Framework\Plugin\Context\ActivateContext;
+use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
+use Shopware\Core\Framework\Plugin\Context\InstallContext;
+use Shopware\Core\Framework\Plugin\Context\UninstallContext;
+use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 
 class BilliePaymentSW6 extends Plugin
 {
@@ -124,7 +124,7 @@ class BilliePaymentSW6 extends Plugin
         /** @var EntityRepository $pluginRepository */
         $pluginRepository = $this->container->get('plugin.repository');
         $plugins = $pluginRepository->search(
-            (new Criteria())->addFilter(new EqualsFilter('baseClass', get_class($this))),
+            (new Criteria())->addFilter(new EqualsFilter('baseClass', static::class)),
             $context->getContext()
         );
         $plugin = $plugins->first();

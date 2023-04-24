@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Components\BillieApi\Service;
 
-use Exception;
-use RuntimeException;
 use Billie\BilliePayment\Components\Order\Model\Extension\OrderExtension;
 use Billie\BilliePayment\Components\Order\Model\OrderDataEntity;
 use Billie\BilliePayment\Components\Order\Util\DocumentUrlHelper;
@@ -22,7 +20,9 @@ use Billie\Sdk\Model\Request\OrderRequestModel;
 use Billie\Sdk\Model\Request\ShipOrderRequestModel;
 use Billie\Sdk\Service\Request\CancelOrderRequest;
 use Billie\Sdk\Service\Request\ShipOrderRequest;
+use Exception;
 use Monolog\Logger;
+use RuntimeException;
 use Shopware\Core\Checkout\Document\Renderer\DeliveryNoteRenderer;
 use Shopware\Core\Checkout\Document\Renderer\InvoiceRenderer;
 use Shopware\Core\Checkout\Order\OrderEntity;

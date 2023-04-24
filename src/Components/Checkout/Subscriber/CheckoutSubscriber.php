@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Components\Checkout\Subscriber;
 
-use RuntimeException;
 use Billie\BilliePayment\Components\Checkout\Service\WidgetService;
 use Billie\BilliePayment\Components\PaymentMethod\Util\MethodHelper;
+use RuntimeException;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Storefront\Page\Account\Order\AccountEditOrderPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;

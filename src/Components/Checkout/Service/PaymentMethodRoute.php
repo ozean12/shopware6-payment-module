@@ -11,13 +11,12 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Components\Checkout\Service;
 
-use Shopware\Core\Checkout\Customer\CustomerEntity;
-use Shopware\Core\System\Country\CountryEntity;
 use Billie\BilliePayment\Components\PaymentMethod\Model\Extension\PaymentMethodExtension;
 use Billie\BilliePayment\Components\PaymentMethod\Model\PaymentMethodConfigEntity;
 use Billie\BilliePayment\Components\PaymentMethod\Util\MethodHelper;
 use Billie\BilliePayment\Components\PluginConfig\Service\ConfigService;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
@@ -26,6 +25,7 @@ use Shopware\Core\Checkout\Payment\SalesChannel\PaymentMethodRouteResponse;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;

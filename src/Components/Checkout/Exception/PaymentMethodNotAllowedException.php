@@ -20,7 +20,9 @@ class PaymentMethodNotAllowedException extends ShopwareHttpException
     {
         parent::__construct(
             'You are not allowed to change the payment method to "{{ paymentMethodName }}".',
-            ['paymentMethodName' => $paymentMethodName]
+            [
+                'paymentMethodName' => $paymentMethodName,
+            ]
         );
     }
 
