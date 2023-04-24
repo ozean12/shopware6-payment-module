@@ -31,10 +31,10 @@ class ConfirmDataService
      * TODO remove interface and increase min. SW Version to 6.5
      * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
-    private $orderRepository;
+    private object $orderRepository;
 
     public function __construct(
-        $orderRepository,
+        object $orderRepository,
         EventDispatcherInterface $eventDispatcher
     ) {
         $this->eventDispatcher = $eventDispatcher;

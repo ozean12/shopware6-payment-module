@@ -15,13 +15,7 @@ use Billie\BilliePayment\Components\PaymentMethod\Model\PaymentMethodConfigEntit
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void                           add(PaymentMethodConfigEntity $entity)
- * @method void                           set(string $key, PaymentMethodConfigEntity $entity)
- * @method PaymentMethodConfigEntity[]    getIterator()
- * @method PaymentMethodConfigEntity[]    getElements()
- * @method PaymentMethodConfigEntity|null get(string $key)
- * @method PaymentMethodConfigEntity|null first()
- * @method PaymentMethodConfigEntity|null last()
+ * @extends EntityCollection<PaymentMethodConfigEntity>
  */
 class PaymentMethodConfigCollection extends EntityCollection
 {

@@ -23,7 +23,7 @@ class AddressHelper
     /**
      * @param OrderAddressEntity|CustomerAddressEntity $addressEntity
      */
-    public static function createDebtorCompany($addressEntity): DebtorCompany
+    public static function createDebtorCompany(object $addressEntity): DebtorCompany
     {
         self::validateParam($addressEntity);
 
@@ -65,13 +65,10 @@ class AddressHelper
         return $addressModel;
     }
 
-    /**
-     * @param OrderAddressEntity|CustomerAddressEntity $address
-     */
-    private static function validateParam($address): void
+    private static function validateParam(object $address = null): void
     {
         if (!$address instanceof OrderAddressEntity && !$address instanceof CustomerAddressEntity) {
-            throw new InvalidArgumentException('the param `address` must be type of ' . OrderAddressEntity::class . ' or ' . CustomerAddressEntity::class . '. Given type: ' . get_class($address));
+            throw new InvalidArgumentException('the param `address` must be type of ' . OrderAddressEntity::class . ' or ' . CustomerAddressEntity::class . '. Given type: ' . ($address !== null ? get_class($address) : 'null'));
         }
     }
 }

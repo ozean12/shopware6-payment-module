@@ -4,18 +4,15 @@ parameters:
         - %currentWorkingDirectory%/src
 
     ignoreErrors:
-        - '#apcu_#'
-        - '#ioncube_#'
-        - '#opcache_#'
-        - '#imagettftext#'
-        - '#class Redis#'
-        - '#Constant STARTTIME#'
-        - '#EntityRepositoryInterface#'
-        - '#Repository with no type specified#'
+        - '#with no value type specified in iterable type array#'
+        - '#type has no value type specified in iterable type array.#'
+        - '#generic class Shopware\\Core\\Framework\\Struct\\ArrayStruct does not specify its types#'
+        - '#generic class Shopware\\Core\\Framework\\Struct\\ArrayStruct but does not specify its types#'
+        - '#has unknown class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepositoryInterface as its type#'
+        - '#on an unknown class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepositoryInterface.#'
+        - '#has invalid type Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepositoryInterface.#'
 
     reportUnmatchedIgnoredErrors: false
-    treatPhpDocTypesAsCertain: false
-    checkMissingIterableValueType: false
     tipsOfTheDay: false
     bootstrapFiles:
         - ../../../vendor/autoload.php

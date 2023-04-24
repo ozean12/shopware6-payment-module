@@ -45,11 +45,11 @@ class OperationService
      * TODO remove interface and increase min. SW Version to 6.5
      * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
-    private $orderDataRepository;
+    private object $orderDataRepository;
 
     public function __construct(
         ContainerInterface $container,
-        $orderDataRepository,
+        object $orderDataRepository,
         DocumentUrlHelper $documentUrlHelper,
         Logger $logger
     ) {

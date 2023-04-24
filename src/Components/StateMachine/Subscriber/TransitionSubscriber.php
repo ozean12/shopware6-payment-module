@@ -34,19 +34,19 @@ class TransitionSubscriber implements EventSubscriberInterface
      * TODO remove interface and increase min. SW Version to 6.5
      * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
-    private $orderDeliveryRepository;
+    private object $orderDeliveryRepository;
 
     /**
      * TODO remove interface and increase min. SW Version to 6.5
      * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
-    private $orderRepository;
+    private object $orderRepository;
 
     private OperationService $operationService;
 
     public function __construct(
-        $orderDeliveryRepository,
-        $orderRepository,
+        object $orderDeliveryRepository,
+        object $orderRepository,
         ConfigService $configService,
         OperationService $operationService
     ) {

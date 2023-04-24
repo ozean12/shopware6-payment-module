@@ -29,7 +29,7 @@ class SetPaymentOrderRoute extends CoreSetPaymentOrderRoute
      * TODO remove interface and increase min. SW Version to 6.5
      * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
-    private $paymentMethodRepository;
+    private object $paymentMethodRepository;
 
     /**
      * @noinspection MagicMethodsValidityInspection
@@ -37,7 +37,7 @@ class SetPaymentOrderRoute extends CoreSetPaymentOrderRoute
      */
     public function __construct(
         AbstractSetPaymentOrderRoute $innerService,
-        $paymentMethodRepository
+        object $paymentMethodRepository
     ) {
         $this->innerService = $innerService;
         $this->paymentMethodRepository = $paymentMethodRepository;

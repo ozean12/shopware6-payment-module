@@ -15,13 +15,7 @@ use Billie\BilliePayment\Components\Order\Model\OrderDataEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void                 add(OrderDataEntity $entity)
- * @method void                 set(string $key, OrderDataEntity $entity)
- * @method OrderDataEntity[]    getIterator()
- * @method OrderDataEntity[]    getElements()
- * @method OrderDataEntity|null get(string $key)
- * @method OrderDataEntity|null first()
- * @method OrderDataEntity|null last()
+ * @extends EntityCollection<OrderDataEntity>
  */
 class OrderDataCollection extends EntityCollection
 {

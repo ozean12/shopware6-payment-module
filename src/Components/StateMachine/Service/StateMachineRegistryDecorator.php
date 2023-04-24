@@ -38,13 +38,13 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
      * TODO remove interface and increase min. SW Version to 6.5
      * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
-    protected $orderRepository;
+    protected object $orderRepository;
 
     /**
      * TODO remove interface and increase min. SW Version to 6.5
      * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
-    protected $orderDeliveryRepository;
+    protected object $orderDeliveryRepository;
 
     private StateMachineRegistry $innerService;
 
@@ -55,8 +55,8 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
     public function __construct(
         StateMachineRegistry $innerService,
         ConfigService $configService,
-        $orderRepository,
-        $orderDeliveryRepository
+        object $orderRepository,
+        object $orderDeliveryRepository
     ) {
         $this->innerService = $innerService;
         $this->configService = $configService;
@@ -88,8 +88,12 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
 
     // not changed methods
 
+    /**
+     * @deprecated method has been removed from shopware core
+     */
     public function getInitialState(string $stateMachineName, Context $context): StateMachineStateEntity
     {
+        /** @phpstan-ignore-next-line */
         return $this->innerService->getInitialState($stateMachineName, $context);
     }
 

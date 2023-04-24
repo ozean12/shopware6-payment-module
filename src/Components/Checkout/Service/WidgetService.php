@@ -56,7 +56,7 @@ class WidgetService
      * TODO remove interface and increase min. SW Version to 6.5
      * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
-    private $productRepository;
+    private object $productRepository;
 
     private EventDispatcherInterface $eventDispatcher;
 
@@ -64,22 +64,22 @@ class WidgetService
      * TODO remove interface and increase min. SW Version to 6.5
      * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
-    private $salutationRepository;
+    private object $salutationRepository;
 
     /**
      * TODO remove interface and increase min. SW Version to 6.5
      * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
-    private $orderRepository;
+    private object $orderRepository;
 
     private ContainerInterface $container;
 
     public function __construct(
         ContainerInterface $container,
         EventDispatcherInterface $eventDispatcher,
-        $productRepository,
-        $orderRepository,
-        $salutationRepository,
+        object $productRepository,
+        object $orderRepository,
+        object $salutationRepository,
         CartService $cartService,
         ConfigService $configService
     ) {
@@ -138,7 +138,7 @@ class WidgetService
      */
     protected function getBaseData(
         $customer,
-        $billingAddress,
+        object $billingAddress,
         $shippingAddress,
         CartPrice $price,
         $lineItems,

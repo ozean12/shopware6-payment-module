@@ -47,7 +47,7 @@ class PaymentMethods extends AbstractBootstrap
 
     /**
      * TODO remove interface and increase min. SW Version to 6.5
-     * @var EntityRepository|Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface|null
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface|null
      */
     private ?object $paymentRepository = null;
 
@@ -112,15 +112,16 @@ class PaymentMethods extends AbstractBootstrap
 
     protected function setActiveFlags(bool $activated): void
     {
+        /** @var PaymentMethodEntity[] $paymentEntities */
         $paymentEntities = $this->paymentRepository->search(
             (new Criteria())->addFilter(new EqualsFilter('pluginId', $this->plugin->getId())),
             $this->defaultContext
-        );
+        )->getElements();
 
         $updateData = array_map(static fn (PaymentMethodEntity $entity): array => [
             'id' => $entity->getId(),
             'active' => $activated,
-        ], $paymentEntities->getElements());
+        ], $paymentEntities);
 
         $this->paymentRepository->update(array_values($updateData), $this->defaultContext);
     }

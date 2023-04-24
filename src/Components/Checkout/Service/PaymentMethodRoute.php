@@ -40,32 +40,24 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
      * TODO remove interface and increase min. SW Version to 6.5
      * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
-    private $orderRepository;
+    private object $orderRepository;
 
     /**
      * TODO remove interface and increase min. SW Version to 6.5
      * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
-    private $countryRepository;
-
-    /**
-     * TODO remove interface and increase min. SW Version to 6.5
-     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
-     */
-    private $paymentMethodRepository;
+    private object $countryRepository;
 
     private ConfigService $configService;
 
     /**
      * @noinspection MagicMethodsValidityInspection
-     * @noinspection PhpMissingParentConstructorInspection
      */
     public function __construct(
         AbstractPaymentMethodRoute $innerService,
         RequestStack $requestStack,
-        $orderRepository,
-        $countryRepository,
-        $paymentMethodRepository,
+        object $orderRepository,
+        object $countryRepository,
         ConfigService $configService
     ) {
         $this->innerService = $innerService;
@@ -73,7 +65,6 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
         $this->orderRepository = $orderRepository;
         $this->countryRepository = $countryRepository;
         $this->configService = $configService;
-        $this->paymentMethodRepository = $paymentMethodRepository;
     }
 
     public function getDecorated(): AbstractPaymentMethodRoute

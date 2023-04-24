@@ -37,7 +37,7 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
      * TODO remove interface and increase min. SW Version to 6.5
      * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
-    private $orderDataRepository;
+    private object $orderDataRepository;
 
     private ContainerInterface $container;
 
@@ -46,7 +46,7 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
     public function __construct(
         ContainerInterface $container,
         ConfirmDataService $confirmDataService,
-        $orderDataRepository,
+        object $orderDataRepository,
         Logger $logger
     ) {
         $this->confirmDataService = $confirmDataService;

@@ -23,7 +23,7 @@ class PluginConfig extends AbstractBootstrap
 
     /**
      * TODO remove interface and increase min. SW Version to 6.5
-     * @var EntityRepository|Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface|null
+     * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface|null
      */
     private ?object $salutationRepository = null;
 

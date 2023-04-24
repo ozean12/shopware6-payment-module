@@ -41,33 +41,33 @@ class CheckoutController extends StorefrontController
      * TODO remove interface and increase min. SW Version to 6.5
      * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
-    private $customerAddressRepository;
+    private object $customerAddressRepository;
 
     /**
      * TODO remove interface and increase min. SW Version to 6.5
      * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
-    private $orderAddressRepository;
+    private object $orderAddressRepository;
 
     /**
      * TODO remove interface and increase min. SW Version to 6.5
      * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
-    private $orderRepository;
+    private object $orderRepository;
 
     /**
      * TODO remove interface and increase min. SW Version to 6.5
      * @var EntityRepository|\Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface
      */
-    private $orderDeliveryRepository;
+    private object $orderDeliveryRepository;
 
     private AccountService $accountService;
 
     public function __construct(
-        $addressRepository,
-        $orderRepository,
-        $orderAddressRepository,
-        $orderDeliveryRepository,
+        object $addressRepository,
+        object $orderRepository,
+        object $orderAddressRepository,
+        object $orderDeliveryRepository,
         AccountService $accountService
     ) {
         $this->customerAddressRepository = $addressRepository;
@@ -134,7 +134,7 @@ class CheckoutController extends StorefrontController
         string $shopwareBillingAddressId,
         string $shopwareShippingAddressId,
         array $requestParams,
-        $repository,
+        object $repository,
         Entity $referencedEntity,
         SalesChannelContext $salesChannelContext
     ): void {
@@ -187,6 +187,7 @@ class CheckoutController extends StorefrontController
                         $arguments[] = $referencedEntity;
                     }
 
+                    /** @phpstan-ignore-next-line */
                     $this->accountService->setDefaultShippingAddress(...$arguments);
                 } elseif ($referencedEntity instanceof OrderEntity) {
                     /** @var OrderDeliveryEntity $delivery */
