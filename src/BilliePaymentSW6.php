@@ -15,8 +15,6 @@ use Billie\BilliePayment\Bootstrap\AbstractBootstrap;
 use Billie\BilliePayment\Bootstrap\Database;
 use Billie\BilliePayment\Bootstrap\PaymentMethods;
 use Billie\BilliePayment\Bootstrap\PluginConfig;
-use Billie\Sdk\HttpClient\BillieClient;
-use Exception;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -109,6 +107,11 @@ class BilliePaymentSW6 extends Plugin
         }
     }
 
+    public function executeComposerCommands(): bool
+    {
+        return true;
+    }
+
     /**
      * @return AbstractBootstrap[]
      */
@@ -138,15 +141,5 @@ class BilliePaymentSW6 extends Plugin
         }
 
         return $bootstrapper;
-    }
-}
-
-if (!class_exists(BillieClient::class)) {
-    $autoloaderPath = dirname(__DIR__) . '/vendor/autoload.php';
-    if (file_exists($autoloaderPath)) {
-        /** @noinspection PhpIncludeInspection */
-        require_once $autoloaderPath;
-    } else {
-        throw new Exception('Missing Billie dependencies! Please run `composer require billie/shopware6-module` in project directory');
     }
 }
