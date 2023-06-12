@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace Billie\BilliePayment\Components\Checkout\Controller;
 
 use Billie\Sdk\Model\Address;
-use Billie\Sdk\Model\DebtorCompany;
 use Billie\Sdk\Model\Person;
+use Billie\Sdk\Util\ArrayHelper;
 use ReflectionClass;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
@@ -155,22 +155,23 @@ class CheckoutController extends StorefrontController
     ): void {
         $context = $salesChannelContext->getContext();
 
-        $billieDebtorCompany = new DebtorCompany($requestParams['debtor_company']);
+        $billieDebtorCompanyName = $requestParams['debtor_company']['name'];
+        $billieBillingAddress = new Address(ArrayHelper::removePrefixFromKeys($requestParams['debtor_company'], 'address_'), true);
         $billieDebtorPerson = new Person($requestParams['debtor_person']);
         $billieShippingAddress = new Address($requestParams['delivery_address']);
 
         // update billing address
         $repository->update([[
             'id' => $shopwareBillingAddressId,
-            'company' => $billieDebtorCompany->getName(),
+            'company' => $billieDebtorCompanyName,
             'firstName' => $billieDebtorPerson->getFirstname(),
             'lastName' => $billieDebtorPerson->getLastname(),
-            'street' => $billieDebtorCompany->getAddress()->getStreet() . ' ' . $billieDebtorCompany->getAddress()->getHouseNumber(),
-            'zipcode' => $billieDebtorCompany->getAddress()->getPostalCode(),
-            'city' => $billieDebtorCompany->getAddress()->getCity(),
+            'street' => $billieBillingAddress->getStreet() . ' ' . $billieBillingAddress->getHouseNumber(),
+            'zipcode' => $billieBillingAddress->getPostalCode(),
+            'city' => $billieBillingAddress->getCity(),
         ]], $context);
 
-        if (!$this->compareArrays($billieDebtorCompany->getAddress()->toArray(), $billieShippingAddress->toArray())) {
+        if (!$this->compareArrays($billieBillingAddress->toArray(), $billieShippingAddress->toArray())) {
             $isNewAddress = $shopwareBillingAddressId === $shopwareShippingAddressId;
             $shippingAddressData = [];
             if ($isNewAddress) {

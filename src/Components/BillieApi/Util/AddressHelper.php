@@ -12,57 +12,42 @@ declare(strict_types=1);
 namespace Billie\BilliePayment\Components\BillieApi\Util;
 
 use Billie\Sdk\Model\Address;
-use Billie\Sdk\Model\DebtorCompany;
 use Billie\Sdk\Util\AddressHelper as SdkHelper;
 use InvalidArgumentException;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerEntity;
 
 class AddressHelper
 {
     /**
-     * @param OrderAddressEntity|CustomerAddressEntity $addressEntity
+     * @param CustomerEntity|OrderCustomerEntity $customer
      */
-    public static function createDebtorCompany(object $addressEntity): DebtorCompany
+    public static function getCustomerNumber($customer): string
     {
-        self::validateParam($addressEntity);
+        $merchantNumber = $customer->getCustomerNumber();
+        if (empty($merchantNumber)) {
+            return $customer instanceof OrderCustomerEntity ? $customer->getCustomerId() : $customer->getId();
+        }
 
-        return (new DebtorCompany())
-            ->setValidateOnSet(false)
-            ->setAddress(self::createAddress($addressEntity))
-            ->setName($addressEntity->getCompany());
+        return $merchantNumber;
     }
 
     /**
      * @param OrderAddressEntity|CustomerAddressEntity $addressEntity
      */
-    public static function createAddress($addressEntity): Address
+    public static function createAddress(object $addressEntity): Address
     {
         self::validateParam($addressEntity);
 
-        $addressModel = (new Address())
+        return (new Address())
             ->setValidateOnSet(false)
             ->setStreet(SdkHelper::getStreetName($addressEntity->getStreet()))
             ->setHouseNumber(SdkHelper::getHouseNumber($addressEntity->getStreet()))
             ->setPostalCode($addressEntity->getZipcode())
             ->setCity($addressEntity->getCity())
             ->setCountryCode($addressEntity->getCountry()->getIso());
-
-        if ($addressEntity->getAdditionalAddressLine1() &&
-            !empty($addition1 = trim($addressEntity->getAdditionalAddressLine1()))
-        ) {
-            $addressModel->setAddition($addition1);
-        }
-
-        if ($addressEntity->getAdditionalAddressLine2() &&
-            !empty($addition2 = trim($addressEntity->getAdditionalAddressLine2()))
-        ) {
-            $addressModel->setAddition(
-                (!empty($addition1) ? $addition1 . ', ' : null) . $addition2
-            );
-        }
-
-        return $addressModel;
     }
 
     private static function validateParam(object $address = null): void

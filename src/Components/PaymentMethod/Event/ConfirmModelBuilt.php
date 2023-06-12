@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Components\PaymentMethod\Event;
 
-use Billie\Sdk\Model\Request\CheckoutSessionConfirmRequestModel;
+use Billie\Sdk\Model\Request\CheckoutSession\CheckoutSessionConfirmRequestModel;
 use Shopware\Core\Checkout\Order\OrderEntity;
 
 class ConfirmModelBuilt
