@@ -17,7 +17,7 @@ export default class BilliePayment extends Plugin {
     }
 
     _registerEvents() {
-        this.el.form.addEventListener('submit', this._submitForm.bind(this))
+        this.el.form.addEventListener('beforeSubmit', this._submitForm.bind(this))
     }
 
     _submitForm(event) {
