@@ -103,6 +103,13 @@ class ConfigService
         return $config['stateCanceled'] ?? null;
     }
 
+    public function getStateReturn(): ?string
+    {
+        $config = $this->getPluginConfiguration();
+
+        return $config['stateReturned'] ?? null;
+    }
+
     public function isStateWatchingEnabled(): bool
     {
         $config = $this->getPluginConfiguration();

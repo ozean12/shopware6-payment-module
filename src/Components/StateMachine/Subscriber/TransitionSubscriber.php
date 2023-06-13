@@ -62,7 +62,7 @@ class TransitionSubscriber implements EventSubscriberInterface
         $this->operationService = $operationService;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             StateMachineTransitionEvent::class => 'onTransition',
@@ -98,6 +98,9 @@ class TransitionSubscriber implements EventSubscriberInterface
                 break;
             case $this->configService->getStateCancel():
                 $this->operationService->cancel($order);
+                break;
+            case $this->configService->getStateReturn():
+                $this->operationService->return($order);
                 break;
         }
     }

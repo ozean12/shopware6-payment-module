@@ -21,15 +21,16 @@
 
         <!-- RequestServices -->
         <service id="Billie\Sdk\Service\Request\CheckoutSession\CreateSessionRequest"/>
-        <service id="Billie\Sdk\Service\Request\CancelOrderRequest"/>
+        <service id="Billie\Sdk\Service\Request\Order\CancelOrderRequest"/>
         <service id="Billie\Sdk\Service\Request\CheckoutSession\CheckoutSessionConfirmRequest"/>
         <service id="Billie\Sdk\Service\Request\CreateOrderRequest"/>
         <service id="Billie\Sdk\Service\Request\GetLegalFormsRequest"/>
-        <service id="Billie\Sdk\Service\Request\GetOrderDetailsRequest"/>
-        <service id="Billie\Sdk\Service\Request\ShipOrderRequest"/>
+        <service id="Billie\Sdk\Service\Request\Order\GetOrderRequest"/>
+        <service id="Billie\Sdk\Service\Request\Invoice\CreateInvoiceRequest"/>
         <service id="Billie\Sdk\Service\Request\UpdateOrderRequest"/>
         <service id="Billie\Sdk\Service\Request\PauseOrderDunningProcessRequest"/>
         <service id="Billie\Sdk\Service\Request\ConfirmPaymentRequest"/>
+        <service id="Billie\Sdk\Service\Request\Invoice\CreateCreditNoteRequest"/>
 
     </services>
 </container>
