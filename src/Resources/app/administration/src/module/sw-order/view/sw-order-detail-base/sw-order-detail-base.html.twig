@@ -1,0 +1,64 @@
+{% block sw_order_detail_base_custom_fields %}
+
+    {% block billie_payment_order_data %}
+        <sw-card class="billie-payment-order-data-card"
+                 :title="$tc('billie.orderData.cart.title')"
+                 v-if="order.extensions.billieData"
+                 :isLoading="isLoading">
+
+            <sw-container columns="repeat(auto-fit, minmax(250px, 1fr))" gap="30px 30px">
+
+                <sw-description-list columns="1fr" grid="1fr">
+                    <dt>{{ $tc('billie.orderData.fields.referenceId.label') }}</dt>
+                    <dd>
+                        {{ order.extensions.billieData.referenceId }}
+                    </dd>
+                </sw-description-list>
+
+                <sw-description-list columns="1fr" grid="1fr">
+                    <dt>{{ $tc('billie.orderData.fields.externalInvoiceNumber.label') }}</dt>
+                    <dd>
+                        <sw-order-inline-field v-model="order.extensions.billieData.externalInvoiceNumber"
+                                               :displayValue="order.extensions.billieData.externalInvoiceNumber ? order.extensions.billieData.externalInvoiceNumber : '-'"
+                                               :value="order.extensions.billieData.externalInvoiceNumber"
+                                               :editable="isEditing"
+                                               @input="saveAndReload"
+                                               class="sw-order-inline-field__truncateable">
+                        </sw-order-inline-field>
+                    </dd>
+                </sw-description-list>
+
+                <sw-description-list columns="1fr" grid="1fr">
+                    <dt>{{ $tc('billie.orderData.fields.externalInvoiceUrl.label') }}</dt>
+                    <dd>
+                        <sw-order-inline-field v-model="order.extensions.billieData.externalInvoiceUrl"
+                                               :displayValue="order.extensions.billieData.externalInvoiceUrl ? order.extensions.billieData.externalInvoiceUrl : '-'"
+                                               :value="order.extensions.billieData.externalInvoiceUrl"
+                                               :editable="isEditing"
+                                               @input="saveAndReload"
+                                               class="sw-order-inline-field__truncateable">
+                        </sw-order-inline-field>
+                    </dd>
+                </sw-description-list>
+
+                <sw-description-list columns="1fr" grid="1fr">
+                    <dt>{{ $tc('billie.orderData.fields.externalDeliveryNoteUrl.label') }}</dt>
+                    <dd>
+                        <sw-order-inline-field v-model="order.extensions.billieData.externalDeliveryNoteUrl"
+                                               :displayValue="order.extensions.billieData.externalDeliveryNoteUrl ? order.extensions.billieData.externalDeliveryNoteUrl : '-'"
+                                               :value="order.extensions.billieData.externalDeliveryNoteUrl"
+                                               :editable="isEditing"
+                                               @input="saveAndReload"
+                                               class="sw-order-inline-field__truncateable">
+                        </sw-order-inline-field>
+                    </dd>
+                </sw-description-list>
+
+            </sw-container>
+
+        </sw-card>
+
+    {% endblock %}
+
+    {% parent %}
+{% endblock %}
