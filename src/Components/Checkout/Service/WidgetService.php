@@ -23,7 +23,9 @@ use Billie\Sdk\Exception\BillieException;
 use Billie\Sdk\Model\Amount;
 use Billie\Sdk\Model\LineItem;
 use Billie\Sdk\Model\Person;
+use Billie\Sdk\Model\Request\CheckoutSession\CreateSessionRequestModel;
 use Billie\Sdk\Model\Request\Widget\DebtorCompany;
+use Billie\Sdk\Service\Request\CheckoutSession\CreateSessionRequest;
 use Billie\Sdk\Util\WidgetHelper;
 use Shopware\Core\Checkout\Cart\LineItem\LineItemCollection;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
@@ -147,16 +149,16 @@ class WidgetService
     protected function getBaseData(
         $customer,
         object $billingAddress,
-        $shippingAddress,
+        object $shippingAddress,
         CartPrice $price,
         $lineItems,
         SalesChannelContext $salesChannelContext
     ): ?ArrayStruct {
         try {
             /** @noinspection NullPointerExceptionInspection */
-            $checkoutSessionId = $this->container->get(\Billie\Sdk\Service\Request\CheckoutSession\CreateSessionRequest::class)
+            $checkoutSessionId = $this->container->get(CreateSessionRequest::class)
                 ->execute(
-                    (new \Billie\Sdk\Model\Request\CheckoutSession\CreateSessionRequestModel())
+                    (new CreateSessionRequestModel())
                         ->setMerchantCustomerId(AddressHelper::getCustomerNumber($customer))
                 )->getCheckoutSessionId();
         } catch (BillieException $billieException) {
