@@ -6,6 +6,7 @@ on:
 
 env:
   MODULE_NAME: BilliePaymentSW6
+  MODULE_DIR: custom/static-plugins/BilliePaymentSW6
   COMPOSER_NAME: billie/shopware6-payment-module
 
 permissions:
@@ -26,13 +27,13 @@ jobs:
       - name: "checkout Shopware"
         uses: actions/checkout@v3
         with:
-          repository: shopware/platform
+          repository: shopware/production
           ref: ${{ matrix.shopware-versions }}
 
       - name: "checkout module"
         uses: actions/checkout@v3
         with:
-          path: custom/plugins/${{ env.MODULE_NAME }}
+          path: ${{ env.MODULE_DIR }}
 
       - name: Cache Composer dependencies
         uses: actions/cache@v3
@@ -59,7 +60,7 @@ jobs:
       - uses: php-actions/phpstan@v3
         with:
           php_version: ${{ matrix.php-versions }}
-          configuration: custom/plugins/${{ env.MODULE_NAME }}/phpstan.neon
+          configuration: ${{ env.MODULE_DIR }}/phpstan.neon
           memory_limit: -1
 
   rector:
@@ -82,7 +83,7 @@ jobs:
       - name: "checkout module"
         uses: actions/checkout@v3
         with:
-          path: custom/plugins/${{ env.MODULE_NAME }}
+          path: ${{ env.MODULE_DIR }}
 
       - name: Cache Composer dependencies
         uses: actions/cache@v3
@@ -109,7 +110,7 @@ jobs:
       - uses: php-actions/composer@v6
         with:
           command: rector-lint
-          working_dir: custom/plugins/${{ env.MODULE_NAME }}
+          working_dir: ${{ env.MODULE_DIR }}
           php_version: ${{ matrix.php-versions }}
 
   coding-style:
@@ -132,7 +133,7 @@ jobs:
       - name: "checkout module"
         uses: actions/checkout@v3
         with:
-          path: custom/plugins/${{ env.MODULE_NAME }}
+          path: ${{ env.MODULE_DIR }}
 
       - name: Cache Composer dependencies
         uses: actions/cache@v3
@@ -160,7 +161,7 @@ jobs:
       - uses: php-actions/composer@v6
         with:
           command: code-style-lint
-          working_dir: custom/plugins/${{ env.MODULE_NAME }}
+          working_dir: ${{ env.MODULE_DIR }}
           php_version: ${{ matrix.php-versions }}
 
   build:
