@@ -84,6 +84,11 @@ class OrderDataEntity extends Entity
      */
     public const FIELD_DURATION = 'duration';
 
+    /**
+     * @var string
+     */
+    public const FIELD_INVOICE_UUID = 'invoiceUuid';
+
     protected string $orderId;
 
     protected string $orderVersionId;
@@ -93,6 +98,8 @@ class OrderDataEntity extends Entity
     protected string $orderState;
 
     protected string $referenceId;
+
+    protected ?string $invoiceUuid = null;
 
     protected ?string $externalInvoiceNumber = null;
 
@@ -133,6 +140,11 @@ class OrderDataEntity extends Entity
     public function getReferenceId(): string
     {
         return $this->referenceId;
+    }
+
+    public function getInvoiceUuid(): ?string
+    {
+        return $this->invoiceUuid;
     }
 
     public function getExternalInvoiceNumber(): ?string

@@ -144,5 +144,20 @@
             <label>Status for cancellation</label>
             <label lang="de-DE">Status für die Stornierung</label>
         </input-field>
+
+        <!-- waiting for this to provide more options: https://issues.shopware.com/issues/NEXT-7670 -->
+        <input-field type="single-select">
+            <name>stateReturned</name>
+            <options>
+                <option>
+                    <id>returned</id>
+                    <name>Returned</name>
+                    <name lang="de-DE">Returniert</name>
+                </option>
+            </options>
+            <defaultValue>returned</defaultValue>
+            <label>Status for retoure</label>
+            <label lang="de-DE">Status für die Retoure</label>
+        </input-field>
     </card>
 </config>
