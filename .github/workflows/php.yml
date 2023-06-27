@@ -90,21 +90,3 @@ jobs:
       - name: "Check Code style (rector)"
         working-directory: custom/plugins/${{ env.MODULE_NAME }}
         run: ./vendor/bin/rector process --dry-run --autoload-file ../../../vendor/autoload.php
-
-  build:
-    name: Build installable packages
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-go@v4
-
-      - run: go install github.com/FriendsOfShopware/shopware-cli@latest
-
-      - run: shopware-cli extension zip . --disable-git --release
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: Module bundles
-          path: "*.zip"
