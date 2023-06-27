@@ -13,156 +13,83 @@ permissions:
   contents: read
 
 jobs:
-  phpstan:
-    name: PhpStan (Shopware ${{ matrix.shopware-versions }}, PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }})
+  lint:
+    name: Lint (Shopware ${{ matrix.shopware-version }}, PHP ${{ matrix.php-version }} on ${{ matrix.operating-system }})
     runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
         operating-system: [ 'ubuntu-latest' ]
-        php-versions: [ '8.1', '8.2' ]
-        shopware-versions: [ 'v6.5.0.0', 'v6.5.1.0', 'v6.5.2.0' ]
+        php-version: [ '8.1', '8.2' ]
+        shopware-version: [ 'v6.5.0.0', 'v6.5.1.0', 'v6.5.2.0' ]
       fail-fast: false
       max-parallel: 10
     steps:
+      - name: Install PHP
+        uses: shivammathur/setup-php@master
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mbstring, xdebug, curl, dom, fileinfo, gd, iconv, intl, json, xml, mbstring, pdo, phar, zip, sodium, pdo_mysql
+          tools: composer:2.2
+
+      - name: "Check PHP Version"
+        run: php -v
+
+      - name: "Check Composer Version"
+        run: composer -V
+
+      - name: "Check PHP Extensions"
+        run: php -m
+
       - name: "checkout Shopware"
         uses: actions/checkout@v3
         with:
           repository: shopware/production
-          ref: ${{ matrix.shopware-versions }}
+          ref: 'flex'
 
-      - name: "checkout module"
+      - name: "Checkout ${{ env.COMPOSER_NAME }}"
         uses: actions/checkout@v3
         with:
-          path: ${{ env.MODULE_DIR }}
+          path: custom/plugins/${{ env.MODULE_NAME }}
 
-      - name: Cache Composer dependencies
+      - name: "Get composer cache directory"
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: "Cache Composer dependencies"
         uses: actions/cache@v3
         with:
-          path: /tmp/composer-cache
-          key: ${{ matrix.operating-system }}-${{ matrix.php-versions }}-${{ matrix.shopware-versions }}-${{ hashFiles('**/composer.lock') }}
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ matrix.operating-system }}-${{ matrix.php-version }}-${{ matrix.shopware-version }}-${{ hashFiles('**/composer.lock') }}
 
-      - name: "composer config: prefer stable"
-        uses: php-actions/composer@v6
-        with:
-          command: config prefer-stable true
+      - name: "Install Shopware dependencies"
+        # Install Shopware with --no-dev to prevent that dev-tools of the module got in conflict with the tools of shopware
+        run: |
+          composer req shopware/administration:${{ matrix.shopware-version }} shopware/core:${{ matrix.shopware-version }} shopware/elasticsearch:${{ matrix.shopware-version }} shopware/storefront:${{ matrix.shopware-version }} --no-update
+          composer install --no-dev
 
-      - name: "composer config: minimum stability"
-        uses: php-actions/composer@v6
-        with:
-          command: config minimum-stability dev
+      - name: "Install ${{ env.COMPOSER_NAME }}"
+        run: |
+          composer config prefer-stable true
+          composer config minimum-stability dev
+          composer req ${{ env.COMPOSER_NAME }}
 
-      - uses: php-actions/composer@v6
-        with:
-          command: req phpstan/phpstan ${{ env.COMPOSER_NAME }}
-          args: --dev --no-scripts --no-plugins --ignore-platform-req=ext-gd --ignore-platform-req=ext-intl --ignore-platform-req=ext-pdo_mysql --ignore-platform-req=ext-zip
-          php_version: ${{ matrix.php-versions }}
+      - name: "Install DEV-Tools"
+        working-directory: custom/plugins/${{ env.MODULE_NAME }}
+        run: |
+          composer remove shopware/* --no-update
+          composer install
 
-      - uses: php-actions/phpstan@v3
-        with:
-          php_version: ${{ matrix.php-versions }}
-          configuration: ${{ env.MODULE_DIR }}/phpstan.neon
-          memory_limit: -1
+      - name: "Run PHPStan"
+        working-directory: custom/plugins/${{ env.MODULE_NAME }}
+        run: ./vendor/bin/phpstan analyse --autoload-file ../../../vendor/autoload.php
 
-  rector:
-    name: Rector (Shopware ${{ matrix.shopware-versions }}, PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }})
-    runs-on: ${{ matrix.operating-system }}
-    strategy:
-      matrix:
-        operating-system: [ 'ubuntu-latest' ]
-        php-versions: [ '8.1', '8.2' ]
-        shopware-versions: [ 'v6.5.0.0', 'v6.5.1.0', 'v6.5.2.0' ]
-      fail-fast: false
-      max-parallel: 10
-    steps:
-      - name: "checkout Shopware"
-        uses: actions/checkout@v3
-        with:
-          repository: shopware/platform
-          ref: ${{ matrix.shopware-versions }}
+      - name: "Check Code style (easy-coding-style)"
+        working-directory: custom/plugins/${{ env.MODULE_NAME }}
+        run: ./vendor/bin/ecs
 
-      - name: "checkout module"
-        uses: actions/checkout@v3
-        with:
-          path: ${{ env.MODULE_DIR }}
-
-      - name: Cache Composer dependencies
-        uses: actions/cache@v3
-        with:
-          path: /tmp/composer-cache
-          key: ${{ matrix.operating-system }}-${{ matrix.php-versions }}-${{ matrix.shopware-versions }}-${{ hashFiles('**/composer.lock') }}
-
-      - name: "composer config: prefer stable"
-        uses: php-actions/composer@v6
-        with:
-          command: config prefer-stable true
-
-      - name: "composer config: minimum stability"
-        uses: php-actions/composer@v6
-        with:
-          command: config minimum-stability dev
-
-      - uses: php-actions/composer@v6
-        with:
-          command: req rector/rector phpstan/phpstan ${{ env.COMPOSER_NAME }}
-          args: --dev --no-scripts --no-plugins --ignore-platform-req=ext-gd --ignore-platform-req=ext-intl --ignore-platform-req=ext-pdo_mysql --ignore-platform-req=ext-zip
-          php_version: ${{ matrix.php-versions }}
-
-      - uses: php-actions/composer@v6
-        with:
-          command: rector-lint
-          working_dir: ${{ env.MODULE_DIR }}
-          php_version: ${{ matrix.php-versions }}
-
-  coding-style:
-    name: CodingStyle (Shopware ${{ matrix.shopware-versions }}, PHP ${{ matrix.php-versions }} on ${{ matrix.operating-system }})
-    runs-on: ${{ matrix.operating-system }}
-    strategy:
-      matrix:
-        operating-system: [ 'ubuntu-latest' ]
-        php-versions: [ '8.1', '8.2' ]
-        shopware-versions: [ 'v6.5.0.0', 'v6.5.1.0', 'v6.5.2.0' ]
-      fail-fast: false
-      max-parallel: 10
-    steps:
-      - name: "checkout Shopware"
-        uses: actions/checkout@v3
-        with:
-          repository: shopware/platform
-          ref: ${{ matrix.shopware-versions }}
-
-      - name: "checkout module"
-        uses: actions/checkout@v3
-        with:
-          path: ${{ env.MODULE_DIR }}
-
-      - name: Cache Composer dependencies
-        uses: actions/cache@v3
-        with:
-          path: /tmp/composer-cache
-          key: ${{ matrix.operating-system }}-${{ matrix.php-versions }}-${{ matrix.shopware-versions }}-${{ hashFiles('**/composer.lock') }}
-
-      - name: "composer config: prefer stable"
-        uses: php-actions/composer@v6
-        with:
-          command: config prefer-stable true
-
-      - name: "composer config: minimum stability"
-        uses: php-actions/composer@v6
-        with:
-          command: config minimum-stability dev
-
-      - uses: php-actions/composer@v6
-        with:
-          command: req symplify/easy-coding-standard ${{ env.COMPOSER_NAME }}
-          args: --dev --no-scripts --no-plugins --ignore-platform-req=ext-gd --ignore-platform-req=ext-intl --ignore-platform-req=ext-pdo_mysql --ignore-platform-req=ext-zip
-          php_version: ${{ matrix.php-versions }}
-          memory_limit: -1
-
-      - uses: php-actions/composer@v6
-        with:
-          command: code-style-lint
-          working_dir: ${{ env.MODULE_DIR }}
-          php_version: ${{ matrix.php-versions }}
+      - name: "Check Code style (rector)"
+        working-directory: custom/plugins/${{ env.MODULE_NAME }}
+        run: ./vendor/bin/rector process --dry-run --autoload-file ../../../vendor/autoload.php
 
   build:
     name: Build installable packages

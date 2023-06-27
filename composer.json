@@ -36,15 +36,17 @@
         "shopware/core": "^6.5.0",
         "billie/api-php-sdk": "^3.0.0-alpha1"
     },
+    "require-dev": {
+        "phpstan/phpstan": "^1.10",
+        "rector/rector": "^0.17.1",
+        "symplify/easy-coding-standard": "^11.5"
+    },
     "scripts": {
-        "init-dev-ops": [
-            "composer req rector/rector symplify/easy-coding-standard phpstan/phpstan --dev --no-scripts --no-plugins -d ../../../"
-        ],
-        "rector-fix": "../../../vendor/bin/rector process",
-        "rector-lint": "../../../vendor/bin/rector process --dry-run",
-        "phpstan-lint": "../../../vendor/bin/phpstan analyse",
-        "code-style-fix": "../../../vendor/bin/ecs --fix",
-        "code-style-lint": "../../../vendor/bin/ecs",
+        "rector-fix": "./vendor/bin/rector process --autoload-file ../../../vendor/autoload.php",
+        "rector-lint": "./vendor/bin/rector process --dry-run --autoload-file ../../../vendor/autoload.php",
+        "phpstan-lint": "./vendor/bin/phpstan analyse --autoload-file ../../../vendor/autoload.php",
+        "code-style-fix": "./vendor/bin/ecs --fix",
+        "code-style-lint": "./vendor/bin/ecs",
         "lint": [
             "@rector-lint",
             "@phpstan-lint",

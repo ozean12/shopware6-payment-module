@@ -6,12 +6,6 @@ build:
             enabled: true
             enable_es_build_for_admin: true
             enable_es_build_for_storefront: false
-            # need the hooks cause issue: https://github.com/FriendsOfShopware/shopware-cli/issues/176
-            after_hooks:
-                - rm -f src/Resources/public/administration/js/billie-payment-s-w6.js
-                - mv src/Resources/public/administration/js/billie-payment-sw6.js src/Resources/public/administration/js/billie-payment-s-w6.js
-                - rm -f src/Resources/app/storefront/dist/storefront/js/billie-payment-s-w6.js
-                - mv src/Resources/app/storefront/dist/storefront/js/billie-payment-sw6.js src/Resources/app/storefront/dist/storefront/js/billie-payment-s-w6.js
         pack:
             excludes:
                 paths:
