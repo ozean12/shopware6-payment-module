@@ -17,7 +17,8 @@ use Billie\BilliePayment\Components\PaymentMethod\Model\Extension\PaymentMethodE
 use Billie\BilliePayment\Components\PaymentMethod\Model\PaymentMethodConfigEntity;
 use Billie\BilliePayment\Util\CriteriaHelper;
 use Billie\Sdk\Model\Amount;
-use Billie\Sdk\Model\Request\CheckoutSessionConfirmRequestModel;
+use Billie\Sdk\Model\Request\CheckoutSession\CheckoutSessionConfirmRequestModel;
+use Billie\Sdk\Model\Request\CheckoutSession\Confirm\Debtor;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -54,11 +55,17 @@ class ConfirmDataService
         $paymentConfig = $orderEntity->getTransactions()->first()->getPaymentMethod()->getExtension(PaymentMethodExtension::EXTENSION_NAME);
 
         $billingAddressId = $orderEntity->getBillingAddressId();
+        $billingAddress = $orderEntity->getAddresses()->get($billingAddressId);
         $shippingAddressId = $orderEntity->getDeliveries()->first()->getShippingOrderAddressId();
 
         $model = (new CheckoutSessionConfirmRequestModel())
             ->setSessionUuid($sessionUuid)
-            ->setCompany(AddressHelper::createDebtorCompany($orderEntity->getAddresses()->get($billingAddressId)))
+            ->setExternalCode($orderEntity->getOrderNumber())
+            ->setDebtor(
+                (new Debtor())
+                    ->setName($billingAddress->getCompany())
+                    ->setAddress(AddressHelper::createAddress($billingAddress))
+            )
             ->setDeliveryAddress(AddressHelper::createAddress($orderEntity->getAddresses()->get($shippingAddressId)))
             ->setDuration($paymentConfig->getDuration())
             ->setAmount(

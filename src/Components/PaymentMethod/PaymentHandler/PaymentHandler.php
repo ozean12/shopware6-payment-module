@@ -14,11 +14,8 @@ namespace Billie\BilliePayment\Components\PaymentMethod\PaymentHandler;
 use Billie\BilliePayment\Components\Order\Model\OrderDataEntity;
 use Billie\BilliePayment\Components\PaymentMethod\Service\ConfirmDataService;
 use Billie\Sdk\Exception\BillieException;
-use Billie\Sdk\Model\Request\GetBankDataRequestModel;
-use Billie\Sdk\Model\Request\UpdateOrderRequestModel;
-use Billie\Sdk\Service\Request\CheckoutSessionConfirmRequest;
-use Billie\Sdk\Service\Request\GetBankDataRequest;
-use Billie\Sdk\Service\Request\UpdateOrderRequest;
+use Billie\Sdk\Exception\GatewayException;
+use Billie\Sdk\Service\Request\CheckoutSession\CheckoutSessionConfirmRequest;
 use Monolog\Logger;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
@@ -75,7 +72,6 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
         $confirmModel = $this->confirmDataService->getConfirmModel($billieData->get('session-id'), $order);
         try {
             $response = $this->container->get(CheckoutSessionConfirmRequest::class)->execute($confirmModel);
-            $bankDataResponse = $this->container->get(GetBankDataRequest::class)->execute(new GetBankDataRequestModel());
 
             $this->orderDataRepository->upsert([
                 [
@@ -83,39 +79,31 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
                     OrderDataEntity::FIELD_ORDER_VERSION_ID => $order->getVersionId(),
                     OrderDataEntity::FIELD_REFERENCE_ID => $response->getUuid(),
                     OrderDataEntity::FIELD_ORDER_STATE => $response->getState(),
-                    OrderDataEntity::FIELD_BANK_IBAN => $response->getBankAccount()->getIban(),
-                    OrderDataEntity::FIELD_BANK_BIC => $response->getBankAccount()->getBic(),
-                    OrderDataEntity::FIELD_BANK_NAME => $bankDataResponse->getBankName($response->getBankAccount()->getBic() ?? '.'),
+                    OrderDataEntity::FIELD_BANK_IBAN => $response->getPaymentMethods()[0]->getIban(),
+                    OrderDataEntity::FIELD_BANK_BIC => $response->getPaymentMethods()[0]->getBic(),
+                    OrderDataEntity::FIELD_BANK_NAME => $response->getPaymentMethods()[0]->getBankName(),
                     OrderDataEntity::FIELD_DURATION => $response->getDuration(),
                     OrderDataEntity::FIELD_IS_SUCCESSFUL => true,
                 ],
             ], $salesChannelContext->getContext());
         } catch (BillieException $billieException) {
+            $context = [
+                'error' => $billieException->getBillieCode(),
+                'order' => $order->getId(),
+                'session-id' => $billieData->get('session-id'),
+                'request' => $billieException,
+            ];
+            if ($billieException instanceof GatewayException) {
+                $context['request'] = $billieException->getRequestData();
+                $context['response'] = $billieException->getResponseData();
+            }
+
             $this->logger->critical(
                 'Exception during checkout session confirmation. (Exception: ' . $billieException->getMessage() . ')',
-                [
-                    'error' => $billieException->getBillieCode(),
-                    'order' => $order->getId(),
-                    'session-id' => $billieData->get('session-id'),
-                ]
+                $context
             );
 
             throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $billieException->getMessage());
-        }
-
-        $updateOrderModel = (new UpdateOrderRequestModel($response->getUuid()))
-            ->setOrderId($order->getOrderNumber());
-        try {
-            $this->container->get(UpdateOrderRequest::class)->execute($updateOrderModel);
-        } catch (BillieException $billieException) {
-            $this->logger->critical(
-                'Exception during order update. (Exception: ' . $billieException->getMessage() . ')',
-                [
-                    'error' => $billieException->getBillieCode(),
-                    'order' => $order->getId(),
-                    'billie-reference-id' => $response->getUuid(),
-                ]
-            );
         }
     }
 }

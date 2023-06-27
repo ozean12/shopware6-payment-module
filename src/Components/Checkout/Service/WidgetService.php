@@ -23,8 +23,7 @@ use Billie\Sdk\Exception\BillieException;
 use Billie\Sdk\Model\Amount;
 use Billie\Sdk\Model\LineItem;
 use Billie\Sdk\Model\Person;
-use Billie\Sdk\Model\Request\CreateSessionRequestModel;
-use Billie\Sdk\Service\Request\CreateSessionRequest;
+use Billie\Sdk\Model\Request\Widget\DebtorCompany;
 use Billie\Sdk\Util\WidgetHelper;
 use Shopware\Core\Checkout\Cart\LineItem\LineItemCollection;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
@@ -140,11 +139,10 @@ class WidgetService
     }
 
     /**
-     * @param CustomerEntity|OrderCustomerEntity         $customer
-     * @param CustomerAddressEntity|OrderAddressEntity   $billingAddress
-     * @param CustomerAddressEntity|OrderAddressEntity   $shippingAddress
+     * @param CustomerEntity|OrderCustomerEntity $customer
+     * @param CustomerAddressEntity|OrderAddressEntity $billingAddress
+     * @param CustomerAddressEntity|OrderAddressEntity $shippingAddress
      * @param LineItemCollection|OrderLineItemCollection $lineItems
-     * @noinspection PhpDocMissingThrowsInspection
      */
     protected function getBaseData(
         $customer,
@@ -156,10 +154,10 @@ class WidgetService
     ): ?ArrayStruct {
         try {
             /** @noinspection NullPointerExceptionInspection */
-            $checkoutSessionId = $this->container->get(CreateSessionRequest::class)
+            $checkoutSessionId = $this->container->get(\Billie\Sdk\Service\Request\CheckoutSession\CreateSessionRequest::class)
                 ->execute(
-                    (new CreateSessionRequestModel())
-                        ->setMerchantCustomerId($customer->getCustomerNumber())
+                    (new \Billie\Sdk\Model\Request\CheckoutSession\CreateSessionRequestModel())
+                        ->setMerchantCustomerId(AddressHelper::getCustomerNumber($customer))
                 )->getCheckoutSessionId();
         } catch (BillieException $billieException) {
             // TODO Log error
@@ -181,7 +179,10 @@ class WidgetService
                     ->setTax($price->getCalculatedTaxes()->getAmount())
                     ->toArray(),
                 'duration' => $billieConfig->getDuration(),
-                'debtor_company' => AddressHelper::createDebtorCompany($billingAddress)->toArray(),
+                'debtor_company' => (new DebtorCompany())
+                    ->setName($billingAddress->getCompany())
+                    ->setAddress(AddressHelper::createAddress($billingAddress))
+                    ->toArray(),
                 'delivery_address' => AddressHelper::createAddress($shippingAddress)->toArray(),
                 'debtor_person' => (new Person())
                     ->setValidateOnSet(false)
@@ -211,7 +212,6 @@ class WidgetService
 
     /**
      * @param LineItemCollection|OrderLineItemCollection $collection
-     * @noinspection PhpDocMissingThrowsInspection
      */
     protected function getLineItems($collection, Context $context): array
     {
@@ -231,7 +231,6 @@ class WidgetService
 
     /**
      * @param \Shopware\Core\Checkout\Cart\LineItem\LineItem|OrderLineItemEntity $lineItem
-     * @noinspection PhpDocMissingThrowsInspection
      */
     protected function getLineItem($lineItem, Context $context): LineItem
     {
