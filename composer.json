@@ -34,7 +34,7 @@
     "require": {
         "php": "~8.1.0 || ~8.2.0",
         "shopware/core": "^6.5.0",
-        "billie/api-php-sdk": "^2.0"
+        "billie/api-php-sdk": "^3.0.0-alpha1"
     },
     "scripts": {
         "init-dev-ops": [
