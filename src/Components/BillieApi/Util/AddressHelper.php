@@ -27,7 +27,7 @@ class AddressHelper
     public static function getCustomerNumber($customer): string
     {
         $merchantNumber = $customer->getCustomerNumber();
-        if (empty($merchantNumber)) {
+        if ($merchantNumber === null || $merchantNumber === '') {
             return $customer instanceof OrderCustomerEntity ? $customer->getCustomerId() : $customer->getId();
         }
 

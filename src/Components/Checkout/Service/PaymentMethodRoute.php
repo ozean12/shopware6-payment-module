@@ -117,7 +117,7 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
         }
 
         if (($order || $filterMethods) && ($billingAddress === null ||
-            empty($billingAddress->getCompany()) || $this->getCountryIso($billingAddress) !== 'DE')) {
+            ($billingAddress->getCompany() === null || $billingAddress->getCompany() === '') || $this->getCountryIso($billingAddress) !== 'DE')) {
             return $this->removeAllBillieMethods($response);
         }
 
