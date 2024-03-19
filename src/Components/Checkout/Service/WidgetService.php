@@ -11,6 +11,10 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Components\Checkout\Service;
 
+use Billie\BilliePayment\Components\PaymentMethod\PaymentHandler\DirectDebitPaymentHandler;
+use Billie\BilliePayment\Components\PaymentMethod\PaymentHandler\InvoicePaymentHandler;
+use Shopware\Core\Framework\DataAbstractionLayer\Entity;
+use Billie\BilliePayment\Bootstrap\PaymentMethods;
 use Billie\BilliePayment\Components\BillieApi\Util\AddressHelper;
 use Billie\BilliePayment\Components\Checkout\Event\WidgetDataBuilt;
 use Billie\BilliePayment\Components\Checkout\Event\WidgetDataLineItemBuilt;
@@ -166,14 +170,32 @@ class WidgetService
             return null;
         }
 
-        /** @var PaymentMethodConfigEntity $billieConfig */
-        $billieConfig = $salesChannelContext->getPaymentMethod()->get(PaymentMethodExtension::EXTENSION_NAME);
+        $paymentMethod = $salesChannelContext->getPaymentMethod();
+
+        /** @var PaymentMethodConfigEntity|null $billieConfig */
+        $billieConfig = $paymentMethod->getExtension(PaymentMethodExtension::EXTENSION_NAME);
+
+        if (!$billieConfig instanceof PaymentMethodConfigEntity) {
+            // todo log error
+            return null;
+        }
 
         $salutation = $this->salutationRepository->search(new Criteria([$billingAddress->getSalutationId()]), $salesChannelContext->getContext())->first();
+
+        $paymentMethodType = match ($paymentMethod->getHandlerIdentifier()) {
+            InvoicePaymentHandler::class => 'invoice',
+            DirectDebitPaymentHandler::class => 'direct_debit',
+            default => null
+        };
+
+        if ($paymentMethodType === null) {
+            return null;
+        }
 
         $widgetData = new ArrayStruct([
             'src' => WidgetHelper::getWidgetUrl($this->configService->isSandbox()),
             'checkoutSessionId' => $checkoutSessionId,
+            'paymentMethod' => $paymentMethodType,
             'checkoutData' => [
                 'amount' => (new Amount())
                     ->setGross($price->getTotalPrice())

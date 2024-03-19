@@ -30,10 +30,13 @@ export default class BilliePayment extends Plugin {
 
             BillieCheckoutWidget.mount({
                 billie_config_data: {
-                    'session_id': this.options.checkoutSessionId,
-                    'merchant_name': this.options.merchantName
+                    session_id: this.options.checkoutSessionId,
+                    merchant_name: this.options.merchantName,
                 },
-                billie_order_data: this.options.checkoutData
+                billie_order_data: this.options.checkoutData,
+                billie_widget_options: {
+                    payment_method: this.options.paymentMethod
+                }
             }).then((data) => {
                 const client = new HttpClient(window.accessKey, window.contextToken);
                 let url = '/billie-payment/update-addresses';

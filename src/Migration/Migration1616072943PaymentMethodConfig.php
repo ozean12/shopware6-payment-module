@@ -38,25 +38,6 @@ class Migration1616072943PaymentMethodConfig extends MigrationStep
                 CONSTRAINT `billie_payment_config_ibfk_1` FOREIGN KEY (`payment_method_id`) REFERENCES `payment_method` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
         ");
-
-        // this is a little bit crazy:
-        // The migrations will be executed AFTER the plugin method call `install`/`update`.
-        // so we must insert the "duration" values after we added the tables.
-        // TODO: we should think about a better solution to insert these values
-        foreach (PaymentMethods::PAYMENT_METHODS as $method) {
-            $connection->{$methodName}(
-                'REPLACE INTO ' . PaymentMethodConfigDefinition::ENTITY_NAME . '
-                    SELECT
-                        payment_method.id,
-                        ?
-                    FROM ' . PaymentMethodDefinition::ENTITY_NAME . '
-                    WHERE payment_method.handler_identifier = ?',
-                [
-                    $method[PaymentMethodExtension::EXTENSION_NAME]['duration'],
-                    $method['handlerIdentifier'],
-                ]
-            );
-        }
     }
 
     public function updateDestructive(Connection $connection): void

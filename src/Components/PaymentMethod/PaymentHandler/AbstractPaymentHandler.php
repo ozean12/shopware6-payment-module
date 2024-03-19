@@ -26,7 +26,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class PaymentHandler implements SynchronousPaymentHandlerInterface
+abstract class AbstractPaymentHandler implements SynchronousPaymentHandlerInterface
 {
     private ConfirmDataService $confirmDataService;
 

@@ -13,7 +13,9 @@ namespace Billie\BilliePayment\Components\PaymentMethod\Model\Definition;
 
 use Billie\BilliePayment\Components\PaymentMethod\Model\Collection\PaymentMethodConfigCollection;
 use Billie\BilliePayment\Components\PaymentMethod\Model\PaymentMethodConfigEntity;
+use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
@@ -45,10 +47,7 @@ class PaymentMethodConfigDefinition extends EntityDefinition
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([
-            (new IdField(
-                'payment_method_id',
-                PaymentMethodConfigEntity::FIELD_ID
-            ))->addFlags(new Required(), new PrimaryKey()),
+            (new FkField('payment_method_id', PaymentMethodConfigEntity::FIELD_ID, PaymentMethodDefinition::class, 'id'))->addFlags(new Required(), new PrimaryKey()),
 
             (new IntField(
                 'duration',

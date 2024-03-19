@@ -53,10 +53,6 @@ class BilliePaymentSW6 extends Plugin
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->update();
         }
-
-        foreach ($bootstrapper as $bootstrap) {
-            $bootstrap->postUpdate();
-        }
     }
 
     public function uninstall(UninstallContext $uninstallContext): void
@@ -104,6 +100,24 @@ class BilliePaymentSW6 extends Plugin
 
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->postActivate();
+        }
+    }
+
+    public function postInstall(InstallContext $installContext): void
+    {
+        $bootstrapper = $this->getBootstrapClasses($installContext);
+
+        foreach ($bootstrapper as $bootstrap) {
+            $bootstrap->postInstall();
+        }
+    }
+
+    public function postUpdate(UpdateContext $updateContext): void
+    {
+        $bootstrapper = $this->getBootstrapClasses($updateContext);
+
+        foreach ($bootstrapper as $bootstrap) {
+            $bootstrap->postUpdate();
         }
     }
 
