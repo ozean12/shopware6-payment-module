@@ -9,15 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
--
+- added direct debit payment method
 
 ### Fixed
 
--
+- prevent update of payment method textes on module update
 
 ### Changed
 
 - disable module validation für Billie widget to prevent errors during
+- technical improvements during module install/update
 
 ### Removed
 

@@ -12,20 +12,29 @@ declare(strict_types=1);
 namespace Billie\BilliePayment\Bootstrap;
 
 use Billie\BilliePayment\Components\PaymentMethod\Model\Extension\PaymentMethodExtension;
-use Billie\BilliePayment\Components\PaymentMethod\PaymentHandler\PaymentHandler;
+use Billie\BilliePayment\Components\PaymentMethod\PaymentHandler\DirectDebitPaymentHandler;
+use Billie\BilliePayment\Components\PaymentMethod\PaymentHandler\InvoicePaymentHandler;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\Uuid\Uuid;
 
 class PaymentMethods extends AbstractBootstrap
 {
+//    public const METHOD_ID_INVOICE = '52db55acf63741b8a88505e2ea90100e';
     /**
-     * @var array<string, array<string, (class-string<PaymentHandler> | bool | array<string, array<string, string>> | array<string, int> | string)>>
+     * @var string
+     */
+    public const METHOD_ID_DIRECT_DEBIT = '7a7691e33d404e72b8c287266c7ff523';
+
+    /**
+     * @var array
      */
     public const PAYMENT_METHODS = [
-        PaymentHandler::class => [
-            'handlerIdentifier' => PaymentHandler::class,
+        [
+//            'id' => self::METHOD_ID_INVOICE, // we can not add this, because we can not update the method-id in the saved context of the user.
+            'handlerIdentifier' => InvoicePaymentHandler::class,
             'name' => 'Billie Invoice',
             'description' => 'Pay comfortably and securely on invoice - within {duration} days after receiving the goods.',
             'afterOrderEnabled' => false,
@@ -37,6 +46,25 @@ class PaymentMethods extends AbstractBootstrap
                 'en-GB' => [
                     'name' => 'Billie Invoice',
                     'description' => 'Pay comfortably and securely on invoice - within {duration} days after receiving the goods.',
+                ],
+            ],
+            PaymentMethodExtension::EXTENSION_NAME => [
+                'duration' => 14,
+            ],
+        ], [
+            'id' => self::METHOD_ID_DIRECT_DEBIT,
+            'handlerIdentifier' => DirectDebitPaymentHandler::class,
+            'name' => 'Billie SEPA Direct Debit',
+            'description' => 'Pay conveniently and securely using SEPA direct debit by Billie {duration} days upon shipment of goods.',
+            'afterOrderEnabled' => false,
+            'translations' => [
+                'de-DE' => [
+                    'name' => 'Billie SEPA Lastschrift',
+                    'description' => 'Bezahlen Sie bequem und sicher per SEPA Lastschrift mit Billie {duration} Tage nach Warenversand.',
+                ],
+                'en-GB' => [
+                    'name' => 'Billie SEPA Direct Debit',
+                    'description' => 'Pay conveniently and securely using SEPA direct debit by Billie {duration} days upon shipment of goods.',
                 ],
             ],
             PaymentMethodExtension::EXTENSION_NAME => [
@@ -54,6 +82,7 @@ class PaymentMethods extends AbstractBootstrap
      */
     private ?object $paymentRepository = null;
 
+
     public function injectServices(): void
     {
         $this->paymentRepository = $this->container->get('payment_method.repository');
@@ -61,20 +90,21 @@ class PaymentMethods extends AbstractBootstrap
 
     public function update(): void
     {
-        foreach (self::PAYMENT_METHODS as $paymentMethod) {
-            $this->upsertPaymentMethod($paymentMethod);
-        }
+    }
 
-        // Keep active flags as they are
+    public function postUpdate(): void
+    {
+        $this->addPaymentMethods();
+    }
+
+    public function postInstall(): void
+    {
+        $this->addPaymentMethods();
+        $this->setActiveFlags(false);
     }
 
     public function install(): void
     {
-        foreach (self::PAYMENT_METHODS as $paymentMethod) {
-            $this->upsertPaymentMethod($paymentMethod);
-        }
-
-        $this->setActiveFlags(false);
     }
 
     public function uninstall(bool $keepUserData = false): void
@@ -92,28 +122,7 @@ class PaymentMethods extends AbstractBootstrap
         $this->setActiveFlags(false);
     }
 
-    protected function upsertPaymentMethod(array $paymentMethod): void
-    {
-        $paymentSearchResult = $this->paymentRepository->search(
-            (
-                (new Criteria())
-                    ->addFilter(new EqualsFilter('handlerIdentifier', $paymentMethod['handlerIdentifier']))
-                    ->setLimit(1)
-            ),
-            $this->defaultContext
-        );
-
-        /** @var PaymentMethodEntity|null $paymentEntity */
-        $paymentEntity = $paymentSearchResult->first();
-        if ($paymentEntity instanceof PaymentMethodEntity) {
-            $paymentMethod['id'] = $paymentEntity->getId();
-        }
-
-        $paymentMethod['pluginId'] = $this->plugin->getId();
-        $this->paymentRepository->upsert([$paymentMethod], $this->defaultContext);
-    }
-
-    protected function setActiveFlags(bool $activated): void
+    private function setActiveFlags(bool $activated): void
     {
         /** @var PaymentMethodEntity[] $paymentEntities */
         $paymentEntities = $this->paymentRepository->search(
@@ -121,11 +130,33 @@ class PaymentMethods extends AbstractBootstrap
             $this->defaultContext
         )->getElements();
 
-        $updateData = array_map(static fn (PaymentMethodEntity $entity): array => [
+        $updateData = array_map(static fn(PaymentMethodEntity $entity): array => [
             'id' => $entity->getId(),
             'active' => $activated,
         ], $paymentEntities);
 
         $this->paymentRepository->update(array_values($updateData), $this->defaultContext);
+    }
+
+    private function addPaymentMethods():void
+    {
+        // add payment methods which does not exist yet
+        foreach (self::PAYMENT_METHODS as $paymentMethod) {
+            if (!isset($paymentMethod['id'])) {
+                $criteria = new Criteria();
+                $criteria->addFilter(new EqualsFilter('handlerIdentifier', $paymentMethod['handlerIdentifier']));
+                $criteria->setLimit(1);
+            } else {
+                $criteria = new Criteria([$paymentMethod['id']]);
+            }
+
+            $id = $this->paymentRepository->searchIds($criteria, $this->defaultContext)->firstId();
+
+            if ($id === null) {
+                $paymentMethod['pluginId'] = $this->plugin->getId();
+                $paymentMethod['active'] = false;
+                $this->paymentRepository->upsert([$paymentMethod], $this->defaultContext);
+            }
+        }
     }
 }

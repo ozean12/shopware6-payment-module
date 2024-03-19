@@ -6,10 +6,18 @@
 
         <defaults autowire="true" />
 
-        <service id="Billie\BilliePayment\Components\PaymentMethod\PaymentHandler\PaymentHandler">
+        <service id="Billie\BilliePayment\Components\PaymentMethod\PaymentHandler\AbstractPaymentHandler">
             <argument key="$orderDataRepository" type="service" id="billie_order_data.repository"/>
             <argument key="$logger" id="billie_payment.logger" type="service" />
             <argument key="$container" type="service" id="service_container" />
+        </service>
+
+        <service id="Billie\BilliePayment\Components\PaymentMethod\PaymentHandler\DirectDebitPaymentHandler"
+                 parent="Billie\BilliePayment\Components\PaymentMethod\PaymentHandler\AbstractPaymentHandler">
+            <tag name="shopware.payment.method.sync"/>
+        </service>
+        <service id="Billie\BilliePayment\Components\PaymentMethod\PaymentHandler\InvoicePaymentHandler"
+                 parent="Billie\BilliePayment\Components\PaymentMethod\PaymentHandler\AbstractPaymentHandler">
             <tag name="shopware.payment.method.sync"/>
         </service>
 
