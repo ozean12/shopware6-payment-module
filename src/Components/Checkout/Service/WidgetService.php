@@ -179,13 +179,13 @@ class WidgetService
                     ->setGross($price->getTotalPrice())
                     ->setNet($price->getNetPrice())
                     ->setTax($price->getCalculatedTaxes()->getAmount())
-                    ->toArray(),
+                    ->toArray(false),
                 'duration' => $billieConfig->getDuration(),
                 'debtor_company' => (new DebtorCompany())
                     ->setName($billingAddress->getCompany())
                     ->setAddress(AddressHelper::createAddress($billingAddress))
-                    ->toArray(),
-                'delivery_address' => AddressHelper::createAddress($shippingAddress)->toArray(),
+                    ->toArray(false),
+                'delivery_address' => AddressHelper::createAddress($shippingAddress)->toArray(false),
                 'debtor_person' => (new Person())
                     ->setValidateOnSet(false)
                     ->setSalutation($this->configService->getSalutation($salutation))
@@ -193,7 +193,7 @@ class WidgetService
                     ->setLastname($customer->getLastName())
                     ->setPhone($billingAddress->getPhoneNumber())
                     ->setMail($customer->getEmail())
-                    ->toArray(),
+                    ->toArray(false),
                 'line_items' => $this->getLineItems($lineItems, $salesChannelContext->getContext()),
             ],
         ]);
