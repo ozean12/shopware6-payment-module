@@ -17,11 +17,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- 
+-
 
 ### Removed
 
 -
+
+## [3.0.0] - 2023-09-01
+
+Release for Shopware 6.5.x
+
+### Added
+
+- API v2 integration
+
+### Changed
+
+- configuration: the salutation fields are now required
+
+## [2.0.1] - 2023-09-01
+
+Release for Shopware 6.4.x
+
+Info: we removed version 2.0.0 because of a wrong Shopware version dependency.
+
+### Added
+
+- API v2 integration
+
+### Changed
+
+- configuration: the salutation fields are now required
 
 
 ## [3.0.0] - 2023-09-01
