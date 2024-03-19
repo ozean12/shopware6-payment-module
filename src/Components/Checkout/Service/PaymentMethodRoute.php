@@ -167,13 +167,17 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
 
             // Description
             $description = $paymentMethod->getDescription();
-            $description = str_replace('{duration}', $duration, $description);
-            $paymentMethod->setDescription($description);
+            if (is_string($description)) {
+                $description = str_replace('{duration}', $duration, $description);
+                $paymentMethod->setDescription($description);
+            }
 
             // Name
             $name = $paymentMethod->getName();
-            $name = str_replace('{duration}', $duration, $name);
-            $paymentMethod->setName($name);
+            if (is_string($name)) {
+                $name = str_replace('{duration}', $duration, $name);
+                $paymentMethod->setName($name);
+            }
 
             // Translations
             $prepared = [];

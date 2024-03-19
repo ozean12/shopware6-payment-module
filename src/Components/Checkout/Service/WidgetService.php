@@ -17,6 +17,8 @@ use Billie\BilliePayment\Components\Checkout\Event\WidgetDataLineItemBuilt;
 use Billie\BilliePayment\Components\Checkout\Event\WidgetDataLineItemCriteriaPrepare;
 use Billie\BilliePayment\Components\PaymentMethod\Model\Extension\PaymentMethodExtension;
 use Billie\BilliePayment\Components\PaymentMethod\Model\PaymentMethodConfigEntity;
+use Billie\BilliePayment\Components\PaymentMethod\PaymentHandler\DirectDebitPaymentHandler;
+use Billie\BilliePayment\Components\PaymentMethod\PaymentHandler\InvoicePaymentHandler;
 use Billie\BilliePayment\Components\PluginConfig\Service\ConfigService;
 use Billie\BilliePayment\Util\CriteriaHelper;
 use Billie\Sdk\Exception\BillieException;
@@ -171,15 +173,33 @@ class WidgetService
             return null;
         }
 
-        /** @var PaymentMethodConfigEntity $billieConfig */
-        $billieConfig = $salesChannelContext->getPaymentMethod()->get(PaymentMethodExtension::EXTENSION_NAME);
+        $paymentMethod = $salesChannelContext->getPaymentMethod();
+
+        /** @var PaymentMethodConfigEntity|null $billieConfig */
+        $billieConfig = $paymentMethod->get(PaymentMethodExtension::EXTENSION_NAME);
+
+        if (!$billieConfig instanceof PaymentMethodConfigEntity) {
+            // todo log error
+            return null;
+        }
 
         /** @var SalutationEntity $salutation */
         $salutation = $this->salutationRepository->search(new Criteria([$billingAddress->getSalutationId()]), $salesChannelContext->getContext())->first();
 
+        $paymentMethodType = match ($paymentMethod->getHandlerIdentifier()) {
+            InvoicePaymentHandler::class => 'invoice',
+            DirectDebitPaymentHandler::class => 'direct_debit',
+            default => null
+        };
+
+        if ($paymentMethodType === null) {
+            return null;
+        }
+
         $widgetData = new ArrayStruct([
             'src' => WidgetHelper::getWidgetUrl($this->configService->isSandbox()),
             'checkoutSessionId' => $checkoutSessionId,
+            'paymentMethod' => $paymentMethodType,
             'checkoutData' => [
                 'amount' => (new Amount())
                     ->setGross($price->getTotalPrice())

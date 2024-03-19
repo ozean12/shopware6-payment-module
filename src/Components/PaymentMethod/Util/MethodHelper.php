@@ -11,13 +11,13 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Components\PaymentMethod\Util;
 
-use Billie\BilliePayment\Bootstrap\PaymentMethods;
+use Billie\BilliePayment\Components\PaymentMethod\PaymentHandler\AbstractPaymentHandler;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 
 class MethodHelper
 {
     public static function isBilliePayment(PaymentMethodEntity $paymentMethodEntity): bool
     {
-        return array_key_exists($paymentMethodEntity->getHandlerIdentifier(), PaymentMethods::PAYMENT_METHODS);
+        return is_subclass_of($paymentMethodEntity->getHandlerIdentifier(), AbstractPaymentHandler::class);
     }
 }
