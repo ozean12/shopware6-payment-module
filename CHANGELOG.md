@@ -13,11 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
--
+- fix cancel delivery without (external) invoice number
 
 ### Changed
 
 - disable module validation für Billie widget to prevent errors during
+- fix cancelling delivery without (external) invoice/invoice-url
+- removed the state-configuration from extension configuration
 
 ### Removed
 

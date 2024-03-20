@@ -29,6 +29,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateCollection;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineTransition\StateMachineTransitionActions;
 use Shopware\Core\System\StateMachine\StateMachineEntity;
 use Shopware\Core\System\StateMachine\StateMachineRegistry;
 use Shopware\Core\System\StateMachine\Transition;
@@ -52,8 +53,9 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
     public function transition(Transition $transition, Context $context): StateMachineStateCollection
     {
         if ($this->configService->isStateWatchingEnabled()
-            && $this->configService->getStateForShip()
-            && $transition->getEntityName() === OrderDeliveryDefinition::ENTITY_NAME) {
+            && $transition->getEntityName() === OrderDeliveryDefinition::ENTITY_NAME
+            && $transition->getTransitionName() === StateMachineTransitionActions::ACTION_SHIP
+        ) {
             /** @var OrderDeliveryEntity $orderDelivery */
             $orderDelivery = $this->orderDeliveryRepository->search(new Criteria([$transition->getEntityId()]), $context)->first();
             $order = $this->getOrder($orderDelivery->getOrderId(), $context);
