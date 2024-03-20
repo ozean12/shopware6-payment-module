@@ -105,59 +105,14 @@
     </card>
 
     <card>
-        <title>Notification about state changes</title>
-        <title lang="de-DE">Übertragen der Statusveränderung</title>
+        <title>Notification about state changes (delivery state)</title>
+        <title lang="de-DE">Übertragen der Statusveränderung (Lieferstatus)</title>
 
         <input-field type="bool">
             <name>stateEnabled</name>
             <label>Enable</label>
             <label lang="de-DE">Aktivieren</label>
             <value>0</value>
-        </input-field>
-
-        <!-- waiting for this to provide more options: https://issues.shopware.com/issues/NEXT-7670 -->
-        <input-field type="single-select">
-            <name>stateShipped</name>
-            <options>
-                <option>
-                    <id>shipped</id>
-                    <name>Shipped</name>
-                    <name lang="de-DE">Ausgeliefert</name>
-                </option>
-            </options>
-            <defaultValue>shipped</defaultValue>
-            <label>Status for shipment</label>
-            <label lang="de-DE">Status für die Lieferung</label>
-        </input-field>
-
-        <!-- waiting for this to provide more options: https://issues.shopware.com/issues/NEXT-7670 -->
-        <input-field type="single-select">
-            <name>stateCanceled</name>
-            <options>
-                <option>
-                    <id>cancelled</id>
-                    <name>Cancelled</name>
-                    <name lang="de-DE">Abgebrochen</name>
-                </option>
-            </options>
-            <defaultValue>cancelled</defaultValue>
-            <label>Status for cancellation</label>
-            <label lang="de-DE">Status für die Stornierung</label>
-        </input-field>
-
-        <!-- waiting for this to provide more options: https://issues.shopware.com/issues/NEXT-7670 -->
-        <input-field type="single-select">
-            <name>stateReturned</name>
-            <options>
-                <option>
-                    <id>returned</id>
-                    <name>Returned</name>
-                    <name lang="de-DE">Returniert</name>
-                </option>
-            </options>
-            <defaultValue>returned</defaultValue>
-            <label>Status for retoure</label>
-            <label lang="de-DE">Status für die Retoure</label>
         </input-field>
     </card>
 </config>

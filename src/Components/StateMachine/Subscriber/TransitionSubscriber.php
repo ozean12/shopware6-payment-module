@@ -18,6 +18,7 @@ use Billie\BilliePayment\Components\PluginConfig\Service\ConfigService;
 use Billie\BilliePayment\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryStates;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
@@ -93,13 +94,13 @@ class TransitionSubscriber implements EventSubscriberInterface
         }
 
         switch ($event->getToPlace()->getTechnicalName()) {
-            case $this->configService->getStateForShip():
+            case OrderDeliveryStates::STATE_SHIPPED:
                 $this->operationService->ship($order);
                 break;
-            case $this->configService->getStateCancel():
+            case OrderDeliveryStates::STATE_CANCELLED:
                 $this->operationService->cancel($order);
                 break;
-            case $this->configService->getStateReturn():
+            case OrderDeliveryStates::STATE_RETURNED:
                 $this->operationService->return($order);
                 break;
         }
