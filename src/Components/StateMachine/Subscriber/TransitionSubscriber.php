@@ -16,8 +16,10 @@ use Billie\BilliePayment\Components\Order\Model\Extension\OrderExtension;
 use Billie\BilliePayment\Components\Order\Model\OrderDataEntity;
 use Billie\BilliePayment\Components\PluginConfig\Service\ConfigService;
 use Billie\BilliePayment\Util\CriteriaHelper;
+use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
+use Shopware\Core\Checkout\Order\OrderCollection;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
@@ -31,7 +33,7 @@ class TransitionSubscriber implements EventSubscriberInterface
     private ConfigService $configService;
 
     /**
-     * @var EntityRepository
+     * @var EntityRepository<OrderDeliveryCollection>
      * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
      * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
      * After Shopware has removed the decorator, we can replace this by a normal definition
@@ -40,7 +42,7 @@ class TransitionSubscriber implements EventSubscriberInterface
     private object $orderDeliveryRepository;
 
     /**
-     * @var EntityRepository
+     * @var EntityRepository<OrderCollection>
      * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
      * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
      * After Shopware has removed the decorator, we can replace this by a normal definition
@@ -110,6 +112,9 @@ class TransitionSubscriber implements EventSubscriberInterface
         $criteria = CriteriaHelper::getCriteriaForOrder($orderId);
         $criteria->addAssociation('documents.documentType');
 
-        return $this->orderRepository->search($criteria, $context)->first();
+        /** @var OrderEntity $orderEntity */
+        $orderEntity = $this->orderRepository->search($criteria, $context)->first();
+
+        return $orderEntity;
     }
 }

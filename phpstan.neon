@@ -8,11 +8,11 @@ parameters:
         - '#type has no value type specified in iterable type array.#'
         - '#generic class Shopware\\Core\\Framework\\Struct\\ArrayStruct does not specify its types#'
         - '#generic class Shopware\\Core\\Framework\\Struct\\ArrayStruct but does not specify its types#'
-        - '#has unknown class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepositoryInterface as its type#'
-        - '#on an unknown class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepositoryInterface.#'
-        - '#has invalid type Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepositoryInterface.#'
-        # only for Shopware 6.4.14.x ignore error, which is related to php-doc
-        - '#Class .+Collection @extends tag contains incompatible type iterable<.+Entity>&Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityCollection#'
+        -
+            # verified errors: SW < 6.5.4.0 does not support generic types for EntityRepository
+            messages:
+                - '#PHPDoc tag @var for (parameter|property|variable) .*Repository contains generic type Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepository<.*but class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepository is not generic.#'
+                - '#PHPDoc tag @param for (parameter|property|variable) .*Repository contains generic type Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepository<.*but class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepository is not generic.#'
 
     reportUnmatchedIgnoredErrors: false
     tipsOfTheDay: false

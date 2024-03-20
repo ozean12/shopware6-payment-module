@@ -15,11 +15,15 @@ use Billie\Sdk\Model\Address;
 use Billie\Sdk\Model\Person;
 use Billie\Sdk\Util\ArrayHelper;
 use ReflectionClass;
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressCollection;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Customer\SalesChannel\AccountService;
+use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
+use Shopware\Core\Checkout\Order\OrderCollection;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -38,7 +42,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class CheckoutController extends StorefrontController
 {
     /**
-     * @var EntityRepository
+     * @var EntityRepository<CustomerAddressCollection>
      * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
      * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
      * After Shopware has removed the decorator, we can replace this by a normal definition
@@ -47,7 +51,7 @@ class CheckoutController extends StorefrontController
     private object $customerAddressRepository;
 
     /**
-     * @var EntityRepository
+     * @var EntityRepository<OrderAddressCollection>
      * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
      * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
      * After Shopware has removed the decorator, we can replace this by a normal definition
@@ -56,7 +60,7 @@ class CheckoutController extends StorefrontController
     private object $orderAddressRepository;
 
     /**
-     * @var EntityRepository
+     * @var EntityRepository<OrderCollection>
      * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
      * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
      * After Shopware has removed the decorator, we can replace this by a normal definition
@@ -65,7 +69,7 @@ class CheckoutController extends StorefrontController
     private object $orderRepository;
 
     /**
-     * @var EntityRepository
+     * @var EntityRepository<OrderDeliveryCollection>
      * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
      * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
      * After Shopware has removed the decorator, we can replace this by a normal definition
@@ -143,13 +147,13 @@ class CheckoutController extends StorefrontController
      * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
      * After Shopware has removed the decorator, we can replace this by a normal definition
      * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
-     * @param EntityRepository $repository
+     * @param EntityRepository<OrderAddressCollection>|EntityRepository<CustomerAddressCollection> $addressRepository
      */
     protected function updateAddress(
         string $shopwareBillingAddressId,
         string $shopwareShippingAddressId,
         array $requestParams,
-        object $repository,
+        object $addressRepository,
         Entity $referencedEntity,
         SalesChannelContext $salesChannelContext
     ): void {
@@ -161,7 +165,7 @@ class CheckoutController extends StorefrontController
         $billieShippingAddress = new Address($requestParams['delivery_address']);
 
         // update billing address
-        $repository->update([[
+        $addressRepository->update([[
             'id' => $shopwareBillingAddressId,
             'company' => $billieDebtorCompanyName,
             'firstName' => $billieDebtorPerson->getFirstname(),
@@ -176,7 +180,7 @@ class CheckoutController extends StorefrontController
             $shippingAddressData = [];
             if ($isNewAddress) {
                 /** @var CustomerAddressEntity|OrderAddressEntity $billingAddressEntity */
-                $billingAddressEntity = $repository->search(new Criteria([$shopwareBillingAddressId]), $context)->first();
+                $billingAddressEntity = $addressRepository->search(new Criteria([$shopwareBillingAddressId]), $context)->first();
 
                 // copy current address data and remove specific values
                 $shippingAddressData = array_diff_key($billingAddressEntity->jsonSerialize(), array_flip([
@@ -192,7 +196,7 @@ class CheckoutController extends StorefrontController
                 'zipcode' => $billieShippingAddress->getPostalCode(),
                 'city' => $billieShippingAddress->getCity(),
             ]);
-            $repository->upsert([$shippingAddressData], $context);
+            $addressRepository->upsert([$shippingAddressData], $context);
 
             if ($isNewAddress) {
                 if ($referencedEntity instanceof CustomerEntity) {

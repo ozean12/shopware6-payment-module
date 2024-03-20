@@ -16,6 +16,8 @@ use Billie\BilliePayment\Components\PaymentMethod\Util\MethodHelper;
 use Shopware\Core\Checkout\Order\SalesChannel\AbstractSetPaymentOrderRoute;
 use Shopware\Core\Checkout\Order\SalesChannel\SetPaymentOrderRoute as CoreSetPaymentOrderRoute;
 use Shopware\Core\Checkout\Order\SalesChannel\SetPaymentOrderRouteResponse;
+use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -26,7 +28,7 @@ class SetPaymentOrderRoute extends CoreSetPaymentOrderRoute
     private AbstractSetPaymentOrderRoute $innerService;
 
     /**
-     * @var EntityRepository
+     * @var EntityRepository<PaymentMethodCollection>
      * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
      * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
      * After Shopware has removed the decorator, we can replace this by a normal definition
@@ -55,9 +57,9 @@ class SetPaymentOrderRoute extends CoreSetPaymentOrderRoute
     {
         $paymentMethodId = $request->get('paymentMethodId');
 
-        $searchResult = $this->paymentMethodRepository->search(new Criteria([$paymentMethodId]), $context->getContext());
-        $paymentMethod = $searchResult->first();
-        if (MethodHelper::isBilliePayment($paymentMethod)) {
+        /** @var PaymentMethodEntity|null $paymentMethod */
+        $paymentMethod = $this->paymentMethodRepository->search(new Criteria([$paymentMethodId]), $context->getContext())->first();
+        if ($paymentMethod instanceof PaymentMethodEntity && MethodHelper::isBilliePayment($paymentMethod)) {
             throw new PaymentMethodNotAllowedException($paymentMethod->getName());
         }
 

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Components\BillieApi\Service;
 
+use Billie\BilliePayment\Components\Order\Model\Collection\OrderDataCollection;
 use Billie\BilliePayment\Components\Order\Model\Extension\OrderExtension;
 use Billie\BilliePayment\Components\Order\Model\OrderDataEntity;
 use Billie\BilliePayment\Components\Order\Util\DocumentUrlHelper;
@@ -45,7 +46,7 @@ class OperationService
     private ContainerInterface $container;
 
     /**
-     * @var EntityRepository
+     * @var EntityRepository<OrderDataCollection>
      * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
      * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
      * After Shopware has removed the decorator, we can replace this by a normal definition

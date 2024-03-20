@@ -34,8 +34,7 @@ file that was distributed with this source code.', 'separate' => 'bottom', 'loca
         AssignmentInConditionSniff::class
     ]);
 
-    $parameters = $ecsConfig->parameters();
-
-    $parameters->set(Option::CACHE_DIRECTORY, __DIR__ . '/var/cache/cs_fixer');
-    $parameters->set(Option::PATHS, [__DIR__ . '/src']);
+    $ecsConfig->paths([
+        __DIR__ . '/src'
+    ]);
 };

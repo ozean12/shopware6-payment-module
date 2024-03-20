@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Billie\BilliePayment\Components\PaymentMethod\PaymentHandler;
 
+use Billie\BilliePayment\Components\Order\Model\Collection\OrderDataCollection;
 use Billie\BilliePayment\Components\Order\Model\OrderDataEntity;
 use Billie\BilliePayment\Components\PaymentMethod\Service\ConfirmDataService;
 use Billie\Sdk\Exception\BillieException;
@@ -31,7 +32,7 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
     private ConfirmDataService $confirmDataService;
 
     /**
-     * @var EntityRepository
+     * @var EntityRepository<OrderDataCollection>
      * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
      * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
      * After Shopware has removed the decorator, we can replace this by a normal definition

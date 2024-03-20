@@ -124,13 +124,15 @@ class BilliePaymentSW6 extends Plugin
             new PluginConfig(),
         ];
 
-        /** @var EntityRepository $pluginRepository */
+        /** @var EntityRepository<Plugin\PluginCollection> $pluginRepository */
         $pluginRepository = $this->container->get('plugin.repository');
-        $plugins = $pluginRepository->search(
-            (new Criteria())->addFilter(new EqualsFilter('baseClass', static::class)),
+
+        /** @var Plugin\PluginEntity $plugin */
+        $plugin = $pluginRepository->search(
+            (new Criteria())->addFilter(new EqualsFilter('baseClass', static::class))->setLimit(1),
             $context->getContext()
-        );
-        $plugin = $plugins->first();
+        )->first();
+
         // $logger = new FileLogger($this->container->getParameter('kernel.logs_dir'));
         foreach ($bootstrapper as $bootstrap) {
             $bootstrap->setInstallContext($context);

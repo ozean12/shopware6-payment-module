@@ -18,9 +18,11 @@ use Billie\BilliePayment\Components\PluginConfig\Service\ConfigService;
 use Billie\BilliePayment\Components\StateMachine\Exception\InvoiceNumberMissingException;
 use Billie\BilliePayment\Util\CriteriaHelper;
 use Shopware\Core\Checkout\Document\Renderer\InvoiceRenderer;
+use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionEntity;
+use Shopware\Core\Checkout\Order\OrderCollection;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -36,7 +38,7 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
     protected ConfigService $configService;
 
     /**
-     * @var EntityRepository
+     * @var EntityRepository<OrderCollection>
      * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
      * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
      * After Shopware has removed the decorator, we can replace this by a normal definition
@@ -45,7 +47,7 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
     protected object $orderRepository;
 
     /**
-     * @var EntityRepository
+     * @var EntityRepository<OrderDeliveryCollection>
      * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
      * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
      * After Shopware has removed the decorator, we can replace this by a normal definition
@@ -140,6 +142,9 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
         $criteria = CriteriaHelper::getCriteriaForOrder($orderId);
         $criteria->addAssociation('documents.documentType');
 
-        return $this->orderRepository->search($criteria, $context)->first();
+        /** @var OrderEntity $orderEntity */
+        $orderEntity = $this->orderRepository->search($criteria, $context)->first();
+
+        return $orderEntity;
     }
 }

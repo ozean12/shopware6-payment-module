@@ -19,6 +19,7 @@ use Billie\BilliePayment\Util\CriteriaHelper;
 use Billie\Sdk\Model\Amount;
 use Billie\Sdk\Model\Request\CheckoutSession\CheckoutSessionConfirmRequestModel;
 use Billie\Sdk\Model\Request\CheckoutSession\Confirm\Debtor;
+use Shopware\Core\Checkout\Order\OrderCollection;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -29,7 +30,7 @@ class ConfirmDataService
     private EventDispatcherInterface $eventDispatcher;
 
     /**
-     * @var EntityRepository
+     * @var EntityRepository<OrderCollection>
      * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
      * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
      * After Shopware has removed the decorator, we can replace this by a normal definition

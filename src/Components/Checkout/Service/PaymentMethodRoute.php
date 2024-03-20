@@ -18,6 +18,7 @@ use Billie\BilliePayment\Components\PluginConfig\Service\ConfigService;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
+use Shopware\Core\Checkout\Order\OrderCollection;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Checkout\Payment\SalesChannel\AbstractPaymentMethodRoute;
@@ -25,6 +26,7 @@ use Shopware\Core\Checkout\Payment\SalesChannel\PaymentMethodRouteResponse;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\System\Country\CountryCollection;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +39,7 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
     private RequestStack $requestStack;
 
     /**
-     * @var EntityRepository
+     * @var EntityRepository<OrderCollection>
      * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
      * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
      * After Shopware has removed the decorator, we can replace this by a normal definition
@@ -46,7 +48,7 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
     private object $orderRepository;
 
     /**
-     * @var EntityRepository
+     * @var EntityRepository<CountryCollection>
      * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
      * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
      * After Shopware has removed the decorator, we can replace this by a normal definition
@@ -138,7 +140,7 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
     /**
      * @param CustomerAddressEntity|OrderAddressEntity $address
      */
-    private function getCountryIso($address): string
+    private function getCountryIso($address): ?string
     {
         // the whole function does not make any sense.
         // on the checkout-confirm page, the country-assoc is loaded.
@@ -146,12 +148,13 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
         // there is no reason to load the payment methods on the finish page. - so this is just a fix, during the methods will be loaded on the success-page.
 
         if (!$address->getCountry() instanceof CountryEntity) {
+            /** @var CountryEntity|null $country */
             $country = $this->countryRepository->search(new Criteria([$address->getCountryId()]), Context::createDefaultContext())->first();
         } else {
             $country = $address->getCountry();
         }
 
-        return $country->getIso();
+        return $country?->getIso();
     }
 
     private function replaceVariables(PaymentMethodEntity $paymentMethod): void
