@@ -3,6 +3,14 @@
         xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/master/src/Core/System/SystemConfig/Schema/config.xsd">
 
     <card>
+        <input-field type="text">
+            <name>merchantName</name>
+            <label>Merchant Name</label>
+            <label lang="de-DE">Firmenname</label>
+        </input-field>
+    </card>
+
+    <card>
         <title>API Mode</title>
         <title lang="de-DE">API Modus</title>
 

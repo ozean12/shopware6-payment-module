@@ -174,6 +174,7 @@ class WidgetService
         $widgetData = new ArrayStruct([
             'src' => WidgetHelper::getWidgetUrl($this->configService->isSandbox()),
             'checkoutSessionId' => $checkoutSessionId,
+            'merchantName' => $this->configService->getMerchantName(),
             'checkoutData' => [
                 'amount' => (new Amount())
                     ->setGross($price->getTotalPrice())

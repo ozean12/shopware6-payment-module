@@ -116,4 +116,11 @@ class ConfigService
 
         return isset($config['stateEnabled']) && $config['stateEnabled'];
     }
+
+    public function getMerchantName(): ?string
+    {
+        $config = $this->getPluginConfiguration();
+
+        return !empty($config['merchantName'] ?? null) ? $config['merchantName'] : null;
+    }
 }

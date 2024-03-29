@@ -30,8 +30,8 @@ export default class BilliePayment extends Plugin {
 
             BillieCheckoutWidget.mount({
                 billie_config_data: {
-                    'session_id': this.options.checkoutSessionId,
-                    'merchant_name': this.options.merchantName
+                    session_id: this.options.checkoutSessionId,
+                    merchant_name: this.options.merchantName
                 },
                 billie_order_data: this.options.checkoutData
             }).then((data) => {
