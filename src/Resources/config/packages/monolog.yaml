@@ -1,0 +1,9 @@
+monolog:
+    channels: ['billie']
+
+    handlers:
+        billieLogHandler:
+            type: rotating_file
+            path: "%kernel.logs_dir%/billie_%kernel.environment%.log"
+            level: error
+            channels: [ "billie"]
