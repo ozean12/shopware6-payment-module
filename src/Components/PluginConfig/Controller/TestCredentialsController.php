@@ -37,7 +37,7 @@ class TestCredentialsController extends AbstractController
                 $request->request->get('secret'),
                 $request->request->get('isSandbox')
             );
-        } catch (UserNotAuthorizedException $userNotAuthorizedException) {
+        } catch (UserNotAuthorizedException) {
             $success = false;
         }
 

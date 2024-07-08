@@ -72,17 +72,11 @@ class ConfigService
         $config['salutationFemale'] ??= null;
         $config['salutationFallback'] ??= null;
 
-        switch ($salutationEntity->getId()) {
-            case $config['salutationMale']:
-                $return = 'm';
-                break;
-            case $config['salutationFemale']:
-                $return = 'f';
-                break;
-            default:
-                $return = $config['salutationFallback'];
-                break;
-        }
+        $return = match ($salutationEntity->getId()) {
+            $config['salutationMale'] => 'm',
+            $config['salutationFemale'] => 'f',
+            default => $config['salutationFallback'],
+        };
 
         return in_array($return, ['m', 'f'], true) ? $return : 'm';
     }

@@ -38,7 +38,7 @@ class CheckoutSubscriber implements EventSubscriberInterface
     public function addWidgetData(PageLoadedEvent $event): void
     {
         if (!$event instanceof CheckoutConfirmPageLoadedEvent && !$event instanceof AccountEditOrderPageLoadedEvent) {
-            throw new RuntimeException('method ' . self::class . '::' . __METHOD__ . ' does not supports a parameter of type' . get_class($event));
+            throw new RuntimeException('method ' . self::class . '::' . __METHOD__ . ' does not supports a parameter of type' . $event::class);
         }
 
         $paymentMethod = $event->getSalesChannelContext()->getPaymentMethod();

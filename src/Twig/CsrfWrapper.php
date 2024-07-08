@@ -52,7 +52,7 @@ class CsrfWrapper extends AbstractExtension
         }
 
         return [
-            new TwigFunction('billie_sw_csrf', [$this, 'returnNothing']),
+            new TwigFunction('billie_sw_csrf', $this->returnNothing(...)),
         ];
     }
 

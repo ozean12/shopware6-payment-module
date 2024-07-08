@@ -129,7 +129,7 @@ class WidgetService
                     (new CreateSessionRequestModel())
                         ->setMerchantCustomerId(AddressHelper::getCustomerNumber($customer))
                 )->getCheckoutSessionId();
-        } catch (BillieException $billieException) {
+        } catch (BillieException) {
             // TODO Log error
             return null;
         }
