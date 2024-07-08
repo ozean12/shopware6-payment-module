@@ -14,16 +14,13 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
 
     $rectorConfig->skip([
-        \Rector\Php74\Rector\LNumber\AddLiteralSeparatorToNumberRector::class,
-        \Rector\CodeQuality\Rector\Ternary\SwitchNegatedTernaryRector::class,
-        \Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector::class,
-        # this rule tried to change the method signature of vendor files during GitHub action
-        \Rector\CodingStyle\Rector\ClassMethod\UnSpreadOperatorRector::class,
+        \Rector\CodeQuality\Rector\Ternary\SwitchNegatedTernaryRector::class
     ]);
 
     $rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
     $rectorConfig->rule(ExplicitBoolCompareRector::class);
 
+    $rectorConfig->removeUnusedImports(true);
     $rectorConfig->importNames(true, true);
 
     // define sets of rules

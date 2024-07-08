@@ -96,10 +96,8 @@ class CheckoutController extends StorefrontController
     /**
      * @Route(path="/update-addresses/{orderId}", name="billie-payment.checkout.update-addresses", methods={"POST"}, defaults={"XmlHttpRequest"=true})
      * @noinspection NullPointerExceptionInspection
-     *
-     * @return NoContentResponse|NotFoundHttpException
      */
-    public function updateCustomerAddress(Request $request, SalesChannelContext $salesChannelContext, string $orderId = null)
+    public function updateCustomerAddress(Request $request, SalesChannelContext $salesChannelContext, string $orderId = null): NotFoundHttpException|NoContentResponse
     {
         // ###############################################################################################################
         // ## PLEASE NOTE ################################################################################################
