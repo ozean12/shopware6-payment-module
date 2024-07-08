@@ -18,14 +18,17 @@ use Billie\Sdk\Exception\BillieException;
 use Billie\Sdk\Exception\GatewayException;
 use Billie\Sdk\Service\Request\CheckoutSession\CheckoutSessionConfirmRequest;
 use Monolog\Logger;
+use RuntimeException;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
+use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
 use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Throwable;
 
 class PaymentHandler implements SynchronousPaymentHandlerInterface
 {
@@ -51,7 +54,7 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
         $order = $transaction->getOrder();
 
         if ($billieData->count() === 0 || !$billieData->has('session-id')) {
-            throw PaymentException::syncProcessInterrupted($transaction->getOrderTransaction()->getId(), 'unknown error during payment');
+            throw $this->syncProcessInterrupted($transaction->getOrderTransaction()->getId(), 'unknown error during payment');
         }
 
         $confirmModel = $this->confirmDataService->getConfirmModel($billieData->get('session-id'), $order);
@@ -88,7 +91,20 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
                 $context
             );
 
-            throw PaymentException::syncProcessInterrupted($transaction->getOrderTransaction()->getId(), $billieException->getMessage(), $billieException);
+            throw $this->syncProcessInterrupted($transaction->getOrderTransaction()->getId(), $billieException->getMessage(), $billieException);
         }
+    }
+
+    private function syncProcessInterrupted(string $orderTransactionId, string $errorMessage, ?Throwable $e = null): Throwable
+    {
+        if (class_exists(PaymentException::class)) {
+            return PaymentException::syncProcessInterrupted($orderTransactionId, $errorMessage, $e);
+        } elseif (class_exists(SyncPaymentProcessException::class)) {
+            // required for shopware version <= 6.5.3
+            return new SyncPaymentProcessException($orderTransactionId, $errorMessage, $e); // @phpstan-ignore-line
+        }
+
+        // should never occur - just to be safe
+        return new RuntimeException('payment interrupted: ' . $errorMessage, 0, $e);
     }
 }
