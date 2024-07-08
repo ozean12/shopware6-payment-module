@@ -71,7 +71,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: shopware/production
-          ref: 'flex'
+          ref: ${{ matrix.shopware-version }}
 
       - name: "Checkout ${{ env.COMPOSER_NAME }}"
         uses: actions/checkout@v3
