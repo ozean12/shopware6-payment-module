@@ -36,9 +36,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(path="/billie-payment", defaults={"_routeScope"={"storefront"}})
- */
+#[Route(path: '/billie-payment', defaults: [
+    '_routeScope' => ['storefront'],
+])]
 class CheckoutController extends StorefrontController
 {
     /**
@@ -93,10 +93,15 @@ class CheckoutController extends StorefrontController
         $this->accountService = $accountService;
     }
 
-    /**
-     * @Route(path="/update-addresses/{orderId}", name="billie-payment.checkout.update-addresses", methods={"POST"}, defaults={"XmlHttpRequest"=true})
-     * @noinspection NullPointerExceptionInspection
-     */
+    #[Route(
+        path: '/update-addresses/{orderId}',
+        name: 'billie-payment.checkout.update-addresses',
+        defaults: [
+            'XmlHttpRequest' => true,
+        ],
+        methods: ['POST']
+    )
+    ]
     public function updateCustomerAddress(Request $request, SalesChannelContext $salesChannelContext, string $orderId = null): NotFoundHttpException|NoContentResponse
     {
         // ###############################################################################################################

@@ -23,15 +23,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(defaults={"_routeScope"={"storefront"}})
- */
+#[Route(defaults: [
+    '_routeScope' => ['storefront'],
+])]
 class AccountOrderControllerDecorator extends AccountOrderController
 {
-    /**
-     * @Route("/account/order/update/{orderId}", name="frontend.account.edit-order.update-order", methods={"POST"})
-     * @noinspection NullPointerExceptionInspection
-     */
     public function updateOrder(string $orderId, Request $request, SalesChannelContext $context): Response
     {
         $order = $this->fetchOrder($context->getContext(), $orderId);

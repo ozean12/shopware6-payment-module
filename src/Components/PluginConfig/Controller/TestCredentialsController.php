@@ -18,14 +18,16 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(defaults={"_routeScope"={"api"}})
- */
+#[Route(path: '/api/billie', defaults: [
+    '_routeScope' => ['api'],
+])]
 class TestCredentialsController extends AbstractController
 {
-    /**
-     * @Route("/api/billie/test-credentials", name="api.action.billie.test-credentials", methods={"POST"})
-     */
+    #[Route(
+        path: '/test-credentials',
+        name: 'api.action.billie.test-credentials',
+        methods: ['POST']
+    )]
     public function testCredentials(Request $request): JsonResponse
     {
         $success = true;

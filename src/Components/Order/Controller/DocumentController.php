@@ -19,9 +19,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(defaults={"_routeScope"={"storefront"}})
- */
+#[Route(defaults: [
+    '_routeScope' => ['storefront'],
+])]
 class DocumentController extends StorefrontController
 {
     private DocumentUrlHelper $documentUrlHelper;
@@ -34,9 +34,7 @@ class DocumentController extends StorefrontController
         $this->documentUrlHelper = $documentUrlHelper;
     }
 
-    /**
-     * @Route(name="billie.payment.document", path="/billie/document/{documentId}/{deepLinkCode}/{token}")
-     */
+    #[Route(path: 'billie/document/{documentId}/{deepLinkCode}/{token}', name: 'billie.payment.document')]
     public function downloadDocument(Request $request, string $documentId, string $deepLinkCode, SalesChannelContext $context): Response
     {
         if ($this->documentUrlHelper->getToken() !== $request->attributes->get('token')) {
