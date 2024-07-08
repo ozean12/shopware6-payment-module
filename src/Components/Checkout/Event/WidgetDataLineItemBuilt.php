@@ -12,10 +12,10 @@ declare(strict_types=1);
 namespace Billie\BilliePayment\Components\Checkout\Event;
 
 use Billie\Sdk\Model\LineItem;
+use Shopware\Core\Checkout\Cart\LineItem\LineItem as CartLineItem;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Framework\Context;
-use \Shopware\Core\Checkout\Cart\LineItem\LineItem as CartLineItem;
 
 class WidgetDataLineItemBuilt
 {

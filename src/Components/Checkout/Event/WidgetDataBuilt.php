@@ -44,17 +44,17 @@ class WidgetDataBuilt
         $this->widgetData = $widgetData;
     }
 
-    public function getCustomer() : CustomerEntity|OrderCustomerEntity
+    public function getCustomer(): CustomerEntity|OrderCustomerEntity
     {
         return $this->customer;
     }
 
-    public function getBillingAddress() : CustomerAddressEntity|OrderAddressEntity
+    public function getBillingAddress(): CustomerAddressEntity|OrderAddressEntity
     {
         return $this->billingAddress;
     }
 
-    public function getShippingAddress() : CustomerAddressEntity|OrderAddressEntity
+    public function getShippingAddress(): CustomerAddressEntity|OrderAddressEntity
     {
         return $this->shippingAddress;
     }
@@ -64,7 +64,7 @@ class WidgetDataBuilt
         return $this->price;
     }
 
-    public function getLineItems() : LineItemCollection|OrderLineItemCollection
+    public function getLineItems(): LineItemCollection|OrderLineItemCollection
     {
         return $this->lineItems;
     }

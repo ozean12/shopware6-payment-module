@@ -35,7 +35,7 @@ class WidgetDataLineItemCriteriaPrepare
         $this->criteria = $criteria;
     }
 
-    public function getLineItem() : LineItem|OrderLineItemEntity
+    public function getLineItem(): LineItem|OrderLineItemEntity
     {
         return $this->lineItem;
     }
