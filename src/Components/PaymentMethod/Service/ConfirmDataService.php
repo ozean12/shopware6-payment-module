@@ -27,22 +27,13 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ConfirmDataService
 {
-    private EventDispatcherInterface $eventDispatcher;
-
-    /**
-     * @var EntityRepository<OrderCollection>
-     */
-    private EntityRepository $orderRepository;
-
     /**
      * @param EntityRepository<OrderCollection> $orderRepository
      */
     public function __construct(
-        EntityRepository $orderRepository,
-        EventDispatcherInterface $eventDispatcher
+        private readonly EntityRepository $orderRepository,
+        private readonly EventDispatcherInterface $eventDispatcher
     ) {
-        $this->eventDispatcher = $eventDispatcher;
-        $this->orderRepository = $orderRepository;
     }
 
     public function getConfirmModel(string $sessionUuid, OrderEntity $orderEntity): CheckoutSessionConfirmRequestModel

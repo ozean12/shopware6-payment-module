@@ -25,24 +25,15 @@ use Symfony\Component\HttpFoundation\Request;
 
 class SetPaymentOrderRoute extends CoreSetPaymentOrderRoute
 {
-    private AbstractSetPaymentOrderRoute $innerService;
-
-    /**
-     * @var EntityRepository<PaymentMethodCollection>
-     */
-    private EntityRepository $paymentMethodRepository;
-
     /**
      * @param EntityRepository<PaymentMethodCollection> $paymentMethodRepository
      * @noinspection MagicMethodsValidityInspection
      * @noinspection PhpMissingParentConstructorInspection
      */
     public function __construct(
-        AbstractSetPaymentOrderRoute $innerService,
-        EntityRepository $paymentMethodRepository
+        private readonly AbstractSetPaymentOrderRoute $innerService,
+        private readonly EntityRepository $paymentMethodRepository
     ) {
-        $this->innerService = $innerService;
-        $this->paymentMethodRepository = $paymentMethodRepository;
     }
 
     public function getDecorated(): AbstractSetPaymentOrderRoute

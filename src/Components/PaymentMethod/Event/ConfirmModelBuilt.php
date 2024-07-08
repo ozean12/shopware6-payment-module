@@ -16,14 +16,10 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 
 class ConfirmModelBuilt
 {
-    private CheckoutSessionConfirmRequestModel $model;
-
-    private OrderEntity $order;
-
-    public function __construct(CheckoutSessionConfirmRequestModel $model, OrderEntity $order)
-    {
-        $this->model = $model;
-        $this->order = $order;
+    public function __construct(
+        private CheckoutSessionConfirmRequestModel $model,
+        private readonly OrderEntity $order
+    ) {
     }
 
     public function getModel(): CheckoutSessionConfirmRequestModel

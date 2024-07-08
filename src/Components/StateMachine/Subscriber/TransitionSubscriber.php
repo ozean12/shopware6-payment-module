@@ -30,34 +30,16 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class TransitionSubscriber implements EventSubscriberInterface
 {
-    private ConfigService $configService;
-
-    /**
-     * @var EntityRepository<OrderDeliveryCollection>
-     */
-    private EntityRepository $orderDeliveryRepository;
-
-    /**
-     * @var EntityRepository<OrderCollection>
-     */
-    private EntityRepository $orderRepository;
-
-    private OperationService $operationService;
-
     /**
      * @param EntityRepository<OrderDeliveryCollection> $orderDeliveryRepository
      * @param EntityRepository<OrderCollection> $orderRepository
      */
     public function __construct(
-        EntityRepository $orderDeliveryRepository,
-        EntityRepository $orderRepository,
-        ConfigService $configService,
-        OperationService $operationService
+        private readonly EntityRepository $orderDeliveryRepository,
+        private readonly EntityRepository $orderRepository,
+        private readonly ConfigService $configService,
+        private readonly OperationService $operationService
     ) {
-        $this->orderDeliveryRepository = $orderDeliveryRepository;
-        $this->orderRepository = $orderRepository;
-        $this->configService = $configService;
-        $this->operationService = $operationService;
     }
 
     public static function getSubscribedEvents(): array

@@ -22,11 +22,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CheckoutSubscriber implements EventSubscriberInterface
 {
-    private WidgetService $widgetService;
-
-    public function __construct(WidgetService $widgetService)
-    {
-        $this->widgetService = $widgetService;
+    public function __construct(
+        private readonly WidgetService $widgetService
+    ) {
     }
 
     public static function getSubscribedEvents(): array

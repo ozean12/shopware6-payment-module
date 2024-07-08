@@ -25,11 +25,9 @@ use Twig\TwigFunction;
  */
 class CsrfWrapper extends AbstractExtension
 {
-    private Environment $twig;
-
-    public function __construct(Environment $twig)
-    {
-        $this->twig = $twig;
+    public function __construct(
+        private readonly Environment $twig
+    ) {
     }
 
     public function getFunctions(): array

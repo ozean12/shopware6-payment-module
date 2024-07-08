@@ -18,25 +18,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 
 class WidgetDataLineItemCriteriaPrepare
 {
-    private Criteria $criteria;
-
-    /**
-     * @var LineItem|OrderLineItemEntity
-     */
-    private $lineItem;
-
-    private Context $context;
-
-    /**
-     * WidgetDataLineItemCriteriaPrepare constructor.
-     *
-     * @param LineItem|OrderLineItemEntity $lineItem
-     */
-    public function __construct(Criteria $criteria, $lineItem, Context $context)
-    {
-        $this->criteria = $criteria;
-        $this->lineItem = $lineItem;
-        $this->context = $context;
+    public function __construct(
+        private Criteria $criteria,
+        private readonly LineItem|OrderLineItemEntity $lineItem,
+        private readonly Context $context
+    ) {
     }
 
     public function getCriteria(): Criteria
@@ -49,10 +35,7 @@ class WidgetDataLineItemCriteriaPrepare
         $this->criteria = $criteria;
     }
 
-    /**
-     * @return LineItem|OrderLineItemEntity
-     */
-    public function getLineItem()
+    public function getLineItem() : LineItem|OrderLineItemEntity
     {
         return $this->lineItem;
     }

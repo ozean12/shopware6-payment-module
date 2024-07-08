@@ -24,14 +24,10 @@ use Symfony\Component\Routing\Annotation\Route;
 ])]
 class DocumentController extends StorefrontController
 {
-    private DocumentUrlHelper $documentUrlHelper;
-
-    private AbstractDocumentRoute $documentRoute;
-
-    public function __construct(AbstractDocumentRoute $documentRoute, DocumentUrlHelper $documentUrlHelper)
-    {
-        $this->documentRoute = $documentRoute;
-        $this->documentUrlHelper = $documentUrlHelper;
+    public function __construct(
+        private readonly AbstractDocumentRoute $documentRoute,
+        private readonly DocumentUrlHelper $documentUrlHelper
+    ) {
     }
 
     #[Route(path: 'billie/document/{documentId}/{deepLinkCode}/{token}', name: 'billie.payment.document')]

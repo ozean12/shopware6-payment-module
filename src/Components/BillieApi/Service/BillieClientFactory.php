@@ -16,11 +16,9 @@ use Billie\Sdk\HttpClient\BillieClient;
 
 class BillieClientFactory
 {
-    private ConfigService $configService;
-
-    public function __construct(ConfigService $configService)
-    {
-        $this->configService = $configService;
+    public function __construct(
+        private readonly ConfigService $configService
+    ) {
     }
 
     public function createBillieClient(): BillieClient

@@ -39,30 +39,15 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class OperationService
 {
-    private Logger $logger;
-
-    private DocumentUrlHelper $documentUrlHelper;
-
-    private ContainerInterface $container;
-
-    /**
-     * @var EntityRepository<OrderDataCollection>
-     */
-    private EntityRepository $orderDataRepository;
-
     /**
      * @param EntityRepository<OrderDataCollection> $orderDataRepository
      */
     public function __construct(
-        ContainerInterface $container,
-        EntityRepository $orderDataRepository,
-        DocumentUrlHelper $documentUrlHelper,
-        Logger $logger
+        private readonly ContainerInterface $container,
+        private readonly EntityRepository $orderDataRepository,
+        private readonly DocumentUrlHelper $documentUrlHelper,
+        private readonly Logger $logger
     ) {
-        $this->container = $container;
-        $this->logger = $logger;
-        $this->documentUrlHelper = $documentUrlHelper;
-        $this->orderDataRepository = $orderDataRepository;
     }
 
     public function ship(OrderEntity $order): bool

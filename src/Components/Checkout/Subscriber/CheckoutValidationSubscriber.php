@@ -23,11 +23,9 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class CheckoutValidationSubscriber implements EventSubscriberInterface
 {
-    private RequestStack $requestStack;
-
-    public function __construct(RequestStack $requestStack)
-    {
-        $this->requestStack = $requestStack;
+    public function __construct(
+        private readonly RequestStack $requestStack
+    ) {
     }
 
     public static function getSubscribedEvents(): array

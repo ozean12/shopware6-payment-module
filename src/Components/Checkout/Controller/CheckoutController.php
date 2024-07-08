@@ -42,45 +42,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class CheckoutController extends StorefrontController
 {
     /**
-     * @var EntityRepository<CustomerAddressCollection>
-     */
-    private EntityRepository $customerAddressRepository;
-
-    /**
-     * @var EntityRepository<OrderAddressCollection>
-     */
-    private EntityRepository $orderAddressRepository;
-
-    /**
-     * @var EntityRepository<OrderCollection>
-     */
-    private EntityRepository $orderRepository;
-
-    /**
-     * @var EntityRepository<OrderDeliveryCollection>
-     */
-    private EntityRepository $orderDeliveryRepository;
-
-    private AccountService $accountService;
-
-    /**
-     * @param EntityRepository<CustomerAddressCollection> $addressRepository
+     * @param EntityRepository<CustomerAddressCollection> $customerAddressRepository
      * @param EntityRepository<OrderCollection> $orderRepository
      * @param EntityRepository<OrderAddressCollection> $orderAddressRepository
      * @param EntityRepository<OrderDeliveryCollection> $orderDeliveryRepository
      */
     public function __construct(
-        EntityRepository $addressRepository,
-        EntityRepository $orderRepository,
-        EntityRepository $orderAddressRepository,
-        EntityRepository $orderDeliveryRepository,
-        AccountService $accountService
+        private readonly EntityRepository $customerAddressRepository,
+        private readonly EntityRepository $orderRepository,
+        private readonly EntityRepository $orderAddressRepository,
+        private readonly EntityRepository $orderDeliveryRepository,
+        private readonly AccountService $accountService
     ) {
-        $this->customerAddressRepository = $addressRepository;
-        $this->orderAddressRepository = $orderAddressRepository;
-        $this->orderRepository = $orderRepository;
-        $this->orderDeliveryRepository = $orderDeliveryRepository;
-        $this->accountService = $accountService;
     }
 
     #[Route(

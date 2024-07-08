@@ -23,54 +23,15 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class WidgetDataBuilt
 {
-    private ArrayStruct $widgetData;
-
-    /**
-     * @var CustomerEntity|OrderCustomerEntity
-     */
-    private $customer;
-
-    /**
-     * @var CustomerAddressEntity|OrderAddressEntity
-     */
-    private $billingAddress;
-
-    /**
-     * @var CustomerAddressEntity|OrderAddressEntity
-     */
-    private $shippingAddress;
-
-    private CartPrice $price;
-
-    /**
-     * @var LineItemCollection|OrderLineItemCollection
-     */
-    private $lineItems;
-
-    private SalesChannelContext $salesChannelContext;
-
-    /**
-     * @param CustomerEntity|OrderCustomerEntity         $customer
-     * @param CustomerAddressEntity|OrderAddressEntity   $billingAddress
-     * @param CustomerAddressEntity|OrderAddressEntity   $shippingAddress
-     * @param LineItemCollection|OrderLineItemCollection $lineItems
-     */
     public function __construct(
-        ArrayStruct $widgetData,
-        $customer,
-        $billingAddress,
-        $shippingAddress,
-        CartPrice $price,
-        $lineItems,
-        SalesChannelContext $salesChannelContext
+        private ArrayStruct $widgetData,
+        private readonly CustomerEntity|OrderCustomerEntity $customer,
+        private readonly CustomerAddressEntity|OrderAddressEntity $billingAddress,
+        private readonly CustomerAddressEntity|OrderAddressEntity $shippingAddress,
+        private readonly CartPrice $price,
+        private readonly LineItemCollection|OrderLineItemCollection $lineItems,
+        private readonly SalesChannelContext $salesChannelContext
     ) {
-        $this->widgetData = $widgetData;
-        $this->customer = $customer;
-        $this->billingAddress = $billingAddress;
-        $this->shippingAddress = $shippingAddress;
-        $this->price = $price;
-        $this->lineItems = $lineItems;
-        $this->salesChannelContext = $salesChannelContext;
     }
 
     public function getWidgetData(): ArrayStruct
@@ -83,26 +44,17 @@ class WidgetDataBuilt
         $this->widgetData = $widgetData;
     }
 
-    /**
-     * @return CustomerEntity|OrderCustomerEntity
-     */
-    public function getCustomer()
+    public function getCustomer() : CustomerEntity|OrderCustomerEntity
     {
         return $this->customer;
     }
 
-    /**
-     * @return CustomerAddressEntity|OrderAddressEntity
-     */
-    public function getBillingAddress()
+    public function getBillingAddress() : CustomerAddressEntity|OrderAddressEntity
     {
         return $this->billingAddress;
     }
 
-    /**
-     * @return CustomerAddressEntity|OrderAddressEntity
-     */
-    public function getShippingAddress()
+    public function getShippingAddress() : CustomerAddressEntity|OrderAddressEntity
     {
         return $this->shippingAddress;
     }
@@ -112,10 +64,7 @@ class WidgetDataBuilt
         return $this->price;
     }
 
-    /**
-     * @return LineItemCollection|OrderLineItemCollection
-     */
-    public function getLineItems()
+    public function getLineItems() : LineItemCollection|OrderLineItemCollection
     {
         return $this->lineItems;
     }

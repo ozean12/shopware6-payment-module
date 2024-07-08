@@ -15,31 +15,16 @@ use Billie\Sdk\Model\LineItem;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Framework\Context;
+use \Shopware\Core\Checkout\Cart\LineItem\LineItem as CartLineItem;
 
 class WidgetDataLineItemBuilt
 {
-    private LineItem $billieLineItem;
-
-    /**
-     * @var \Shopware\Core\Checkout\Cart\LineItem\LineItem|OrderLineItemEntity
-     */
-    private $shopwareLineItem;
-
-    private Context $context;
-
-    private ?ProductEntity $product;
-
-    /**
-     * WidgetDataLineItemBuilt constructor.
-     *
-     * @param \Shopware\Core\Checkout\Cart\LineItem\LineItem|OrderLineItemEntity $shopwareLineItem
-     */
-    public function __construct(LineItem $billieLineItem, $shopwareLineItem, Context $context, ?ProductEntity $product)
-    {
-        $this->billieLineItem = $billieLineItem;
-        $this->shopwareLineItem = $shopwareLineItem;
-        $this->context = $context;
-        $this->product = $product;
+    public function __construct(
+        private LineItem $billieLineItem,
+        private readonly CartLineItem|OrderLineItemEntity $shopwareLineItem,
+        private readonly Context $context,
+        private readonly ?ProductEntity $product
+    ) {
     }
 
     public function getBillieLineItem(): LineItem
@@ -52,10 +37,7 @@ class WidgetDataLineItemBuilt
         $this->billieLineItem = $billieLineItem;
     }
 
-    /**
-     * @return \Shopware\Core\Checkout\Cart\LineItem\LineItem|OrderLineItemEntity
-     */
-    public function getShopwareLineItem()
+    public function getShopwareLineItem(): CartLineItem|OrderLineItemEntity
     {
         return $this->shopwareLineItem;
     }

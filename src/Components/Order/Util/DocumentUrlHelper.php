@@ -17,16 +17,10 @@ use Shopware\Storefront\Framework\Routing\Router;
 
 class DocumentUrlHelper
 {
-    private ConfigService $configService;
-
-    private Router $router;
-
     public function __construct(
-        ConfigService $configService,
-        Router $router
+        private readonly ConfigService $configService,
+        private readonly Router $router
     ) {
-        $this->configService = $configService;
-        $this->router = $router;
     }
 
     public function generateRouteForDocument(DocumentEntity $document): string

@@ -15,11 +15,9 @@ use Shopware\Storefront\Framework\Cookie\CookieProviderInterface;
 
 class CookieProvider implements CookieProviderInterface
 {
-    private CookieProviderInterface $originalService;
-
-    public function __construct(CookieProviderInterface $service)
-    {
-        $this->originalService = $service;
+    public function __construct(
+        private readonly CookieProviderInterface $originalService
+    ) {
     }
 
     public function getCookieGroups(): array

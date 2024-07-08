@@ -55,50 +55,20 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class WidgetService
 {
-    private ConfigService $configService;
-
-    private CartService $cartService;
-
-    /**
-     * @var EntityRepository<ProductCollection>
-     */
-    private EntityRepository $productRepository;
-
-    private EventDispatcherInterface $eventDispatcher;
-
-    /**
-     * @var EntityRepository<SalutationCollection>
-     */
-    private EntityRepository $salutationRepository;
-
-    /**
-     * @var EntityRepository<OrderCollection>
-     */
-    private EntityRepository $orderRepository;
-
-    private ContainerInterface $container;
-
     /**
      * @param EntityRepository<ProductCollection> $productRepository
      * @param EntityRepository<OrderCollection> $orderRepository
      * @param EntityRepository<SalutationCollection> $salutationRepository
      */
     public function __construct(
-        ContainerInterface $container,
-        EventDispatcherInterface $eventDispatcher,
-        EntityRepository $productRepository,
-        EntityRepository $orderRepository,
-        EntityRepository $salutationRepository,
-        CartService $cartService,
-        ConfigService $configService
+        private readonly ContainerInterface $container,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly EntityRepository $productRepository,
+        private readonly EntityRepository $orderRepository,
+        private readonly EntityRepository $salutationRepository,
+        private readonly CartService $cartService,
+        private readonly ConfigService $configService
     ) {
-        $this->container = $container;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->productRepository = $productRepository;
-        $this->orderRepository = $orderRepository;
-        $this->salutationRepository = $salutationRepository;
-        $this->configService = $configService;
-        $this->cartService = $cartService;
     }
 
     public function getWidgetDataByOrder(OrderEntity $orderEntity, SalesChannelContext $salesChannelContext): ArrayStruct

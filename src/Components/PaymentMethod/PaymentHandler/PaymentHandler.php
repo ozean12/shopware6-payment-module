@@ -29,30 +29,15 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class PaymentHandler implements SynchronousPaymentHandlerInterface
 {
-    private ConfirmDataService $confirmDataService;
-
-    /**
-     * @var EntityRepository<OrderDataCollection>
-     */
-    private EntityRepository $orderDataRepository;
-
-    private ContainerInterface $container;
-
-    private Logger $logger;
-
     /**
      * @param EntityRepository<OrderDataCollection> $orderDataRepository
      */
     public function __construct(
-        ContainerInterface $container,
-        ConfirmDataService $confirmDataService,
-        EntityRepository $orderDataRepository,
-        Logger $logger
+        private readonly ContainerInterface $container,
+        private readonly ConfirmDataService $confirmDataService,
+        private readonly EntityRepository $orderDataRepository,
+        private readonly Logger $logger
     ) {
-        $this->confirmDataService = $confirmDataService;
-        $this->orderDataRepository = $orderDataRepository;
-        $this->container = $container;
-        $this->logger = $logger;
     }
 
     public function pay(

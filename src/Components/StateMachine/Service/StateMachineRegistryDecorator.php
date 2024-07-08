@@ -35,20 +35,6 @@ use Shopware\Core\System\StateMachine\Transition;
 
 class StateMachineRegistryDecorator extends StateMachineRegistry // we must extend it, cause there is no interface
 {
-    protected ConfigService $configService;
-
-    /**
-     * @var EntityRepository<OrderCollection>
-     */
-    protected EntityRepository $orderRepository;
-
-    /**
-     * @var EntityRepository<OrderDeliveryCollection>
-     */
-    protected EntityRepository $orderDeliveryRepository;
-
-    private StateMachineRegistry $innerService;
-
     /**
      * @param EntityRepository<OrderCollection> $orderRepository
      * @param EntityRepository<OrderDeliveryCollection> $orderDeliveryRepository
@@ -56,15 +42,11 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
      * @noinspection PhpMissingParentConstructorInspection
      */
     public function __construct(
-        StateMachineRegistry $innerService,
-        ConfigService $configService,
-        EntityRepository $orderRepository,
-        EntityRepository $orderDeliveryRepository
+        private readonly StateMachineRegistry $innerService,
+        private readonly ConfigService $configService,
+        private readonly EntityRepository $orderRepository,
+        private readonly EntityRepository $orderDeliveryRepository
     ) {
-        $this->innerService = $innerService;
-        $this->configService = $configService;
-        $this->orderRepository = $orderRepository;
-        $this->orderDeliveryRepository = $orderDeliveryRepository;
     }
 
     public function transition(Transition $transition, Context $context): StateMachineStateCollection

@@ -34,39 +34,18 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class PaymentMethodRoute extends AbstractPaymentMethodRoute
 {
-    private AbstractPaymentMethodRoute $innerService;
-
-    private RequestStack $requestStack;
-
-    /**
-     * @var EntityRepository<OrderCollection>
-     */
-    private EntityRepository $orderRepository;
-
-    /**
-     * @var EntityRepository<CountryCollection>
-     */
-    private EntityRepository $countryRepository;
-
-    private ConfigService $configService;
-
     /**
      * @param EntityRepository<OrderCollection> $orderRepository
      * @param EntityRepository<CountryCollection> $countryRepository
      * @noinspection MagicMethodsValidityInspection
      */
     public function __construct(
-        AbstractPaymentMethodRoute $innerService,
-        RequestStack $requestStack,
-        EntityRepository $orderRepository,
-        EntityRepository $countryRepository,
-        ConfigService $configService
+        private readonly AbstractPaymentMethodRoute $innerService,
+        private readonly RequestStack $requestStack,
+        private readonly EntityRepository $orderRepository,
+        private readonly EntityRepository $countryRepository,
+        private readonly ConfigService $configService
     ) {
-        $this->innerService = $innerService;
-        $this->requestStack = $requestStack;
-        $this->orderRepository = $orderRepository;
-        $this->countryRepository = $countryRepository;
-        $this->configService = $configService;
     }
 
     public function getDecorated(): AbstractPaymentMethodRoute
