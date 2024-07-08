@@ -13,21 +13,21 @@
             <sw-description-list columns="1fr" grid="1fr">
                 <dt>{{ $tc('billie.orderData.fields.externalInvoiceNumber.label') }}</dt>
                 <dd>
-                    <sw-text-field v-model="order.extensions.billieData.externalInvoiceNumber"></sw-text-field>
+                    <sw-text-field v-model:value="order.extensions.billieData.externalInvoiceNumber"></sw-text-field>
                 </dd>
             </sw-description-list>
 
             <sw-description-list columns="1fr" grid="1fr">
                 <dt>{{ $tc('billie.orderData.fields.externalInvoiceUrl.label') }}</dt>
                 <dd>
-                    <sw-text-field v-model="order.extensions.billieData.externalInvoiceUrl"></sw-text-field>
+                    <sw-text-field v-model:value="order.extensions.billieData.externalInvoiceUrl"></sw-text-field>
                 </dd>
             </sw-description-list>
 
             <sw-description-list columns="1fr" grid="1fr">
                 <dt>{{ $tc('billie.orderData.fields.externalDeliveryNoteUrl.label') }}</dt>
                 <dd>
-                    <sw-text-field v-model="order.extensions.billieData.externalDeliveryNoteUrl"></sw-text-field>
+                    <sw-text-field v-model:value="order.extensions.billieData.externalDeliveryNoteUrl"></sw-text-field>
                 </dd>
             </sw-description-list>
 
