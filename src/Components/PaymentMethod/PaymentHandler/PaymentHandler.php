@@ -20,7 +20,7 @@ use Billie\Sdk\Service\Request\CheckoutSession\CheckoutSessionConfirmRequest;
 use Monolog\Logger;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SynchronousPaymentHandlerInterface;
 use Shopware\Core\Checkout\Payment\Cart\SyncPaymentTransactionStruct;
-use Shopware\Core\Checkout\Payment\Exception\SyncPaymentProcessException;
+use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -66,7 +66,7 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
         $order = $transaction->getOrder();
 
         if ($billieData->count() === 0 || !$billieData->has('session-id')) {
-            throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), 'unknown error during payment');
+            throw PaymentException::syncProcessInterrupted($transaction->getOrderTransaction()->getId(), 'unknown error during payment');
         }
 
         $confirmModel = $this->confirmDataService->getConfirmModel($billieData->get('session-id'), $order);
@@ -103,7 +103,7 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
                 $context
             );
 
-            throw new SyncPaymentProcessException($transaction->getOrderTransaction()->getId(), $billieException->getMessage());
+            throw PaymentException::syncProcessInterrupted($transaction->getOrderTransaction()->getId(), $billieException->getMessage(), $billieException);
         }
     }
 }
