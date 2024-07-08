@@ -33,21 +33,20 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
 
     /**
      * @var EntityRepository<OrderDataCollection>
-     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
-     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     * After Shopware has removed the decorator, we can replace this by a normal definition
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
-    private object $orderDataRepository;
+    private EntityRepository $orderDataRepository;
 
     private ContainerInterface $container;
 
     private Logger $logger;
 
+    /**
+     * @param EntityRepository<OrderDataCollection> $orderDataRepository
+     */
     public function __construct(
         ContainerInterface $container,
         ConfirmDataService $confirmDataService,
-        object $orderDataRepository,
+        EntityRepository $orderDataRepository,
         Logger $logger
     ) {
         $this->confirmDataService = $confirmDataService;

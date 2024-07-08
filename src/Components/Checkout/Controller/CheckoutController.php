@@ -43,47 +43,37 @@ class CheckoutController extends StorefrontController
 {
     /**
      * @var EntityRepository<CustomerAddressCollection>
-     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
-     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     * After Shopware has removed the decorator, we can replace this by a normal definition
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
-    private object $customerAddressRepository;
+    private EntityRepository $customerAddressRepository;
 
     /**
      * @var EntityRepository<OrderAddressCollection>
-     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
-     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     * After Shopware has removed the decorator, we can replace this by a normal definition
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
-    private object $orderAddressRepository;
+    private EntityRepository $orderAddressRepository;
 
     /**
      * @var EntityRepository<OrderCollection>
-     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
-     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     * After Shopware has removed the decorator, we can replace this by a normal definition
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
-    private object $orderRepository;
+    private EntityRepository $orderRepository;
 
     /**
      * @var EntityRepository<OrderDeliveryCollection>
-     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
-     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     * After Shopware has removed the decorator, we can replace this by a normal definition
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
-    private object $orderDeliveryRepository;
+    private EntityRepository $orderDeliveryRepository;
 
     private AccountService $accountService;
 
+    /**
+     * @param EntityRepository<CustomerAddressCollection> $addressRepository
+     * @param EntityRepository<OrderCollection> $orderRepository
+     * @param EntityRepository<OrderAddressCollection> $orderAddressRepository
+     * @param EntityRepository<OrderDeliveryCollection> $orderDeliveryRepository
+     */
     public function __construct(
-        object $addressRepository,
-        object $orderRepository,
-        object $orderAddressRepository,
-        object $orderDeliveryRepository,
+        EntityRepository $addressRepository,
+        EntityRepository $orderRepository,
+        EntityRepository $orderAddressRepository,
+        EntityRepository $orderDeliveryRepository,
         AccountService $accountService
     ) {
         $this->customerAddressRepository = $addressRepository;
@@ -146,17 +136,13 @@ class CheckoutController extends StorefrontController
     }
 
     /**
-     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
-     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     * After Shopware has removed the decorator, we can replace this by a normal definition
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      * @param EntityRepository<OrderAddressCollection>|EntityRepository<CustomerAddressCollection> $addressRepository
      */
     protected function updateAddress(
         string $shopwareBillingAddressId,
         string $shopwareShippingAddressId,
         array $requestParams,
-        object $addressRepository,
+        EntityRepository $addressRepository,
         Entity $referencedEntity,
         SalesChannelContext $salesChannelContext
     ): void {

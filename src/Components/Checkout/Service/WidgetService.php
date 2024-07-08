@@ -61,41 +61,34 @@ class WidgetService
 
     /**
      * @var EntityRepository<ProductCollection>
-     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
-     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     * After Shopware has removed the decorator, we can replace this by a normal definition
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
-    private object $productRepository;
+    private EntityRepository $productRepository;
 
     private EventDispatcherInterface $eventDispatcher;
 
     /**
      * @var EntityRepository<SalutationCollection>
-     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
-     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     * After Shopware has removed the decorator, we can replace this by a normal definition
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
-    private object $salutationRepository;
+    private EntityRepository $salutationRepository;
 
     /**
      * @var EntityRepository<OrderCollection>
-     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
-     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     * After Shopware has removed the decorator, we can replace this by a normal definition
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
-    private object $orderRepository;
+    private EntityRepository $orderRepository;
 
     private ContainerInterface $container;
 
+    /**
+     * @param EntityRepository<ProductCollection> $productRepository
+     * @param EntityRepository<OrderCollection> $orderRepository
+     * @param EntityRepository<SalutationCollection> $salutationRepository
+     */
     public function __construct(
         ContainerInterface $container,
         EventDispatcherInterface $eventDispatcher,
-        object $productRepository,
-        object $orderRepository,
-        object $salutationRepository,
+        EntityRepository $productRepository,
+        EntityRepository $orderRepository,
+        EntityRepository $salutationRepository,
         CartService $cartService,
         ConfigService $configService
     ) {

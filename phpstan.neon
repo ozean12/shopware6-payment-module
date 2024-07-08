@@ -11,8 +11,7 @@ parameters:
         -
             # verified errors: SW < 6.5.4.0 does not support generic types for EntityRepository
             messages:
-                - '#PHPDoc tag @var for (parameter|property|variable) .*Repository contains generic type Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepository<.*but class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepository is not generic.#'
-                - '#PHPDoc tag @param for (parameter|property|variable) .*Repository contains generic type Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepository<.*but class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepository is not generic.#'
+                - '#PHPDoc .*Repository contains generic type Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepository<.*but class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepository is not generic.#'
 
     reportUnmatchedIgnoredErrors: false
     tipsOfTheDay: false

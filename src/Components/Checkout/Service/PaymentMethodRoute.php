@@ -40,32 +40,26 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
 
     /**
      * @var EntityRepository<OrderCollection>
-     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
-     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     * After Shopware has removed the decorator, we can replace this by a normal definition
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
-    private object $orderRepository;
+    private EntityRepository $orderRepository;
 
     /**
      * @var EntityRepository<CountryCollection>
-     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
-     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     * After Shopware has removed the decorator, we can replace this by a normal definition
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
-    private object $countryRepository;
+    private EntityRepository $countryRepository;
 
     private ConfigService $configService;
 
     /**
+     * @param EntityRepository<OrderCollection> $orderRepository
+     * @param EntityRepository<CountryCollection> $countryRepository
      * @noinspection MagicMethodsValidityInspection
      */
     public function __construct(
         AbstractPaymentMethodRoute $innerService,
         RequestStack $requestStack,
-        object $orderRepository,
-        object $countryRepository,
+        EntityRepository $orderRepository,
+        EntityRepository $countryRepository,
         ConfigService $configService
     ) {
         $this->innerService = $innerService;

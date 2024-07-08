@@ -39,33 +39,27 @@ class StateMachineRegistryDecorator extends StateMachineRegistry // we must exte
 
     /**
      * @var EntityRepository<OrderCollection>
-     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
-     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     * After Shopware has removed the decorator, we can replace this by a normal definition
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
-    protected object $orderRepository;
+    protected EntityRepository $orderRepository;
 
     /**
      * @var EntityRepository<OrderDeliveryCollection>
-     * the interface has been deprecated, but shopware is using the Interface in a decorator for the repository.
-     * so it will crash, if we are only using EntityRepository, cause an object of the decorator got injected into the constructor.
-     * After Shopware has removed the decorator, we can replace this by a normal definition
-     * TODO remove comment on Shopware Version 6.5.0.0 & readd type hint & change constructor argument type
      */
-    protected object $orderDeliveryRepository;
+    protected EntityRepository $orderDeliveryRepository;
 
     private StateMachineRegistry $innerService;
 
     /**
+     * @param EntityRepository<OrderCollection> $orderRepository
+     * @param EntityRepository<OrderDeliveryCollection> $orderDeliveryRepository
      * @noinspection MagicMethodsValidityInspection
      * @noinspection PhpMissingParentConstructorInspection
      */
     public function __construct(
         StateMachineRegistry $innerService,
         ConfigService $configService,
-        object $orderRepository,
-        object $orderDeliveryRepository
+        EntityRepository $orderRepository,
+        EntityRepository $orderDeliveryRepository
     ) {
         $this->innerService = $innerService;
         $this->configService = $configService;
