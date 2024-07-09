@@ -16,6 +16,10 @@
             <call method="setContainer">
                 <argument id="service_container" type="service"/>
             </call>
+            <!-- required for SW 6.5.0.x & 6.5.1.x - Method has been marked as required in SW > 6.5.2.x -->
+            <call method="setTwig">
+                <argument type="service" id="twig"/>
+            </call>
         </service>
 
     </services>
