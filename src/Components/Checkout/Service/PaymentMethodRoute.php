@@ -62,10 +62,9 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
             return $response;
         }
 
-        $filterMethods = $request->query->getBoolean('onlyAvailable', false);
         $isPluginReady = $this->configService->isConfigReady();
 
-        if ($isPluginReady === false && $filterMethods) {
+        if ($isPluginReady === false) {
             return $this->removeAllBillieMethods($response);
         }
 
@@ -79,20 +78,17 @@ class PaymentMethodRoute extends AbstractPaymentMethodRoute
         // if the order id is set, the oder has been already placed, and the customer may try to change/edit
         // the payment method. - e.g. in case of a failed payment
         $orderId = $currentRequest->get('orderId');
-        $order = null;
         if ($orderId) {
             $criteria = (new Criteria([$orderId]))
                 ->addAssociation('addresses');
-            /** @var OrderEntity $order */
             $order = $this->orderRepository->search($criteria, $salesChannelContext->getContext())->first();
-            $billingAddress = $order->getAddresses()->get($order->getBillingAddressId());
+            $billingAddress = $order instanceof OrderEntity ? $order->getAddresses()->get($order->getBillingAddressId()) : null;
         } else {
             $customer = $salesChannelContext->getCustomer();
             $billingAddress = $customer instanceof CustomerEntity ? $customer->getActiveBillingAddress() : null;
         }
 
-        if (($order || $filterMethods) && ($billingAddress === null ||
-            ($billingAddress->getCompany() === null || $billingAddress->getCompany() === '') || $this->getCountryIso($billingAddress) !== 'DE')) {
+        if ($billingAddress === null || empty($billingAddress->getCompany()) || $this->getCountryIso($billingAddress) !== 'DE') {
             return $this->removeAllBillieMethods($response);
         }
 
