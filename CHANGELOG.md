@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Shopware 6.6.x compatibility
+- update transaction status on Billie state changes
 
 ### Fixed
 

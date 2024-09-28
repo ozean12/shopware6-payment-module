@@ -15,6 +15,7 @@ use Billie\BilliePayment\Components\Order\Model\Collection\OrderDataCollection;
 use Billie\BilliePayment\Components\Order\Model\Extension\OrderExtension;
 use Billie\BilliePayment\Components\Order\Model\OrderDataEntity;
 use Billie\BilliePayment\Components\Order\Util\DocumentUrlHelper;
+use Billie\BilliePayment\Components\StateMachine\Event\BillieStateChangedEvent;
 use Billie\Sdk\Exception\BillieException;
 use Billie\Sdk\Model\Amount;
 use Billie\Sdk\Model\Order;
@@ -33,6 +34,7 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @internal please always use the state-machine to change the state of the order. If you know what you are doing, keep going
@@ -46,11 +48,12 @@ class OperationService
         private readonly ContainerInterface $container,
         private readonly EntityRepository $orderDataRepository,
         private readonly DocumentUrlHelper $documentUrlHelper,
-        private readonly Logger $logger
+        private readonly Logger $logger,
+        private readonly EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
-    public function ship(OrderEntity $order): bool
+    public function ship(OrderEntity $order, Context $context): bool
     {
         $billieData = $this->getBillieDataForOrder($order);
 
@@ -92,11 +95,17 @@ class OperationService
             $invoiceResponse = $this->container->get(CreateInvoiceRequest::class)->execute($data);
             sleep(1); // we have to wait one second, so the invoice has been published into the internal systems of billie.
 
-            $order = $this->container->get(GetOrderRequest::class)->execute(new OrderRequestModel($billieData->getReferenceId()));
-            $this->updateOrderState($billieData, $order->getState(), [
-                OrderDataEntity::FIELD_INVOICE_UUID => $invoiceResponse->getUuid(),
-                OrderDataEntity::FIELD_EXTERNAL_INVOICE_NUMBER => $invoiceNumber,
-            ]);
+            $billieOrder = $this->container->get(GetOrderRequest::class)->execute(new OrderRequestModel($billieData->getReferenceId()));
+            $this->updateOrderState(
+                $order,
+                $billieData,
+                $billieOrder->getState(),
+                $context,
+                [
+                    OrderDataEntity::FIELD_INVOICE_UUID => $invoiceResponse->getUuid(),
+                    OrderDataEntity::FIELD_EXTERNAL_INVOICE_NUMBER => $invoiceNumber,
+                ],
+            );
 
             return true;
         } catch (BillieException $billieException) {
@@ -113,12 +122,12 @@ class OperationService
         return false;
     }
 
-    public function cancel(OrderEntity $order): bool
+    public function cancel(OrderEntity $order, Context $context): bool
     {
         $billieData = $this->getBillieDataForOrder($order);
 
         if ($billieData->getInvoiceUuid() !== null) {
-            return $this->return($order);
+            return $this->return($order, $context);
         }
 
         if ($billieData->getOrderState() === Order::STATE_CANCELLED) {
@@ -131,7 +140,7 @@ class OperationService
 
         try {
             $this->container->get(CancelOrderRequest::class)->execute(new OrderRequestModel($billieData->getReferenceId()));
-            $this->updateOrderState($billieData, Order::STATE_CANCELLED);
+            $this->updateOrderState($order, $billieData, Order::STATE_CANCELLED, context: $context);
 
             return true;
         } catch (BillieException $billieException) {
@@ -148,12 +157,12 @@ class OperationService
         return false;
     }
 
-    public function return(OrderEntity $order): bool
+    public function return(OrderEntity $order, Context $context): bool
     {
         $billieData = $this->getBillieDataForOrder($order);
 
         if ($billieData->getInvoiceUuid() === null) {
-            return $this->cancel($order);
+            return $this->cancel($order, $context);
         }
 
         if ($billieData->getOrderState() === Order::STATE_CANCELLED) {
@@ -173,7 +182,7 @@ class OperationService
                 );
 
             $this->container->get(CreateCreditNoteRequest::class)->execute($data);
-            $this->updateOrderState($billieData, Order::STATE_CANCELLED);
+            $this->updateOrderState($order, $billieData, Order::STATE_CANCELLED, context: $context);
 
             return true;
         } catch (BillieException $billieException) {
@@ -190,7 +199,7 @@ class OperationService
         return false;
     }
 
-    private function updateOrderState(OrderDataEntity $billieData, string $state, array $additionalData = []): void
+    private function updateOrderState(OrderEntity $orderEntity, OrderDataEntity $billieData, string $state, Context $context, array $additionalData = []): void
     {
         try {
             $this->orderDataRepository->update([
@@ -199,7 +208,7 @@ class OperationService
                     OrderDataEntity::FIELD_ORDER_VERSION_ID => $billieData->getVersionId(),
                     OrderDataEntity::FIELD_ORDER_STATE => $state,
                 ], $additionalData),
-            ], Context::createDefaultContext());
+            ], $context);
         } catch (Exception $exception) {
             $this->logger->critical(
                 'Order state can not be updated. (Exception: ' . $exception->getMessage() . ')',
@@ -211,6 +220,13 @@ class OperationService
                 ]
             );
         }
+
+        $this->eventDispatcher->dispatch(new BillieStateChangedEvent(
+            $orderEntity,
+            $orderEntity->getTransactions()->last(),
+            $state,
+            $context
+        ));
     }
 
     private function getBillieDataForOrder(OrderEntity $order): OrderDataEntity

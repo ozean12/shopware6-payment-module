@@ -13,5 +13,7 @@
             <argument key="$orderDeliveryRepository" id="order_delivery.repository" type="service" />
         </service>
 
+        <service id="Billie\BilliePayment\Components\StateMachine\Subscriber\BillieStateSubscriber"/>
+
     </services>
 </container>
