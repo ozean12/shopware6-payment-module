@@ -14,8 +14,10 @@ namespace Billie\BilliePayment\Components\PaymentMethod\PaymentHandler;
 use Billie\BilliePayment\Components\Order\Model\Collection\OrderDataCollection;
 use Billie\BilliePayment\Components\Order\Model\OrderDataEntity;
 use Billie\BilliePayment\Components\PaymentMethod\Service\ConfirmDataService;
+use Billie\BilliePayment\Components\StateMachine\Event\BillieStateChangedEvent;
 use Billie\Sdk\Exception\BillieException;
 use Billie\Sdk\Exception\GatewayException;
+use Billie\Sdk\Model\Order;
 use Billie\Sdk\Service\Request\CheckoutSession\CheckoutSessionConfirmRequest;
 use Monolog\Logger;
 use RuntimeException;
@@ -27,6 +29,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Throwable;
 
@@ -39,7 +42,8 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
         private readonly ContainerInterface $container,
         private readonly ConfirmDataService $confirmDataService,
         private readonly EntityRepository $orderDataRepository,
-        private readonly Logger $logger
+        private readonly Logger $logger,
+        private readonly EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
@@ -93,6 +97,8 @@ class PaymentHandler implements SynchronousPaymentHandlerInterface
 
             throw $this->syncProcessInterrupted($transaction->getOrderTransaction()->getId(), $billieException->getMessage(), $billieException);
         }
+
+        $this->eventDispatcher->dispatch(new BillieStateChangedEvent($order, $transaction->getOrderTransaction(), Order::STATE_AUTHORIZED, $salesChannelContext->getContext()));
     }
 
     private function syncProcessInterrupted(string $orderTransactionId, string $errorMessage, ?Throwable $e = null): Throwable

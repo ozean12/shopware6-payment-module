@@ -23,7 +23,8 @@ class CriteriaHelper
             ->addAssociation('addresses.salutation')
             ->addAssociation('deliveries')
             ->addAssociation('lineItems')
-            ->addAssociation('transactions.paymentMethod');
+            ->addAssociation('transactions.paymentMethod')
+            ->addAssociation('transactions.stateMachineState');
 
         // sort by latest transactions to get the current transaction
         $criteria->getAssociation('transactions')->addSorting(new FieldSorting('createdAt'));
