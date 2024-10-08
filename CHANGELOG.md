@@ -20,11 +20,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - disable module validation für Billie widget to prevent errors during
 - fix cancelling delivery without (external) invoice/invoice-url
-- removed the state-configuration from extension configuration
 
 ### Removed
 
--
+- removed the state-configuration from extension configuration
+- removed the split of house number within the address
 
 ## [3.0.0] - 2023-09-01
 
