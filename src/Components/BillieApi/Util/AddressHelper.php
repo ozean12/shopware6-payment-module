@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Billie\BilliePayment\Components\BillieApi\Util;
 
 use Billie\Sdk\Model\Address;
-use Billie\Sdk\Util\AddressHelper as SdkHelper;
 use InvalidArgumentException;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
@@ -43,8 +42,7 @@ class AddressHelper
 
         return (new Address())
             ->setValidateOnSet(false)
-            ->setStreet(SdkHelper::getStreetName($addressEntity->getStreet()))
-            ->setHouseNumber(SdkHelper::getHouseNumber($addressEntity->getStreet()))
+            ->setStreet($addressEntity->getStreet())
             ->setPostalCode($addressEntity->getZipcode())
             ->setCity($addressEntity->getCity())
             ->setCountryCode($addressEntity->getCountry()->getIso());
